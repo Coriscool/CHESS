@@ -1,19 +1,35 @@
 {
-  "name": "p5chess",
+  "name": "chess",
   "version": "1.0.0",
-  "description": "p5js chess",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "webpack": "webpack"
+  "description": "",
+  "main": "board.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
   },
-  "author": "Nik Chankov",
+  "scripts": {
+    "test": "jest",
+    "test-coverage": "jest --ci --coverage",
+    "dev": "live-server --port=3000",
+    "lint": "./node_modules/.bin/eslint ./**/*.js",
+    "fix-lint": "./node_modules/.bin/eslint ./**/*.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeGarrigan/p5js-chess.git"
+  },
+  "author": "lg",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LukeGarrigan/p5js-chess/issues"
+  },
+  "homepage": "https://github.com/LukeGarrigan/p5js-chess#readme",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.37.0",
-    "webpack-cli": "^3.3.6"
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "eslint": "^7.13.0",
+    "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "jest-cli": "^26.6.3"
   }
 }
