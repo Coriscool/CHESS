@@ -157,7 +157,7 @@ describe('Should upgrade to a queen if at the edge of the board', () => {
         const pawn = new Pawn(0, 1, COLOUR.WHITE);
         pawn.move(0, 0, tiles);
 
-        expect(tiles[0][0] instanceof Knight).toBeTruthy();
+        expect(tiles[0][0] instanceof Queen).toBeTruthy();
     });
 
 
