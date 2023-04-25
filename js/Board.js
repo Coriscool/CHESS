@@ -1,5 +1,5 @@
 import Bishop from './Bishop.js';
-import {COLOUR, SIZE} from './constants.js';
+import { COLOUR, SIZE } from './constants.js';
 import Pawn from './Pawn.js';
 import Rook from './Rook.js';
 import Knight from './Knight.js';
@@ -19,7 +19,7 @@ export default class Board {
     createTiles() {
         let tiles = this.createEmptyBoard();
 
-        for (let i = 0; i < 8; i++) { 
+        for (let i = 0; i < 8; i++) {
             tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟');
             tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙');
         }
@@ -48,7 +48,7 @@ export default class Board {
 
         return tiles;
     }
-    
+
     createEmptyBoard() {
         let board = [];
         for (let i = 0; i < 8; i++) {
@@ -65,24 +65,24 @@ export default class Board {
         textSize(80);
         rectMode(CENTER);
         for (let i = 0; i < 8; i++) {
-            
+
             for (let j = 0; j < 8; j++) {
                 const currentTile = this.tiles[i][j];
-                const x =  this.getPos(i);
+                const x = this.getPos(i);
                 const y = this.getPos(j);
 
                 if ((i + j) % 2 != 0) {
                     push();
-                    fill(181,136,99);
+                    fill(181, 136, 99);
                     rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
                     pop();
                 } else {
                     push();
-                    fill(240,217,181);
+                    fill(240, 217, 181);
                     rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
                     pop();
                 }
-                if (currentTile)  {
+                if (currentTile) {
                     currentTile.draw(x, y);
                 }
             }
@@ -92,9 +92,9 @@ export default class Board {
             let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
             if (moves.length === 0) {
                 console.log('Checkmate');
-                fill(10,10,10);
+                fill(10, 10, 10);
                 textFont('Arial');
-                text('Checkmate',400,400,500,500);
+                text('Checkmate', 400, 400, 500, 500);
                 noLoop();
             }
         }
@@ -105,22 +105,22 @@ export default class Board {
             const tile = this.tiles[this.selected.x][this.selected.y];
             if (tile) {
                 push();
-                fill(118,115,115,170);
+                fill(118, 115, 115, 170);
 
                 for (const move of this.legalMoves) {
                     push();
                     noStroke();
                     //rect(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare, this.sizeOfSquare);
-                    circle(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare/4);
+                    circle(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare / 4);
                     pop();
                 }
-                pop(); 
+                pop();
             }
         }
     }
 
     getPos(index) {
-        let offset = this.sizeOfSquare/2;
+        let offset = this.sizeOfSquare / 2;
         return index * this.sizeOfSquare + offset;
     }
 
@@ -131,7 +131,7 @@ export default class Board {
     }
 
     select(x, y) {
-        if (this.isOffBoard(x, y) ) {
+        if (this.isOffBoard(x, y)) {
             this.selected = undefined;
         } else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
             this.selected = JSON.parse(JSON.stringify(this.tiles[x][y]));
@@ -143,12 +143,12 @@ export default class Board {
             } else {
                 this.selected = undefined;
             }
-        } 
+        }
     }
 
     move(from, to) {
         //define flag hier??
-        if(this.turn === COLOUR.WHITE){
+        if (this.turn === COLOUR.WHITE) {
             this.turn = COLOUR.BLACK;
             //alle flags van wit naar false
         }
@@ -166,9 +166,9 @@ export default class Board {
             let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
             if (moves.length === 0) {
                 console.log('Checkmate');
-                fill(10,10,10);
+                fill(10, 10, 10);
                 textFont('Arial');
-                text('Checkmate',400,400,50,50);
+                text('Checkmate', 400, 400, 50, 50);
                 noLoop();
             }
         }
@@ -180,6 +180,6 @@ export default class Board {
     }
 
 
-    
+
 
 }

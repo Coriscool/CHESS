@@ -13,24 +13,24 @@ export default class Piece {
         this.hasMoved = this.hasMoved + 2;
         this.move(toX, toY, tiles);
     }
-    
+
 
     move(toX, toY, tiles) {
         const fromX = this.x;
         const fromY = this.y;
 
         tiles[toX][toY] = this;
-        
+
         this.x = toX;
         this.y = toY;
-     
-        tiles[fromX][fromY] = undefined; 
+
+        tiles[fromX][fromY] = undefined;
     }
 
 
     findLegalMoves(tiles) {
         let moves = this.findMoves(tiles);
-        for (let i = moves.length -1; i >= 0; i--) {
+        for (let i = moves.length - 1; i >= 0; i--) {
             const currentMove = moves[i];
             if (CheckFinder.movePutsPlayerInCheck(this.x, this.y, currentMove.x, currentMove.y, tiles, this.colour)) {
                 moves.splice(i, 1);
