@@ -27,11 +27,11 @@ export default class Bishop extends Piece {
 
             if (tiles[newX][newY]) {
                 if (tiles[newX][newY].colour !== this.colour) {
-                    moves.push({x : newX, y: newY});         
+                    moves.push({ x: newX, y: newY });
                 }
                 return moves;
             }
-            moves.push({x : newX, y: newY});
+            moves.push({ x: newX, y: newY });
         }
         return moves;
     }

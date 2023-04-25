@@ -1,5 +1,5 @@
 import Board from './Board.js';
-import {SIZE} from './constants.js';
+import { SIZE } from './constants.js';
 let board;
 
 window.setup = () => {
@@ -12,7 +12,7 @@ window.draw = () => {
     board.draw();
 };
 
-window.onclick = function(evt) {
+window.onclick = function (evt) {
     const x = evt.clientX;
     const y = evt.clientY;
     board.userClick(x, y);
