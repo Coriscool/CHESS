@@ -73,12 +73,12 @@ export default class Board {
 
                 if ((i + j) % 2 != 0) {
                     push();
-                    fill(205, 205, 205);
+                    fill(181,136,99);
                     rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
                     pop();
                 } else {
                     push();
-                    fill(255, 255, 255);
+                    fill(240,217,181);
                     rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
                     pop();
                 }
@@ -88,6 +88,16 @@ export default class Board {
             }
         }
         this.displaySelected();
+        if (this.isInCheck) {
+            let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
+            if (moves.length === 0) {
+                console.log('Checkmate');
+                fill(10,10,10);
+                textFont('Arial');
+                text('Checkmate',400,400,500,500);
+                noLoop();
+            }
+        }
     }
 
     displaySelected() {
@@ -95,10 +105,14 @@ export default class Board {
             const tile = this.tiles[this.selected.x][this.selected.y];
             if (tile) {
                 push();
-                fill(100,255,100, 100);
+                fill(118,115,115,170);
 
                 for (const move of this.legalMoves) {
-                    rect(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare, this.sizeOfSquare);
+                    push();
+                    noStroke();
+                    //rect(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare, this.sizeOfSquare);
+                    circle(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare/4);
+                    pop();
                 }
                 pop(); 
             }
@@ -133,7 +147,16 @@ export default class Board {
     }
 
     move(from, to) {
-        this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+        //define flag hier??
+        if(this.turn === COLOUR.WHITE){
+            this.turn = COLOUR.BLACK;
+            //alle flags van wit naar false
+        }
+        else {
+            this.turn = COLOUR.WHITE;
+            //alle flags van zwart naar false
+        }
+        //this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
         this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
         this.selected = undefined;
 
@@ -143,6 +166,10 @@ export default class Board {
             let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
             if (moves.length === 0) {
                 console.log('Checkmate');
+                fill(10,10,10);
+                textFont('Arial');
+                text('Checkmate',400,400,50,50);
+                noLoop();
             }
         }
     }

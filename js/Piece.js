@@ -5,12 +5,12 @@ export default class Piece {
         this.x = x;
         this.y = y;
         this.colour = colour;
-        this.hasMoved = false;
+        this.hasMoved = 0;
         this.sprite = sprite;
     }
 
     userMove(toX, toY, tiles) {
-        this.hasMoved = true;
+        this.hasMoved = this.hasMoved + 2;
         this.move(toX, toY, tiles);
     }
     
