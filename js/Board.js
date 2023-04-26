@@ -20,10 +20,10 @@ export default class Board {
         let tiles = this.createEmptyBoard();
 
         for (let i = 0; i < 8; i++) { 
-            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟');
-            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙');
+            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', false);
+            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', false);
         }
-
+        //♟♙♜♖♝♗♞♘♚♔♛♕
         tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜');
         tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜');
         tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖');
@@ -147,16 +147,20 @@ export default class Board {
     }
 
     move(from, to) {
-        //define flag hier??
-        if(this.turn === COLOUR.WHITE){
-            this.turn = COLOUR.BLACK;
-            //alle flags van wit naar false
+        for(let i = 0; i<8; i++){
+            for(let j = 0; j<8; j++){
+                if (this.tiles[i][j] != undefined){
+                    if (this.tiles[i][j].sprite == '♟' || this.tiles[i][j].sprite == '♙'){
+                        this.tiles[i][j].flag = false;
+                    }
+                }
+            }
         }
-        else {
-            this.turn = COLOUR.WHITE;
-            //alle flags van zwart naar false
+        if ((from.y - to.y == 2 || from.y - to.y == -2) && (from.sprite == '♟' || from.sprite == '♙')) {
+            console.log("epic");        
+            this.tiles[from.x][from.y].flag = true;   
         }
-        //this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+        this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
         this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
         this.selected = undefined;
 

@@ -3,9 +3,10 @@ import Knight from './Knight.js';
 import Piece from './Piece.js';
 import Queen from './Queen.js';
 export default class Pawn extends Piece {
-    constructor(x, y, colour, sprite) {
-        super(x, y, colour, sprite);
+    constructor(x, y, colour, sprite, flag) {
+        super(x, y, colour, sprite, flag);
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
+        //this.hasDone2Moves = flag;
     }
 
 
@@ -14,11 +15,10 @@ export default class Pawn extends Piece {
         const forwardMove = { x: this.x, y: this.y + this.direction};
         if (!tiles[forwardMove.x][forwardMove.y]) {
             legalMoves.push(forwardMove);
-            if (this.hasMoved == 0) {
+            if (!this.hasMoved) {
                 const twoSquareMove = {x: this.x, y: this.y + (this.direction*2)};
                 if (!tiles[this.x][twoSquareMove.y]) {
                     legalMoves.push(twoSquareMove);
-                    //set flag to true
                 }
             }
         }
@@ -44,30 +44,39 @@ export default class Pawn extends Piece {
         
         //Notes: om te verwijderen= remove alle pawns met flag=true
         //in de if-statement moet ie checken of pawn ernaast een flag met true heeft
-        if(this.x + 1 < 8 && this.colour == 'white' && this.y == 3){
-            const adjacentRight = tiles[this.x+1][this.y];
-            if (adjacentRight && adjacentRight.colour !== this.colour) {
-                attacks.push({x: this.x+1, y: this.y + this.direction});
+        if(this.x + 1 < 8 && this.colour == 'white' && this.y == 3) {
+            if (tiles[this.x+1][this.y] != undefined) {
+                if (tiles[this.x+1][this.y].sprite == '♟') {
+                    if (tiles[this.x+1][this.y].flag) {
+                        if (tiles[this.x+1][this.y].colour !== this.colour) {
+                            attacks.push({x: this.x+1, y: this.y + this.direction});
+                        }
+                    }
+                }
             }
+            
         }
-        if(this.x + 1 < 8 && this.colour == 'black' && this.y == 4){
+        if(this.x + 1 < 8 && this.colour == 'black' && this.y == 4 && this.flag == true) {
             const adjacentRight = tiles[this.x+1][this.y];
             if (adjacentRight && adjacentRight.colour !== this.colour) {
                 attacks.push({x: this.x+1, y: this.y + this.direction});
+                //attacks.push({x: this.x, y: this.y + 1});
             }
         }
 
 
-        if(this.x - 1 >= 0 && this.colour == 'white' && this.y == 3){
+        if (this.x - 1 >= 0 && this.colour == 'white' && this.y == 3 && this.flag == true){
             const adjacentLeft = tiles[this.x-1][this.y];
             if (adjacentLeft && adjacentLeft.colour !== this.colour) {
                 attacks.push({x: this.x-1, y: this.y + this.direction});
+                //attacks.push({x: this.x, y: this.y - 1});
             }
         }
-        if(this.x - 1 >= 0 && this.colour == 'black' && this.y == 4){
+        if(this.x - 1 >= 0 && this.colour == 'black' && this.y == 4 && this.flag == true){
             const adjacentLeft = tiles[this.x-1][this.y];
             if (adjacentLeft && adjacentLeft.colour !== this.colour) {
                 attacks.push({x: this.x-1, y: this.y + this.direction});
+                //attacks.push({x: this.x, y: this.y + 1});
             }
         }
 

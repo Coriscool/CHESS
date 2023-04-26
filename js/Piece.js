@@ -4,13 +4,13 @@ export default class Piece {
     constructor(x, y, colour, sprite) {
         this.x = x;
         this.y = y;
-        this.colour = colour;
-        this.hasMoved = 0;
+        this.colour = colour; //
+        this.hasMoved = false;
         this.sprite = sprite;
     }
 
     userMove(toX, toY, tiles) {
-        this.hasMoved = this.hasMoved + 2;
+        this.hasMoved = true;
         this.move(toX, toY, tiles);
     }
     
@@ -45,5 +45,6 @@ export default class Piece {
 
     draw(x, y) {
         text(this.sprite, x, y);
+        //Image(sprite,x,y);
     }
 }
