@@ -24,7 +24,6 @@ window.setup = () => {
 
 window.draw = () => {
     background(220);
-    //console.log(frameRate());
     board.draw();
 };
 

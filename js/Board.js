@@ -150,14 +150,24 @@ export default class Board {
         for(let i = 0; i<8; i++){
             for(let j = 0; j<8; j++){
                 if (this.tiles[i][j] != undefined){
-                    if (this.tiles[i][j].sprite == '♟' || this.tiles[i][j].sprite == '♙'){
+                    if (this.tiles[i][j].sprite == '♟') {
+                        if (this.tiles[i][j].flag && to.y == j-1) {
+                            this.tiles[i][j] = undefined;
+                            continue;
+                        }
+                        this.tiles[i][j].flag = false;
+                    }
+                    if (this.tiles[i][j].sprite == '♙') {
+                        if (this.tiles[i][j].flag && to.y == j+1) {
+                            this.tiles[i][j] = undefined;
+                            continue;
+                        }
                         this.tiles[i][j].flag = false;
                     }
                 }
             }
         }
-        if ((from.y - to.y == 2 || from.y - to.y == -2) && (from.sprite == '♟' || from.sprite == '♙')) {
-            console.log("epic");        
+        if ((from.y - to.y == 2 || from.y - to.y == -2) && (from.sprite == '♟' || from.sprite == '♙')) {      
             this.tiles[from.x][from.y].flag = true;   
         }
         this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
@@ -169,7 +179,6 @@ export default class Board {
         if (this.isInCheck) {
             let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
             if (moves.length === 0) {
-                console.log('Checkmate');
                 fill(10,10,10);
                 textFont('Arial');
                 text('Checkmate',400,400,50,50);

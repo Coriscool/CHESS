@@ -44,9 +44,9 @@ export default class Pawn extends Piece {
         
         //Notes: om te verwijderen= remove alle pawns met flag=true
         //in de if-statement moet ie checken of pawn ernaast een flag met true heeft
-        if(this.x + 1 < 8 && this.colour == 'white' && this.y == 3) {
+        if (this.x + 1 < 8) {
             if (tiles[this.x+1][this.y] != undefined) {
-                if (tiles[this.x+1][this.y].sprite == '♟') {
+                if (tiles[this.x+1][this.y].sprite == '♟' || tiles[this.x+1][this.y].sprite == '♙') {
                     if (tiles[this.x+1][this.y].flag) {
                         if (tiles[this.x+1][this.y].colour !== this.colour) {
                             attacks.push({x: this.x+1, y: this.y + this.direction});
@@ -54,32 +54,18 @@ export default class Pawn extends Piece {
                     }
                 }
             }
-            
         }
-        if(this.x + 1 < 8 && this.colour == 'black' && this.y == 4 && this.flag == true) {
-            const adjacentRight = tiles[this.x+1][this.y];
-            if (adjacentRight && adjacentRight.colour !== this.colour) {
-                attacks.push({x: this.x+1, y: this.y + this.direction});
-                //attacks.push({x: this.x, y: this.y + 1});
+        if (this.x - 1 > 0) {
+            if (tiles[this.x-1][this.y] != undefined) {
+                if (tiles[this.x-1][this.y].sprite == '♟' || tiles[this.x-1][this.y].sprite == '♙') {
+                    if (tiles[this.x-1][this.y].flag) {
+                        if (tiles[this.x-1][this.y].colour !== this.colour) {
+                            attacks.push({x: this.x-1, y: this.y + this.direction});
+                        }
+                    }
+                }
             }
         }
-
-
-        if (this.x - 1 >= 0 && this.colour == 'white' && this.y == 3 && this.flag == true){
-            const adjacentLeft = tiles[this.x-1][this.y];
-            if (adjacentLeft && adjacentLeft.colour !== this.colour) {
-                attacks.push({x: this.x-1, y: this.y + this.direction});
-                //attacks.push({x: this.x, y: this.y - 1});
-            }
-        }
-        if(this.x - 1 >= 0 && this.colour == 'black' && this.y == 4 && this.flag == true){
-            const adjacentLeft = tiles[this.x-1][this.y];
-            if (adjacentLeft && adjacentLeft.colour !== this.colour) {
-                attacks.push({x: this.x-1, y: this.y + this.direction});
-                //attacks.push({x: this.x, y: this.y + 1});
-            }
-        }
-
         return attacks;
     }
 
