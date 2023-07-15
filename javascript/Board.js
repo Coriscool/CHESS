@@ -7,7 +7,7 @@ import King from "./King.js";
 import Queen from "./Queen.js";
 import CheckFinder from "./CheckFinder.js";
 import Pieces from "./constants.js";
-impro
+
 
 export default class Board {
     constructor() {
@@ -21,45 +21,33 @@ export default class Board {
         let tiles = this.createEmptyBoard();
 
         for (let i = 0; i < 8; i++) {
-            tiles[i][1] = new Pawn(
-                i,
-                1,
-                COLOUR.BLACK,
-                "♟",
-                Pieces.BPawn,
-                false
+            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, Pieces.BPawn, false
             );
-            tiles[i][6] = new Pawn(
-                i,
-                6,
-                COLOUR.WHITE,
-                "♙",
-                Pieces.WPawn,
-                false
+            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, Pieces.WPawn, false
             );
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
 
-        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", Pieces.BRook);
-        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", Pieces.BRook);
-        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", Pieces.WRook);
-        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, "♖", Pieces.WRook);
+        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, Pieces.BRook);
+        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, Pieces.BRook);
+        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, Pieces.WRook);
+        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, Pieces.WRook);
 
-        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, "♝", Pieces.BBishop);
-        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, "♝", Pieces.BBishop);
-        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, "♗", Pieces.WBishop);
-        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, "♗", Pieces.WBishop);
+        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, Pieces.BBishop);
+        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, Pieces.BBishop);
+        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, Pieces.WBishop);
+        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, Pieces.WBishop);
 
-        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, "♞", Pieces.BKnight);
-        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, "♞", Pieces.BKnight);
-        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, "♘", Pieces.WKnight);
-        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, "♘", Pieces.WKnight);
+        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, Pieces.BKnight);
+        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, Pieces.BKnight);
+        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, Pieces.WKnight);
+        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, Pieces.WKnight);
 
-        tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", Pieces.BKing);
-        tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", Pieces.WKing);
+        tiles[4][0] = new King(4, 0, COLOUR.BLACK, Pieces.BKing);
+        tiles[4][7] = new King(4, 7, COLOUR.WHITE, Pieces.WKing);
 
-        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, "♛", Pieces.BQueen);
-        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, "♕", Pieces.WQueen);
+        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, Pieces.BQueen);
+        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, Pieces.WQueen);
 
         return tiles;
     }
@@ -97,9 +85,12 @@ export default class Board {
                     rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
                     pop();
                 }
-                if (currentTile.type != Pieces.Empty) {
+                if(currentTile) {
                     currentTile.draw(x, y);
                 }
+                // if (currentTile.type != Pieces.Empty) {
+                //     currentTile.draw(x, y);
+                // }
             }
         }
         this.displaySelected();

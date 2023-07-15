@@ -59,7 +59,9 @@ export default class Piece {
     }
 
     draw(x, y) {
+        //rect(x,y,10);
         text(this.sprite, x, y);
-        //Image(sprite,x,y);
+        //new p5.Image(x, y);
+        //Image(this.sprite,x,y);
     }
 }
