@@ -6,6 +6,12 @@ export default class Pawn extends Piece {
     constructor(x, y, colour, sprite, flag) {
         super(x, y, colour, sprite, flag);
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
+        // if(this.colour === COLOUR.BLACK){
+        //     this.direction = 1;
+        // }
+        // if(this.colour === COLOUR.WHITE){
+        //     this.direction = -1;
+        // }
         //this.hasDone2Moves = flag;
     }
 
