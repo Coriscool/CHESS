@@ -127,16 +127,45 @@ export default class Board {
     userClick(clientX, clientY) {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
-        this.select(x, y);
+        if(this.turn === COLOUR.WHITE){
+            this.select(x, y);
+        }
+        if(this.turn === COLOUR.BLACK){
+            let willem = [];
+            // let randomXValue = undefined;
+            // let randomYValue = undefined;
+            for(let i = 0; i<8; i++){
+                for(let j = 0; j<8; j++){
+                    if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
+                        willem.push({i,j});
+                        console.log(willem);
+                        console.log('hi');
+                    }
+                }
+            }
+            let a = willem[int(random(0,willem.length))];
+            let c = round(random(0,7));
+            let d = round(random(0,7));
+            console.log(this.tiles);
+            this.move(this.tiles[a.i][a.j], {x: c, y: d});
+        }
     }
 
     select(x, y) {
         if (this.isOffBoard(x, y) ) {
             this.selected = undefined;
-        } else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
+        } 
+         //else if(this.tiles[x][y] && this.tiles[x][y].colour === this.turn && this.turn === COLOUR.BLACK){
+        //     //console.log('hi');
+               //this.selected = JSON.parse(JSON.stringify(this.tiles[0][0]));
+             //this.makemoveforblack;
+         //} 
+        else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
             this.selected = JSON.parse(JSON.stringify(this.tiles[x][y]));
+            //this.selected = this.tiles[x][y];
             this.legalMoves = this.tiles[this.selected.x][this.selected.y].findLegalMoves(this.tiles);
-        } else if (this.selected) {
+        } 
+        else if (this.selected) {
             const potentialMove = this.legalMoves.find(e => e.x == x && e.y == y);
             if (potentialMove) {
                 this.move(this.selected, potentialMove);
@@ -192,7 +221,15 @@ export default class Board {
         return x > 7 || x < 0 || y > 7 || y < 0;
     }
 
+    makemoveforblack(values) {
+        this.selected = JSON.parse(JSON.stringify(this.tiles[0][0]));
+        console.log(this.tiles);
+        this.tiles = [0][0];
+        this.legalMoves = this.tiles[0][0].findLegalMoves(this.tiles);
+        //this.legalMoves = this.tiles[this.selected.x][this.selected.y].findLegalMoves(this.tiles);
+        //this.moves = this.tiles[1][1].findLegalMoves(this.tiles);
+        this.tiles[0][0].userMove(2, 2, this.tiles);
+    }
 
-    
 
 }
