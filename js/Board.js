@@ -127,42 +127,44 @@ export default class Board {
     userClick(clientX, clientY) {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
+        this.select(x,y);
         if(this.turn === COLOUR.WHITE){
             this.select(x, y);
         }
+        //this.select(x,y);
         if(this.turn === COLOUR.BLACK){
-            let willem = [];
-            // let randomXValue = undefined;
-            // let randomYValue = undefined;
+            let possibleMovables = [];
+            let movesTo = [];
             for(let i = 0; i<8; i++){
                 for(let j = 0; j<8; j++){
                     if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
-                        willem.push({i,j});
-                        console.log(willem);
-                        console.log('hi');
+                        this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                        if(this.legalMoves != 0){
+                            possibleMovables.push({i,j});
+                        }
                     }
                 }
             }
-            let a = willem[int(random(0,willem.length))];
-            let c = round(random(0,7));
-            let d = round(random(0,7));
-            console.log(this.tiles);
-            this.move(this.tiles[a.i][a.j], {x: c, y: d});
+            if (possibleMovables.length === 0) {
+                console.log("Draw by stalemate");
+                fill(10, 10, 10);
+                textFont("Arial");
+                text("Draw by stalemate", 400, 400, 500, 500);
+                noLoop();
+            }
+            let a = possibleMovables[int(random(0,possibleMovables.length))];
+            movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+            let b = movesTo[int(random(0,movesTo.length))];
+            this.move(this.tiles[a.i][a.j], b);
         }
     }
 
     select(x, y) {
         if (this.isOffBoard(x, y) ) {
             this.selected = undefined;
-        } 
-         //else if(this.tiles[x][y] && this.tiles[x][y].colour === this.turn && this.turn === COLOUR.BLACK){
-        //     //console.log('hi');
-               //this.selected = JSON.parse(JSON.stringify(this.tiles[0][0]));
-             //this.makemoveforblack;
-         //} 
+        }  
         else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
             this.selected = JSON.parse(JSON.stringify(this.tiles[x][y]));
-            //this.selected = this.tiles[x][y];
             this.legalMoves = this.tiles[this.selected.x][this.selected.y].findLegalMoves(this.tiles);
         } 
         else if (this.selected) {
@@ -180,14 +182,14 @@ export default class Board {
             for(let j = 0; j<8; j++){
                 if (this.tiles[i][j] != undefined){
                     if (this.tiles[i][j].sprite == '♟') {
-                        if (this.tiles[i][j].flag && to.y == j-1) {
+                        if (this.tiles[i][j].flag && to.y == j-1 && to.x == i) {
                             this.tiles[i][j] = undefined;
                             continue;
                         }
                         this.tiles[i][j].flag = false;
                     }
                     if (this.tiles[i][j].sprite == '♙') {
-                        if (this.tiles[i][j].flag && to.y == j+1) {
+                        if (this.tiles[i][j].flag && to.y == j+1 && to.x == i) {
                             this.tiles[i][j] = undefined;
                             continue;
                         }
@@ -220,16 +222,4 @@ export default class Board {
     isOffBoard(x, y) {
         return x > 7 || x < 0 || y > 7 || y < 0;
     }
-
-    makemoveforblack(values) {
-        this.selected = JSON.parse(JSON.stringify(this.tiles[0][0]));
-        console.log(this.tiles);
-        this.tiles = [0][0];
-        this.legalMoves = this.tiles[0][0].findLegalMoves(this.tiles);
-        //this.legalMoves = this.tiles[this.selected.x][this.selected.y].findLegalMoves(this.tiles);
-        //this.moves = this.tiles[1][1].findLegalMoves(this.tiles);
-        this.tiles[0][0].userMove(2, 2, this.tiles);
-    }
-
-
 }

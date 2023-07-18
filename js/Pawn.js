@@ -6,13 +6,6 @@ export default class Pawn extends Piece {
     constructor(x, y, colour, sprite, flag) {
         super(x, y, colour, sprite, flag);
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
-        // if(this.colour === COLOUR.BLACK){
-        //     this.direction = 1;
-        // }
-        // if(this.colour === COLOUR.WHITE){
-        //     this.direction = -1;
-        // }
-        //this.hasDone2Moves = flag;
     }
 
 
@@ -48,8 +41,6 @@ export default class Pawn extends Piece {
             }
         }
         
-        //Notes: om te verwijderen= remove alle pawns met flag=true
-        //in de if-statement moet ie checken of pawn ernaast een flag met true heeft
         if (this.x + 1 < 8) {
             if (tiles[this.x+1][this.y] != undefined) {
                 if (tiles[this.x+1][this.y].sprite == '♟' || tiles[this.x+1][this.y].sprite == '♙') {
