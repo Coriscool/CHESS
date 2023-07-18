@@ -1,8 +1,8 @@
 import { COLOUR } from './constants.js';
 import Piece from './Piece.js';
 export default class Knight extends Piece {
-    constructor(x, y, colour, sprite) {
-        super(x, y, colour, sprite);
+    constructor(x, y, colour, sprite, value) {
+        super(x, y, colour, sprite, value);
     }
 
 

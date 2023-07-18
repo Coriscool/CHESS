@@ -3,11 +3,10 @@ import Knight from './Knight.js';
 import Piece from './Piece.js';
 import Queen from './Queen.js';
 export default class Pawn extends Piece {
-    constructor(x, y, colour, sprite, flag) {
-        super(x, y, colour, sprite, flag);
+    constructor(x, y, colour, sprite, value, flag) {
+        super(x, y, colour, sprite, value, flag);
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
     }
-
 
     findMoves(tiles) {
         let legalMoves = [];
@@ -73,9 +72,9 @@ export default class Pawn extends Piece {
 
     checkPromotion(y, tiles, x) {
         if (this.colour == COLOUR.BLACK && y == 7) {
-            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛');
+            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛', -10);
         } else if (this.colour === COLOUR.WHITE && y === 0) {
-            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕');
+            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕', 10);
         }
     }
 }

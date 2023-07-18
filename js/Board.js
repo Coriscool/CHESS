@@ -20,31 +20,31 @@ export default class Board {
         let tiles = this.createEmptyBoard();
 
         for (let i = 0; i < 8; i++) { 
-            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', false);
-            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', false);
+            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', -1, false);
+            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 1, false);
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
-        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜');
-        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜');
-        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖');
-        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖');
+        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -5);
+        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -5);
+        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
+        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
 
-        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝');
-        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝');
-        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗');
-        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗');
+        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -3.4);
+        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -3.4);
+        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 3.4);
+        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 3.4);
 
 
-        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞');
-        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞');
-        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘');
-        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘');
+        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -3);
+        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -3);
+        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 3);
+        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 3);
 
-        tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚');
-        tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔');
+        tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -900);
+        tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 900);
 
-        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛');
-        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕');
+        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
+        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
 
         return tiles;
     }
@@ -131,7 +131,7 @@ export default class Board {
         if(this.turn === COLOUR.WHITE){
             this.select(x, y);
         }
-        //this.select(x,y);
+        this.select(x,y);
         if(this.turn === COLOUR.BLACK){
             let possibleMovables = [];
             let movesTo = [];
@@ -156,6 +156,7 @@ export default class Board {
             movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
             let b = movesTo[int(random(0,movesTo.length))];
             this.move(this.tiles[a.i][a.j], b);
+             this.evaluator(this.tiles);
         }
     }
 
@@ -222,4 +223,22 @@ export default class Board {
     isOffBoard(x, y) {
         return x > 7 || x < 0 || y > 7 || y < 0;
     }
+
+
+evaluator(tiles) {
+    let evaluation = 0;
+    for(let i = 0; i<8; i++){
+        for(let j = 0; j<8; j++){
+            if(this.tiles[i][j] != undefined){
+                evaluation += this.tiles[i][j].value;
+            }
+        }
+    }
+    console.log(round(evaluation,2));
+    return evaluation;
 }
+    //♟♙♜♖♝♗♞♘♚♔♛♕
+}
+
+
+

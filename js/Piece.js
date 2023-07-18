@@ -1,12 +1,13 @@
 
 import CheckFinder from './CheckFinder.js';
 export default class Piece {
-    constructor(x, y, colour, sprite) {
+    constructor(x, y, colour, sprite, value) {
         this.x = x;
         this.y = y;
         this.colour = colour; //
         this.hasMoved = false;
         this.sprite = sprite;
+        this.value = value;
     }
 
     userMove(toX, toY, tiles) {

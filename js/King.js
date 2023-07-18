@@ -3,8 +3,8 @@ import { COLOUR } from './constants.js';
 import Piece from './Piece.js';
 import Rook from './Rook.js';
 export default class King extends Piece {
-    constructor(x, y, colour, sprite) {
-        super(x, y, colour, sprite);
+    constructor(x, y, colour, sprite, value) {
+        super(x, y, colour, sprite, value);
         this.type = 'king';
     }
 
