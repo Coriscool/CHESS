@@ -153,14 +153,22 @@ export default class Board {
                 noLoop();
             }
             if (possibleMovables.length !== 0){
-                let bestmove = 0;
+                let bestmove = [];
                 let a = possibleMovables;
+                let previousEvaluation = 0;
                 for(let c = 0; c<a.length; c++){
                     movesTo = this.tiles[a[c].i][a[c].j].findLegalMoves(this.tiles);
                     for(let j = 0; j<movesTo.length; j++){
-                        this.evaluator(a[c], movesTo[j]);
+                        if(this.evaluator(movesTo[j]) != previousEvaluation && this.evaluator(movesTo[j]) <= previousEvaluation){
+                            console.log(movesTo);
+                            this.move(this.tiles[a[c].i][a[c].j], movesTo[j]);
+                            possibleMovables.length = 0;
+                        }
+                        previousEvaluation = this.evaluator(movesTo[j]);
                     }
                 }
+                //this.move moet hier gedaaan worden
+                console.log(bestmove);
             }
             if (possibleMovables.length !== 0){
                 let a = possibleMovables[int(random(0,possibleMovables.length))];
@@ -168,7 +176,6 @@ export default class Board {
                 let b = movesTo[int(random(0,movesTo.length))];
                 this.move(this.tiles[a.i][a.j], b);
             }
-            
         }
     }
 
@@ -237,20 +244,19 @@ export default class Board {
     }
 
 
-evaluator(wherePieceMovesFrom, wherePieceMovesTo) {
-    //if wherePieceMovesFrom == this.tiles[i][j]
+evaluator(wherePieceMovesTo) {
     let evaluation = 0;
     for(let i = 0; i<8; i++){
         for(let j = 0; j<8; j++){
             if(this.tiles[i][j] != undefined){
-                if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined && this.tiles[i][j] == this.tiles[wherePieceMovesFrom.i][wherePieceMovesFrom.j]){
-                    evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
-                }
                 evaluation += this.tiles[i][j].value;
             }
         }
     }
-    console.log(evaluation + ' Final decision');
+    if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
+        evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
+    }
+    console.log(evaluation);
     return evaluation;
 }
     //♟♙♜♖♝♗♞♘♚♔♛♕
