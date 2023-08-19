@@ -29,10 +29,10 @@ export default class Board {
         tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
         tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
 
-        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -3.4);
-        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -3.4);
-        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 3.4);
-        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 3.4);
+        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -3);
+        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -3);
+        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 3);
+        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 3);
 
 
         tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -3);
@@ -128,10 +128,10 @@ export default class Board {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         this.select(x,y);
-        if(this.turn === COLOUR.WHITE){
-            this.select(x, y);
-        }
-        this.select(x,y);
+        // if(this.turn === COLOUR.WHITE){
+        //     this.select(x, y);
+        // }
+        //this.select(x,y);
         if(this.turn === COLOUR.BLACK){
             let possibleMovables = [];
             let movesTo = [];
@@ -145,18 +145,30 @@ export default class Board {
                     }
                 }
             }
-            if (possibleMovables.length === 0) {
+            if (possibleMovables.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
                 textFont("Arial");
                 text("Draw by stalemate", 400, 400, 500, 500);
                 noLoop();
             }
-            let a = possibleMovables[int(random(0,possibleMovables.length))];
-            movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
-            let b = movesTo[int(random(0,movesTo.length))];
-            this.move(this.tiles[a.i][a.j], b);
-             this.evaluator(this.tiles);
+            if (possibleMovables.length !== 0){
+                let bestmove = 0;
+                let a = possibleMovables;
+                for(let c = 0; c<a.length; c++){
+                    movesTo = this.tiles[a[c].i][a[c].j].findLegalMoves(this.tiles);
+                    for(let j = 0; j<movesTo.length; j++){
+                        this.evaluator(a[c], movesTo[j]);
+                    }
+                }
+            }
+            if (possibleMovables.length !== 0){
+                let a = possibleMovables[int(random(0,possibleMovables.length))];
+                movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+                let b = movesTo[int(random(0,movesTo.length))];
+                this.move(this.tiles[a.i][a.j], b);
+            }
+            
         }
     }
 
@@ -225,16 +237,20 @@ export default class Board {
     }
 
 
-evaluator(tiles) {
+evaluator(wherePieceMovesFrom, wherePieceMovesTo) {
+    //if wherePieceMovesFrom == this.tiles[i][j]
     let evaluation = 0;
     for(let i = 0; i<8; i++){
         for(let j = 0; j<8; j++){
             if(this.tiles[i][j] != undefined){
+                if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined && this.tiles[i][j] == this.tiles[wherePieceMovesFrom.i][wherePieceMovesFrom.j]){
+                    evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
+                }
                 evaluation += this.tiles[i][j].value;
             }
         }
     }
-    console.log(round(evaluation,2));
+    console.log(evaluation + ' Final decision');
     return evaluation;
 }
     //♟♙♜♖♝♗♞♘♚♔♛♕
