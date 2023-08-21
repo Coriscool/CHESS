@@ -128,10 +128,6 @@ export default class Board {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         this.select(x,y);
-        // if(this.turn === COLOUR.WHITE){
-        //     this.select(x, y);
-        // }
-        //this.select(x,y);
         if(this.turn === COLOUR.BLACK){
             let possibleMovables = [];
             let movesTo = [];
@@ -152,25 +148,28 @@ export default class Board {
                 text("Draw by stalemate", 400, 400, 500, 500);
                 noLoop();
             }
+            let rMGActive = true;
             if (possibleMovables.length !== 0){
-                let bestmove = [];
+                let bestpiece = 0;
+                let bestsquare = 0;
                 let a = possibleMovables;
-                let previousEvaluation = 0;
+                let previousBestEvaluation = this.evaluator(undefined);
                 for(let c = 0; c<a.length; c++){
                     movesTo = this.tiles[a[c].i][a[c].j].findLegalMoves(this.tiles);
                     for(let j = 0; j<movesTo.length; j++){
-                        if(this.evaluator(movesTo[j]) != previousEvaluation && this.evaluator(movesTo[j]) <= previousEvaluation){
-                            console.log(movesTo);
-                            this.move(this.tiles[a[c].i][a[c].j], movesTo[j]);
-                            possibleMovables.length = 0;
+                        if(this.evaluator(movesTo[j]) < previousBestEvaluation){
+                            bestpiece = this.tiles[a[c].i][a[c].j];
+                            bestsquare = movesTo[j];
+                            previousBestEvaluation = this.evaluator(movesTo[j]);
+                            rMGActive = false;
                         }
-                        previousEvaluation = this.evaluator(movesTo[j]);
                     }
                 }
-                //this.move moet hier gedaaan worden
-                console.log(bestmove);
+                if(bestpiece !== 0 && bestsquare !== 0){
+                    this.move(bestpiece, bestsquare);
+                }
             }
-            if (possibleMovables.length !== 0){
+            if (possibleMovables.length !== 0 && rMGActive){
                 let a = possibleMovables[int(random(0,possibleMovables.length))];
                 movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
                 let b = movesTo[int(random(0,movesTo.length))];
@@ -198,22 +197,24 @@ export default class Board {
     }
 
     move(from, to) {
-        for(let i = 0; i<8; i++){
-            for(let j = 0; j<8; j++){
-                if (this.tiles[i][j] != undefined){
-                    if (this.tiles[i][j].sprite == '♟') {
-                        if (this.tiles[i][j].flag && to.y == j-1 && to.x == i) {
-                            this.tiles[i][j] = undefined;
-                            continue;
+        if(from.sprite == '♟' || from.sprite == '♙'){
+            for(let i = 0; i<8; i++){
+                for(let j = 0; j<8; j++){
+                    if (this.tiles[i][j] != undefined){
+                        if (this.tiles[i][j].sprite == '♟') {
+                            if (this.tiles[i][j].flag && to.y == j-1 && to.x == i) {
+                                this.tiles[i][j] = undefined;
+                                continue;
+                            }
+                            this.tiles[i][j].flag = false;
                         }
-                        this.tiles[i][j].flag = false;
-                    }
-                    if (this.tiles[i][j].sprite == '♙') {
-                        if (this.tiles[i][j].flag && to.y == j+1 && to.x == i) {
-                            this.tiles[i][j] = undefined;
-                            continue;
+                        if (this.tiles[i][j].sprite == '♙') {
+                            if (this.tiles[i][j].flag && to.y == j+1 && to.x == i) {
+                                this.tiles[i][j] = undefined;
+                                continue;
+                            }
+                            this.tiles[i][j].flag = false;
                         }
-                        this.tiles[i][j].flag = false;
                     }
                 }
             }
@@ -256,7 +257,6 @@ evaluator(wherePieceMovesTo) {
     if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
         evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
     }
-    console.log(evaluation);
     return evaluation;
 }
     //♟♙♜♖♝♗♞♘♚♔♛♕
