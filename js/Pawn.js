@@ -45,7 +45,7 @@ export default class Pawn extends Piece {
                 if (tiles[this.x+1][this.y].sprite == '♟' || tiles[this.x+1][this.y].sprite == '♙') {
                     if (tiles[this.x+1][this.y].flag) {
                         if (tiles[this.x+1][this.y].colour !== this.colour) {
-                            attacks.push({x: this.x+1, y: this.y + this.direction});
+                            attacks.push({x: this.x+1, y: this.y + this.direction, z: 'thisMoveIsEnpassant'});
                         }
                     }
                 }
@@ -56,7 +56,7 @@ export default class Pawn extends Piece {
                 if (tiles[this.x-1][this.y].sprite == '♟' || tiles[this.x-1][this.y].sprite == '♙') {
                     if (tiles[this.x-1][this.y].flag) {
                         if (tiles[this.x-1][this.y].colour !== this.colour) {
-                            attacks.push({x: this.x-1, y: this.y + this.direction});
+                            attacks.push({x: this.x-1, y: this.y + this.direction, z: 'thisMoveIsEnpassant'});
                         }
                     }
                 }

@@ -152,16 +152,27 @@ export default class Board {
             if (possibleMovables.length !== 0){
                 let bestpiece = 0;
                 let bestsquare = 0;
-                let a = possibleMovables;
-                let previousBestEvaluation = this.evaluator(undefined);
-                for(let c = 0; c<a.length; c++){
-                    movesTo = this.tiles[a[c].i][a[c].j].findLegalMoves(this.tiles);
+                let currentEvaluation = this.evaluator();
+                let previousBestEvaluation = this.evaluator();
+                for(let c = 0; c<possibleMovables.length; c++){
+                    console.log(' ');
+                    movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
+                    console.log(possibleMovables[c].i + ', ' + possibleMovables[c].j);
+                    console.log(movesTo);
                     for(let j = 0; j<movesTo.length; j++){
-                        if(this.evaluator(movesTo[j]) < previousBestEvaluation){
-                            bestpiece = this.tiles[a[c].i][a[c].j];
-                            bestsquare = movesTo[j];
-                            previousBestEvaluation = this.evaluator(movesTo[j]);
-                            rMGActive = false;
+                        if(this.tiles[movesTo[j].x][movesTo[j].y] !== undefined || movesTo[j].z === 'thisMoveIsEnpassant'){
+                            if(movesTo[j].z == 'thisMoveIsEnpassant'){
+                                bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
+                                bestsquare = movesTo[j];
+                                previousBestEvaluation = currentEvaluation - 1;
+                                rMGActive = false;
+                            }
+                            else if(currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value < previousBestEvaluation){
+                                bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
+                                bestsquare = movesTo[j];
+                                previousBestEvaluation = currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value;
+                                rMGActive = false;
+                            }
                         }
                     }
                 }
@@ -245,7 +256,7 @@ export default class Board {
     }
 
 
-evaluator(wherePieceMovesTo) {
+evaluator() {
     let evaluation = 0;
     for(let i = 0; i<8; i++){
         for(let j = 0; j<8; j++){
@@ -254,9 +265,9 @@ evaluator(wherePieceMovesTo) {
             }
         }
     }
-    if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
-        evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
-    }
+    // if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
+    //     evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
+    // }
     return evaluation;
 }
     //♟♙♜♖♝♗♞♘♚♔♛♕
