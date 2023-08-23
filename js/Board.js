@@ -154,28 +154,45 @@ export default class Board {
                 let bestsquare = 0;
                 let currentEvaluation = this.evaluator();
                 let previousBestEvaluation = this.evaluator();
-                for(let c = 0; c<possibleMovables.length; c++){
-                    console.log(' ');
-                    movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
-                    console.log(possibleMovables[c].i + ', ' + possibleMovables[c].j);
-                    console.log(movesTo);
-                    for(let j = 0; j<movesTo.length; j++){
-                        if(this.tiles[movesTo[j].x][movesTo[j].y] !== undefined || movesTo[j].z === 'thisMoveIsEnpassant'){
-                            if(movesTo[j].z == 'thisMoveIsEnpassant'){
-                                bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
-                                bestsquare = movesTo[j];
-                                previousBestEvaluation = currentEvaluation - 1;
-                                rMGActive = false;
-                            }
-                            else if(currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value < previousBestEvaluation){
-                                bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
-                                bestsquare = movesTo[j];
-                                previousBestEvaluation = currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value;
-                                rMGActive = false;
-                            }
-                        }
+                let validAttackingMoves = [];
+                for (let c = 0; c < possibleMovables.length; c++) {
+                    let movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
+                    for (let j = movesTo.length - 1; j >= 0; j--) {
+                        if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
+                            validAttackingMoves.push({from: possibleMovables[c], to: movesTo[j]});
+                        } 
                     }
                 }
+                let bestMove = validAttackingMoves[0];
+                for(let i = 0; i<validAttackingMoves.length; i++){
+                    if(this.tiles[validAttackingMoves[i].to.x][validAttackingMoves[i].to.y].value >= this.tiles[bestMove.to.x][bestMove.to.y].value){
+                        bestMove = validAttackingMoves[i];
+                    }
+                }
+                console.log(bestMove);
+                if(bestMove !== undefined){
+                    this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+                    rMGActive = false;
+                }
+                // for(let c = 0; c<possibleMovables.length; c++){
+                //     movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
+                //     for(let j = 0; j<movesTo.length; j++){
+                //         if(this.tiles[movesTo[j].x][movesTo[j].y] !== undefined || movesTo[j].z === 'thisMoveIsEnpassant'){
+                //             if(movesTo[j].z == 'thisMoveIsEnpassant'){
+                //                 bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
+                //                 bestsquare = movesTo[j];
+                //                 previousBestEvaluation = currentEvaluation - 1;
+                //                 rMGActive = false;
+                //             }
+                //             else if(currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value < previousBestEvaluation){
+                //                 bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
+                //                 bestsquare = movesTo[j];
+                //                 previousBestEvaluation = currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value;
+                //                 rMGActive = false;
+                //             }
+                //         }
+                //     }
+                // }
                 if(bestpiece !== 0 && bestsquare !== 0){
                     this.move(bestpiece, bestsquare);
                 }
