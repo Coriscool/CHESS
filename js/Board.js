@@ -125,10 +125,15 @@ export default class Board {
     }
 
     userClick(clientX, clientY) {
+        let calculating = false;
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
-        this.select(x,y);
+        if(!calculating){
+            this.select(x,y);
+        }
         if(this.turn === COLOUR.BLACK){
+            calculating = true;
+            let currentPosition = this.tiles;
             let possibleMovables = [];
             let movesTo = [];
             for(let i = 0; i<8; i++){
@@ -150,10 +155,6 @@ export default class Board {
             }
             let rMGActive = true;
             if (possibleMovables.length !== 0){
-                let bestpiece = 0;
-                let bestsquare = 0;
-                let currentEvaluation = this.evaluator();
-                let previousBestEvaluation = this.evaluator();
                 let validAttackingMoves = [];
                 for (let c = 0; c < possibleMovables.length; c++) {
                     let movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
@@ -169,40 +170,21 @@ export default class Board {
                         bestMove = validAttackingMoves[i];
                     }
                 }
-                console.log(bestMove);
+                console.log(bestMove);  
                 if(bestMove !== undefined){
                     this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
                     rMGActive = false;
-                }
-                // for(let c = 0; c<possibleMovables.length; c++){
-                //     movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
-                //     for(let j = 0; j<movesTo.length; j++){
-                //         if(this.tiles[movesTo[j].x][movesTo[j].y] !== undefined || movesTo[j].z === 'thisMoveIsEnpassant'){
-                //             if(movesTo[j].z == 'thisMoveIsEnpassant'){
-                //                 bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
-                //                 bestsquare = movesTo[j];
-                //                 previousBestEvaluation = currentEvaluation - 1;
-                //                 rMGActive = false;
-                //             }
-                //             else if(currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value < previousBestEvaluation){
-                //                 bestpiece = this.tiles[possibleMovables[c].i][possibleMovables[c].j];
-                //                 bestsquare = movesTo[j];
-                //                 previousBestEvaluation = currentEvaluation - this.tiles[movesTo[j].x][movesTo[j].y].value;
-                //                 rMGActive = false;
-                //             }
-                //         }
-                //     }
-                // }
-                if(bestpiece !== 0 && bestsquare !== 0){
-                    this.move(bestpiece, bestsquare);
-                }
+                }      
             }
+                        
             if (possibleMovables.length !== 0 && rMGActive){
                 let a = possibleMovables[int(random(0,possibleMovables.length))];
                 movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
                 let b = movesTo[int(random(0,movesTo.length))];
                 this.move(this.tiles[a.i][a.j], b);
             }
+            console.log(currentPosition);
+            calculating = false;
         }
     }
 
