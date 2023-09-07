@@ -141,7 +141,7 @@ export default class Board {
                     if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
                         this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
                         if(this.legalMoves != 0){
-                            possibleMovables.push({i,j});
+                            possibleMovables.push ({i,j});
                         }
                     }
                 }
@@ -170,11 +170,60 @@ export default class Board {
                         bestMove = validAttackingMoves[i];
                     }
                 }
-                console.log(bestMove);  
+                //console.log(bestMove);  
                 if(bestMove !== undefined){
+                    let valueOfAttackedSquare = this.tiles[bestMove.to.x][bestMove.to.y].value;
                     this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
                     rMGActive = false;
+
+                //HIER WORDT VOOR WHITE
+                    let possibleMovables2 = []
+                for(let i = 0; i<8; i++){
+                    for(let j = 0; j<8; j++){
+                        if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
+                            this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                            if(this.legalMoves != 0){
+                                possibleMovables2.push ({i,j});
+                            }
+                        }
+                    }
                 }      
+
+                let validAttackingMoves2 = [];
+                for (let c = 0; c < possibleMovables2.length; c++) {
+                    let movesTo2 = this.tiles[possibleMovables2[c].i][possibleMovables2[c].j].findLegalMoves(this.tiles);
+                    for (let j = movesTo2.length - 1; j >= 0; j--) {
+                        if (this.tiles[movesTo2[j].x][movesTo2[j].y] !== undefined) {
+                            validAttackingMoves2.push({from: possibleMovables2[c], to: movesTo2[j]});
+                        } 
+                    }
+                }
+                let bestMove2 = validAttackingMoves2[0];
+                for(let i = 0; i<validAttackingMoves2.length; i++){
+                    if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value >= this.tiles[bestMove2.to.x][bestMove2.to.y].value){
+                        bestMove2 = validAttackingMoves2[i];
+                    }
+                }
+                if(bestMove2 != undefined){
+                    console.log(bestMove2);
+                    //value hieronder is van black
+                    console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
+                    //value hieronder is van white
+                    console.log(bestMove);
+                    console.log(valueOfAttackedSquare);
+                    if(this.tiles[bestMove2.to.x][bestMove2.to.y].value >= this.tiles[bestMove2.from.i][bestMove2.from.j].value){
+                    console.log('hi');
+                    }
+                }
+                
+                //if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value){}
+                // if(bestMove2 !== undefined){
+                //     this.move(this.tiles[bestMove2.from.i][bestMove2.from.j], bestMove2.to);
+                //     rMGActive = false;
+                // }   
+
+                // TOT AAN HIER
+                }                          
             }
                         
             if (possibleMovables.length !== 0 && rMGActive){
@@ -183,7 +232,8 @@ export default class Board {
                 let b = movesTo[int(random(0,movesTo.length))];
                 this.move(this.tiles[a.i][a.j], b);
             }
-            console.log(currentPosition);
+
+            //console.log(currentPosition);
             calculating = false;
         }
     }
