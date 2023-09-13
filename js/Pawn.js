@@ -3,12 +3,10 @@ import Knight from './Knight.js';
 import Piece from './Piece.js';
 import Queen from './Queen.js';
 export default class Pawn extends Piece {
-    constructor(x, y, colour, sprite, flag) {
-        super(x, y, colour, sprite, flag);
+    constructor(x, y, colour, sprite, value, flag) {
+        super(x, y, colour, sprite, value, flag);
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
-        //this.hasDone2Moves = flag;
     }
-
 
     findMoves(tiles) {
         let legalMoves = [];
@@ -42,14 +40,12 @@ export default class Pawn extends Piece {
             }
         }
         
-        //Notes: om te verwijderen= remove alle pawns met flag=true
-        //in de if-statement moet ie checken of pawn ernaast een flag met true heeft
         if (this.x + 1 < 8) {
             if (tiles[this.x+1][this.y] != undefined) {
                 if (tiles[this.x+1][this.y].sprite == '♟' || tiles[this.x+1][this.y].sprite == '♙') {
                     if (tiles[this.x+1][this.y].flag) {
                         if (tiles[this.x+1][this.y].colour !== this.colour) {
-                            attacks.push({x: this.x+1, y: this.y + this.direction});
+                            attacks.push({x: this.x+1, y: this.y + this.direction, z: 'thisMoveIsEnpassant'});
                         }
                     }
                 }
@@ -60,7 +56,7 @@ export default class Pawn extends Piece {
                 if (tiles[this.x-1][this.y].sprite == '♟' || tiles[this.x-1][this.y].sprite == '♙') {
                     if (tiles[this.x-1][this.y].flag) {
                         if (tiles[this.x-1][this.y].colour !== this.colour) {
-                            attacks.push({x: this.x-1, y: this.y + this.direction});
+                            attacks.push({x: this.x-1, y: this.y + this.direction, z: 'thisMoveIsEnpassant'});
                         }
                     }
                 }
@@ -76,9 +72,9 @@ export default class Pawn extends Piece {
 
     checkPromotion(y, tiles, x) {
         if (this.colour == COLOUR.BLACK && y == 7) {
-            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛');
+            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛', -10);
         } else if (this.colour === COLOUR.WHITE && y === 0) {
-            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕');
+            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕', 10);
         }
     }
 }

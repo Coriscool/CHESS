@@ -1,17 +1,19 @@
-export const Pieces = {
-    WPawn: "WPawn",
-    BPawn: "BPawn",
-    WKnight: "WKnight",
-    BKnight: "BKnight",
-    WBishop: "WBishop",
-    BBishop: "BBishop",
-    WRook: "Wrook",
-    BRook: "Brook",
-    WQueen: "Wqueen",
-    BQueen: "Bqueen",
-    WKing: "WKing",
-    BKing: "BKing",
+const Pieces = {
+    WPawn: "♙",
+    BPawn: "♟",
+    WKnight: "♘",
+    BKnight: "♞",
+    WBishop: "♗",
+    BBishop: "♝",
+    WRook: "♖",
+    BRook: "♜",
+    WQueen: "♕",
+    BQueen: "♛",
+    WKing: "♔",
+    BKing: "♚",
+    //♟♙♜♖♝♗♞♘♚♔♛♕
 };
+export default Pieces;
 export const SIZE = 800;
 export const COLOUR = {
     BLACK: "black",

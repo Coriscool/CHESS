@@ -20,31 +20,31 @@ export default class Board {
         let tiles = this.createEmptyBoard();
 
         for (let i = 0; i < 8; i++) { 
-            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', false);
-            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', false);
+            tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', -1, false);
+            tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 1, false);
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
-        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜');
-        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜');
-        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖');
-        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖');
+        tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -5);
+        tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -5);
+        tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
+        tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
 
-        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝');
-        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝');
-        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗');
-        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗');
+        tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -3);
+        tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -3);
+        tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 3);
+        tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 3);
 
 
-        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞');
-        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞');
-        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘');
-        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘');
+        tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -3);
+        tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -3);
+        tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 3);
+        tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 3);
 
-        tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚');
-        tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔');
+        tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -900);
+        tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 900);
 
-        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛');
-        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕');
+        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
+        tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
 
         return tiles;
     }
@@ -125,18 +125,128 @@ export default class Board {
     }
 
     userClick(clientX, clientY) {
+        let calculating = false;
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
-        this.select(x, y);
+        if(!calculating){
+            this.select(x,y);
+        }
+        if(this.turn === COLOUR.BLACK){
+            calculating = true;
+            let currentPosition = this.tiles;
+            let possibleMovables = [];
+            let movesTo = [];
+            for(let i = 0; i<8; i++){
+                for(let j = 0; j<8; j++){
+                    if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
+                        this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                        if(this.legalMoves != 0){
+                            possibleMovables.push ({i,j});
+                        }
+                    }
+                }
+            }
+            if (possibleMovables.length === 0 && !this.isInCheck) {
+                console.log("Draw by stalemate");
+                fill(10, 10, 10);
+                textFont("Arial");
+                text("Draw by stalemate", 400, 400, 500, 500);
+                noLoop();
+            }
+            let rMGActive = true;
+            if (possibleMovables.length !== 0){
+                let validAttackingMoves = [];
+                for (let c = 0; c < possibleMovables.length; c++) {
+                    let movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
+                    for (let j = movesTo.length - 1; j >= 0; j--) {
+                        if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
+                            validAttackingMoves.push({from: possibleMovables[c], to: movesTo[j]});
+                        } 
+                    }
+                }
+                let bestMove = validAttackingMoves[0];
+                for(let i = 0; i<validAttackingMoves.length; i++){
+                    if(this.tiles[validAttackingMoves[i].to.x][validAttackingMoves[i].to.y].value >= this.tiles[bestMove.to.x][bestMove.to.y].value){
+                        bestMove = validAttackingMoves[i];
+                    }
+                }
+                //console.log(bestMove);  
+                if(bestMove !== undefined){
+                    let valueOfAttackedSquare = this.tiles[bestMove.to.x][bestMove.to.y].value;
+                    this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+                    rMGActive = false;
+
+                //HIER WORDT VOOR WHITE
+                    let possibleMovables2 = []
+                for(let i = 0; i<8; i++){
+                    for(let j = 0; j<8; j++){
+                        if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
+                            this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                            if(this.legalMoves != 0){
+                                possibleMovables2.push ({i,j});
+                            }
+                        }
+                    }
+                }      
+
+                let validAttackingMoves2 = [];
+                for (let c = 0; c < possibleMovables2.length; c++) {
+                    let movesTo2 = this.tiles[possibleMovables2[c].i][possibleMovables2[c].j].findLegalMoves(this.tiles);
+                    for (let j = movesTo2.length - 1; j >= 0; j--) {
+                        if (this.tiles[movesTo2[j].x][movesTo2[j].y] !== undefined) {
+                            validAttackingMoves2.push({from: possibleMovables2[c], to: movesTo2[j]});
+                        } 
+                    }
+                }
+                let bestMove2 = validAttackingMoves2[0];
+                for(let i = 0; i<validAttackingMoves2.length; i++){
+                    if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value >= this.tiles[bestMove2.to.x][bestMove2.to.y].value){
+                        bestMove2 = validAttackingMoves2[i];
+                    }
+                }
+                if(bestMove2 != undefined){
+                    console.log(bestMove2);
+                    //value hieronder is van black
+                    console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
+                    //value hieronder is van white
+                    console.log(bestMove);
+                    console.log(valueOfAttackedSquare);
+                    if(this.tiles[bestMove2.to.x][bestMove2.to.y].value >= this.tiles[bestMove2.from.i][bestMove2.from.j].value){
+                    console.log('hi');
+                    }
+                }
+                
+                //if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value){}
+                // if(bestMove2 !== undefined){
+                //     this.move(this.tiles[bestMove2.from.i][bestMove2.from.j], bestMove2.to);
+                //     rMGActive = false;
+                // }   
+
+                // TOT AAN HIER
+                }                          
+            }
+                        
+            if (possibleMovables.length !== 0 && rMGActive){
+                let a = possibleMovables[int(random(0,possibleMovables.length))];
+                movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+                let b = movesTo[int(random(0,movesTo.length))];
+                this.move(this.tiles[a.i][a.j], b);
+            }
+
+            //console.log(currentPosition);
+            calculating = false;
+        }
     }
 
     select(x, y) {
         if (this.isOffBoard(x, y) ) {
             this.selected = undefined;
-        } else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
+        }  
+        else if (this.tiles[x][y] && this.tiles[x][y].colour === this.turn) {
             this.selected = JSON.parse(JSON.stringify(this.tiles[x][y]));
             this.legalMoves = this.tiles[this.selected.x][this.selected.y].findLegalMoves(this.tiles);
-        } else if (this.selected) {
+        } 
+        else if (this.selected) {
             const potentialMove = this.legalMoves.find(e => e.x == x && e.y == y);
             if (potentialMove) {
                 this.move(this.selected, potentialMove);
@@ -147,22 +257,24 @@ export default class Board {
     }
 
     move(from, to) {
-        for(let i = 0; i<8; i++){
-            for(let j = 0; j<8; j++){
-                if (this.tiles[i][j] != undefined){
-                    if (this.tiles[i][j].sprite == '♟') {
-                        if (this.tiles[i][j].flag && to.y == j-1) {
-                            this.tiles[i][j] = undefined;
-                            continue;
+        if(from.sprite == '♟' || from.sprite == '♙'){
+            for(let i = 0; i<8; i++){
+                for(let j = 0; j<8; j++){
+                    if (this.tiles[i][j] != undefined){
+                        if (this.tiles[i][j].sprite == '♟') {
+                            if (this.tiles[i][j].flag && to.y == j-1 && to.x == i) {
+                                this.tiles[i][j] = undefined;
+                                continue;
+                            }
+                            this.tiles[i][j].flag = false;
                         }
-                        this.tiles[i][j].flag = false;
-                    }
-                    if (this.tiles[i][j].sprite == '♙') {
-                        if (this.tiles[i][j].flag && to.y == j+1) {
-                            this.tiles[i][j] = undefined;
-                            continue;
+                        if (this.tiles[i][j].sprite == '♙') {
+                            if (this.tiles[i][j].flag && to.y == j+1 && to.x == i) {
+                                this.tiles[i][j] = undefined;
+                                continue;
+                            }
+                            this.tiles[i][j].flag = false;
                         }
-                        this.tiles[i][j].flag = false;
                     }
                 }
             }
@@ -193,6 +305,22 @@ export default class Board {
     }
 
 
-    
-
+evaluator() {
+    let evaluation = 0;
+    for(let i = 0; i<8; i++){
+        for(let j = 0; j<8; j++){
+            if(this.tiles[i][j] != undefined){
+                evaluation += this.tiles[i][j].value;
+            }
+        }
+    }
+    // if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
+    //     evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
+    // }
+    return evaluation;
 }
+    //♟♙♜♖♝♗♞♘♚♔♛♕
+}
+
+
+
