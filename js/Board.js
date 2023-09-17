@@ -196,26 +196,8 @@ export default class Board {
                             } 
                         }
                     }
-                    for(let i = 0; i<validAttackingMoves2.length; i++){
-                        // if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value <= this.tiles[bestMove2.to.x][bestMove2.to.y].value){
-                        //     bestMove2 = validAttackingMoves2[i];
-                        // }
-                        if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value == -1){
-                            
-                        }
-                        if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value == -3){
-                            
-                        }
-                        if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value == -5){
-                            
-                        }
-                        if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value == -10){
-                            
-                        }
-                        if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value == -900){
-                            
-                        }
-                    }
+                    //dit sorteert de array validAttackingMoves2
+                    this.arraySorter(validAttackingMoves2);
                     let bestMove2 = validAttackingMoves2[0];
                     if(bestMove2 != undefined){
                         //value hieronder is van black
@@ -223,7 +205,7 @@ export default class Board {
                         //value hieronder is van white
                         //console.log(valueOfAttackedSquare);
                         if(this.tiles[bestMove2.to.x][bestMove2.to.y].value <= valueOfAttackedSquare){
-                            console.log('hi');
+
                         }
                     }
                 
@@ -332,6 +314,41 @@ evaluator() {
     return evaluation;
 }
     //♟♙♜♖♝♗♞♘♚♔♛♕
+
+arraySorter(arrayToSort) {
+    for(let i = 0; i<arrayToSort.length; i++){
+        console.log(arrayToSort);
+        var attackingMove_1 = [];
+        var attackingMove_3 = [];
+        var attackingMove_5 = [];
+        var attackingMove_10 = [];
+        var attackingMove_900 = []; 
+        console.log(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value);
+        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 1){
+            console.log(arrayToSort[i]);
+            attackingMove_1.push(arrayToSort[i]);
+        }
+        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 3){
+            console.log(arrayToSort[i]);
+            attackingMove_3.push(arrayToSort[i]);
+        }
+        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 5){
+            console.log(arrayToSort[i]);
+            attackingMove_5.push(arrayToSort[i]);
+        }
+        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 10){
+            console.log(arrayToSort[i]);
+            attackingMove_10.push(arrayToSort[i]);
+        }
+        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 900){
+            console.log(arrayToSort[i]);
+            attackingMove_900.push(arrayToSort[i]);
+        }
+    }
+    arrayToSort = [];
+    arrayToSort = arrayToSort.concat(attackingMove_900, attackingMove_10, attackingMove_5, attackingMove_3, attackingMove_1);
+    console.log(arrayToSort);
+    return arrayToSort
 }
 
-
+}
