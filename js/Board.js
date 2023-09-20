@@ -128,9 +128,7 @@ export default class Board {
         let calculating = false;
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
-        if(!calculating){
-            this.select(x,y);
-        }
+        this.select(x,y);
         if(this.turn === COLOUR.BLACK){
             calculating = true;
             let currentPosition = this.tiles;
@@ -164,60 +162,52 @@ export default class Board {
                         } 
                     }
                 }
+                validAttackingMoves = this.arraySorter(validAttackingMoves);
                 let bestMove = validAttackingMoves[0];
-                for(let i = 0; i<validAttackingMoves.length; i++){
-                    if(this.tiles[validAttackingMoves[i].to.x][validAttackingMoves[i].to.y].value >= this.tiles[bestMove.to.x][bestMove.to.y].value){
-                        bestMove = validAttackingMoves[i];
-                    }
-                } 
                 if(bestMove !== undefined){
-                    let valueOfAttackedSquare = this.tiles[bestMove.to.x][bestMove.to.y].value;
-                    rMGActive = false;
-
-                    //HIER WORDT VOOR WHITE
-                    let possibleMovables2 = []
-                    for(let i = 0; i<8; i++){
-                        for(let j = 0; j<8; j++){
-                            if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
-                                this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
-                                if(this.legalMoves != 0){
-                                    possibleMovables2.push ({i,j});
+                    while(calculating){                    
+                        let valueOfAttackedSquare = this.tiles[bestMove.to.x][bestMove.to.y].value;
+                        rMGActive = false;
+    
+                        //HIER WORDT VOOR WHITE
+                        let possibleMovables2 = []
+                        for(let i = 0; i<8; i++){
+                            for(let j = 0; j<8; j++){
+                                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
+                                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                                    if(this.legalMoves != 0){
+                                        possibleMovables2.push ({i,j});
+                                    }
                                 }
                             }
+                        }      
+    
+                        let validAttackingMoves2 = [];
+                        for (let c = 0; c < possibleMovables2.length; c++) {
+                            let movesTo2 = this.tiles[possibleMovables2[c].i][possibleMovables2[c].j].findLegalMoves(this.tiles);
+                            for (let j = movesTo2.length - 1; j >= 0; j--) {
+                                if (this.tiles[movesTo2[j].x][movesTo2[j].y] !== undefined) {
+                                    validAttackingMoves2.push({from: possibleMovables2[c], to: movesTo2[j]});
+                                } 
+                            }
                         }
-                    }      
-
-                    let validAttackingMoves2 = [];
-                    for (let c = 0; c < possibleMovables2.length; c++) {
-                        let movesTo2 = this.tiles[possibleMovables2[c].i][possibleMovables2[c].j].findLegalMoves(this.tiles);
-                        for (let j = movesTo2.length - 1; j >= 0; j--) {
-                            if (this.tiles[movesTo2[j].x][movesTo2[j].y] !== undefined) {
-                                validAttackingMoves2.push({from: possibleMovables2[c], to: movesTo2[j]});
-                            } 
-                        }
-                    }
-                    //dit sorteert de array validAttackingMoves2
-                    this.arraySorter(validAttackingMoves2);
-                    let bestMove2 = validAttackingMoves2[0];
-                    if(bestMove2 != undefined){
-                        //value hieronder is van black
-                        //console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
-                        //value hieronder is van white
-                        //console.log(valueOfAttackedSquare);
-                        if(this.tiles[bestMove2.to.x][bestMove2.to.y].value <= valueOfAttackedSquare){
-
-                        }
-                    }
-                
-                    //if(this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value){}
-                    // if(bestMove2 !== undefined){
-                    //     this.move(this.tiles[bestMove2.from.i][bestMove2.from.j], bestMove2.to);
-                    //     rMGActive = false;
-                    // }   
-
-                    // TOT AAN HIER
-                    this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
-                }                       
+                        //dit sorteert de array validAttackingMoves2
+                        validAttackingMoves2 = this.arraySorter(validAttackingMoves2);
+                        let bestMove2 = validAttackingMoves2[0];
+                        if(bestMove2 != undefined){
+                            //value hieronder is van black
+                            //console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
+                            //value hieronder is van white
+                            //console.log(valueOfAttackedSquare);
+                            if(this.tiles[bestMove2.to.x][bestMove2.to.y].value <= valueOfAttackedSquare){
+    
+                            }
+                        }    
+                        // TOT AAN HIER
+                        this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+                        calculating = false;
+                    } 
+                }                      
             }
                         
             if (possibleMovables.length !== 0 && rMGActive){
@@ -316,38 +306,30 @@ evaluator() {
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
 arraySorter(arrayToSort) {
+    let attackingMove_1 = [];
+    let attackingMove_3 = [];
+    let attackingMove_5 = [];
+    let attackingMove_10 = [];
+    let attackingMove_900 = []; 
     for(let i = 0; i<arrayToSort.length; i++){
-        console.log(arrayToSort);
-        var attackingMove_1 = [];
-        var attackingMove_3 = [];
-        var attackingMove_5 = [];
-        var attackingMove_10 = [];
-        var attackingMove_900 = []; 
-        console.log(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value);
         if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 1){
-            console.log(arrayToSort[i]);
             attackingMove_1.push(arrayToSort[i]);
         }
         if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 3){
-            console.log(arrayToSort[i]);
             attackingMove_3.push(arrayToSort[i]);
         }
         if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 5){
-            console.log(arrayToSort[i]);
             attackingMove_5.push(arrayToSort[i]);
         }
         if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 10){
-            console.log(arrayToSort[i]);
             attackingMove_10.push(arrayToSort[i]);
         }
         if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 900){
-            console.log(arrayToSort[i]);
             attackingMove_900.push(arrayToSort[i]);
         }
     }
     arrayToSort = [];
     arrayToSort = arrayToSort.concat(attackingMove_900, attackingMove_10, attackingMove_5, attackingMove_3, attackingMove_1);
-    console.log(arrayToSort);
     return arrayToSort
 }
 
