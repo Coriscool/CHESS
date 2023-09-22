@@ -19,5 +19,8 @@
   },
   "author": "Poeliewoelie",
   "license": "ISC",
-  "homepage": "https://github.com/Coriscool/CHESS#readme"
+  "homepage": "https://github.com/Coriscool/CHESS#readme",
+  "devDependencies": {
+    "eslint": "^8.49.0"
+  }
 }

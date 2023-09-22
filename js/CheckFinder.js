@@ -1,4 +1,5 @@
 import { COLOUR } from "./constants.js";
+
 export default class CheckFinder {
     static isCurrentPlayerInCheck(tiles, player) {
         const kingPosition = this.getCurrentPlayersKing(tiles, player);

@@ -1,4 +1,5 @@
 import CheckFinder from "./CheckFinder.js";
+
 export default class Piece {
     constructor(x, y, colour, sprite, value) {
         this.x = x;

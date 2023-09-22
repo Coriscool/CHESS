@@ -6,6 +6,7 @@ import Knight from "./Knight.js";
 import King from "./King.js";
 import Queen from "./Queen.js";
 import CheckFinder from "./CheckFinder.js";
+///* eslint no-undef: 0 */ // Don't uncomment this
 
 export default class Board {
     constructor() {
@@ -133,9 +134,10 @@ export default class Board {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         this.select(x, y);
+
         if (this.turn === COLOUR.BLACK) {
             calculating = true;
-            let currentPosition = this.tiles;
+            // let currentPosition = this.tiles; unused variable
             let possibleMovables = [];
             let movesTo = [];
             for (let i = 0; i < 8; i++) {
@@ -153,6 +155,7 @@ export default class Board {
                     }
                 }
             }
+
             if (possibleMovables.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
@@ -160,6 +163,7 @@ export default class Board {
                 text("Draw by stalemate", 400, 400, 500, 500);
                 noLoop();
             }
+
             let rMGActive = true;
             if (possibleMovables.length !== 0) {
                 let validAttackingMoves = [];
@@ -178,12 +182,14 @@ export default class Board {
                         }
                     }
                 }
+                // console.log(validAttackingMoves.length);
                 validAttackingMoves = this.arraySorter(validAttackingMoves);
+
                 let bestMove = validAttackingMoves[0];
                 if (bestMove !== undefined) {
                     while (calculating) {
-                        let valueOfAttackedSquare =
-                            this.tiles[bestMove.to.x][bestMove.to.y].value;
+                        // let valueOfAttackedSquare =
+                        //  this.tiles[bestMove.to.x][bestMove.to.y].value; this variable was unused
                         rMGActive = false;
 
                         //HIER WORDT VOOR WHITE
@@ -221,6 +227,7 @@ export default class Board {
                                 }
                             }
                         }
+
                         //dit sorteert de array validAttackingMoves2
                         validAttackingMoves2 =
                             this.arraySorter(validAttackingMoves2);
@@ -230,11 +237,11 @@ export default class Board {
                             //console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
                             //value hieronder is van white
                             //console.log(valueOfAttackedSquare);
-                            if (
+                            /*if (
                                 this.tiles[bestMove2.to.x][bestMove2.to.y]
                                     .value <= valueOfAttackedSquare
                             ) {
-                            }
+                            }*/
                         }
                         // TOT AAN HIER
                         this.move(
@@ -359,7 +366,16 @@ export default class Board {
     }
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
+    sortArray(array) {
+        // array.map(this.tiles[array[i].to.x][array[i].to.y].value);
+        console.log(array[0]);
+        array.map((value) => this.tiles[value.to.x][value.to.y].value);
+        console.log(array[0]);
+    }
+
     arraySorter(arrayToSort) {
+        // console.log(arrayToSort.length);
+        // this.sortArray(arrayToSort);
         let attackingMove_1 = [];
         let attackingMove_3 = [];
         let attackingMove_5 = [];
