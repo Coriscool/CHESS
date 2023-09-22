@@ -1,0 +1,14 @@
+{
+    "host": "127.0.0.1",
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "launch",
+            //"reAttach": true,
+            "name": "Launch localhost",
+            "url": "http://127.0.0.1:5500/",
+            "webRoot": "${workspaceFolder}",
+            "timeout": 9000
+        }
+    ]
+}

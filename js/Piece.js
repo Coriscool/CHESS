@@ -1,5 +1,5 @@
+import CheckFinder from "./CheckFinder.js";
 
-import CheckFinder from './CheckFinder.js';
 export default class Piece {
     constructor(x, y, colour, sprite, value) {
         this.x = x;
@@ -14,26 +14,33 @@ export default class Piece {
         this.hasMoved = true;
         this.move(toX, toY, tiles);
     }
-    
 
     move(toX, toY, tiles) {
         const fromX = this.x;
         const fromY = this.y;
 
         tiles[toX][toY] = this;
-        
+
         this.x = toX;
         this.y = toY;
-     
-        tiles[fromX][fromY] = undefined; 
-    }
 
+        tiles[fromX][fromY] = undefined;
+    }
 
     findLegalMoves(tiles) {
         let moves = this.findMoves(tiles);
         for (let i = moves.length - 1; i >= 0; i--) {
             const currentMove = moves[i];
-            if (CheckFinder.movePutsPlayerInCheck(this.x,this.y,currentMove.x,currentMove.y,tiles,this.colour)) {
+            if (
+                CheckFinder.movePutsPlayerInCheck(
+                    this.x,
+                    this.y,
+                    currentMove.x,
+                    currentMove.y,
+                    tiles,
+                    this.colour
+                )
+            ) {
                 moves.splice(i, 1);
             }
         }
@@ -56,3 +63,5 @@ export default class Piece {
         //Image(sprite,x,y);
     }
 }
+
+/* globals text */
