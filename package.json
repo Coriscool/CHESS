@@ -8,28 +8,13 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
-    "test-coverage": "jest --ci --coverage",
-    "dev": "live-server --port=3000",
-    "lint": "./node_modules/.bin/eslint ./**/*.js",
-    "fix-lint": "./node_modules/.bin/eslint ./**/*.js --fix"
+    "dev": "live-server --port=3000"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LukeGarrigan/p5js-chess.git"
+    "url": "git+https://github.com/Coriscool/CHESS.git"
   },
-  "author": "lg",
+  "author": "Poeliewoelie",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LukeGarrigan/p5js-chess/issues"
-  },
-  "homepage": "https://github.com/LukeGarrigan/p5js-chess#readme",
-  "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "eslint": "^7.13.0",
-    "jest": "^26.6.3"
-  },
-  "dependencies": {
-    "jest-cli": "^26.6.3"
-  }
+  "homepage": "https://github.com/Coriscool/CHESS#readme"
 }
