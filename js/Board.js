@@ -56,31 +56,40 @@ export default class Board {
             return;
         }
 
-        let rMGActive = true;
-        let validAttackingMoves = [];
+        let rngActive = true;
+        let AttackingMoves = [];
         for (let c = 0; c < possibleMovables.length; c++) {
-            let movesTo = this.tiles[possibleMovables[c].i][
+            let legalMoves = this.tiles[possibleMovables[c].i][
                 possibleMovables[c].j
             ].findLegalMoves(this.tiles);
-            console.log(movesTo);
-            for (let j = movesTo.length - 1; j >= 0; j--) {
-                if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
-                    validAttackingMoves.push({
+
+            for (let j = legalMoves.length - 1; j >= 0; j--) {
+                if (
+                    this.tiles[legalMoves[j].x][legalMoves[j].y] !== undefined
+                ) {
+                    AttackingMoves.push({
                         from: possibleMovables[c],
-                        to: movesTo[j],
+                        to: legalMoves[j],
                     });
+
+                    /*console.log(
+                        this.tiles[possibleMovables[c].i][possibleMovables[c].j]
+                    );*/
                 }
             }
         }
-        console.log(validAttackingMoves.length);
-        validAttackingMoves = this.arraySorter(validAttackingMoves);
+        // console.log(validAttackingMoves.length);
+        if (AttackingMoves.length !== 0) {
+            AttackingMoves = this.sortArray(AttackingMoves);
+        }
 
-        let bestMove = validAttackingMoves[0];
+        let bestMove = AttackingMoves[0];
         if (bestMove !== undefined) {
             while (calculating) {
+                console.log("Dfs");
                 // let valueOfAttackedSquare =
                 //  this.tiles[bestMove.to.x][bestMove.to.y].value; this variable was unused
-                rMGActive = false;
+                rngActive = false;
 
                 //HIER WORDT VOOR WHITE
                 let possibleMovables2 = [];
@@ -119,7 +128,7 @@ export default class Board {
                 }
 
                 //dit sorteert de array validAttackingMoves2
-                validAttackingMoves2 = this.arraySorter(validAttackingMoves2);
+                validAttackingMoves2 = this.sortArray(validAttackingMoves2);
                 let bestMove2 = validAttackingMoves2[0];
                 if (bestMove2 != undefined) {
                     //value hieronder is van black
@@ -141,7 +150,7 @@ export default class Board {
             }
         }
 
-        if (rMGActive) {
+        if (rngActive) {
             let a = possibleMovables[int(random(0, possibleMovables.length))];
             movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
             let b = movesTo[int(random(0, movesTo.length))];
@@ -362,67 +371,14 @@ export default class Board {
     }
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
-    /*sortArray(array) {
-        // array.map(this.tiles[array[i].to.x][array[i].to.y].value);
-        console.log(array[0]);
-        array.map((value) => this.tiles[value.to.x][value.to.y].value);
-        console.log(array[0]);
-    }*/
-
-    arraySorter(arrayToSort) {
-        // console.log(arrayToSort.length);
-        // this.sortArray(arrayToSort);
-        let attackingMove_1 = [];
-        let attackingMove_3 = [];
-        let attackingMove_5 = [];
-        let attackingMove_10 = [];
-        let attackingMove_900 = [];
-        for (let i = 0; i < arrayToSort.length; i++) {
-            if (
-                abs(
-                    this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value
-                ) === 1
-            ) {
-                attackingMove_1.push(arrayToSort[i]);
-            }
-            if (
-                abs(
-                    this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value
-                ) === 3
-            ) {
-                attackingMove_3.push(arrayToSort[i]);
-            }
-            if (
-                abs(
-                    this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value
-                ) === 5
-            ) {
-                attackingMove_5.push(arrayToSort[i]);
-            }
-            if (
-                abs(
-                    this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value
-                ) === 10
-            ) {
-                attackingMove_10.push(arrayToSort[i]);
-            }
-            if (
-                abs(
-                    this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value
-                ) === 900
-            ) {
-                attackingMove_900.push(arrayToSort[i]);
-            }
-        }
-        arrayToSort = [];
-        arrayToSort = arrayToSort.concat(
-            attackingMove_900,
-            attackingMove_10,
-            attackingMove_5,
-            attackingMove_3,
-            attackingMove_1
+    sortArray(array) {
+        array = array.map((value) =>
+            abs(this.tiles[value.to.x][value.to.y].value)
         );
-        return arrayToSort;
+        array = array.sort(function (a, b) {
+            return a - b;
+        });
+        return array;
     }
 }
 
