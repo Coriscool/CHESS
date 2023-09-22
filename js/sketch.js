@@ -30,5 +30,7 @@ window.draw = () => {
 window.onclick = function (evt) {
     const x = evt.clientX;
     const y = evt.clientY;
-    board.userClick(x, y);
+    board.onClick(x, y);
 };
+
+/* globals background createCanvas*/

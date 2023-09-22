@@ -74,3 +74,5 @@ export default class CheckFinder {
         return this.isCurrentPlayerInCheck(clonedTiles, player);
     }
 }
+
+/* globals _*/

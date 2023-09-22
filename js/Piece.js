@@ -63,3 +63,5 @@ export default class Piece {
         //Image(sprite,x,y);
     }
 }
+
+/* globals text */

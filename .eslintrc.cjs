@@ -3,7 +3,7 @@ module.exports = {
         browser: true,
         es2021: true,
     },
-    extends: "eslint:recommended",
+    extends: ["eslint:recommended"],
     overrides: [
         {
             env: {
@@ -19,9 +19,12 @@ module.exports = {
         ecmaVersion: "latest",
         sourceType: "module",
     },
-    plugins: ["p5js"],
+    rules: {
+        //no_unused_vars: ["warning", "always"],
+    },
     /*rules: {
         semi: ["error", "always"],
         quotes: ["error", "double"],
+        unus
     },*/
 };
