@@ -131,20 +131,8 @@ export default class Board {
         this.select(x,y);
         if(this.turn === COLOUR.BLACK){
             calculating = true;
-            let currentPosition = this.tiles;
-            let possibleMovables = [];
-            let movesTo = [];
-            for(let i = 0; i<8; i++){
-                for(let j = 0; j<8; j++){
-                    if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
-                        this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
-                        if(this.legalMoves != 0){
-                            possibleMovables.push ({i,j});
-                        }
-                    }
-                }
-            }
-            if (possibleMovables.length === 0 && !this.isInCheck) {
+            let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1);
+            if (possibleMovables1.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
                 textFont("Arial");
@@ -152,64 +140,37 @@ export default class Board {
                 noLoop();
             }
             let rMGActive = true;
-            if (possibleMovables.length !== 0){
-                let validAttackingMoves = [];
-                for (let c = 0; c < possibleMovables.length; c++) {
-                    let movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
-                    for (let j = movesTo.length - 1; j >= 0; j--) {
-                        if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
-                            validAttackingMoves.push({from: possibleMovables[c], to: movesTo[j]});
-                        } 
-                    }
-                }
-                validAttackingMoves = this.arraySorter(validAttackingMoves);
-                let bestMove = validAttackingMoves[0];
-                if(bestMove !== undefined){
-                    while(calculating){                    
+            if (possibleMovables1.length !== 0) {
+                let bestMove = validAttackingMoves1[0];
+                if (bestMove !== undefined) {
+                    let calculating = true;
+                    let nextBestMove = 1;
+                    while (calculating) {
                         let valueOfAttackedSquare = this.tiles[bestMove.to.x][bestMove.to.y].value;
                         rMGActive = false;
-    
+            
                         //HIER WORDT VOOR WHITE
-                        let possibleMovables2 = []
-                        for(let i = 0; i<8; i++){
-                            for(let j = 0; j<8; j++){
-                                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
-                                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
-                                    if(this.legalMoves != 0){
-                                        possibleMovables2.push ({i,j});
-                                    }
+                        console.log(this.findAttackingMoves1());
+                        let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2);
+                        console.log(possibleMovables2);
+                        if (possibleMovables2.length !== 0) {
+                            let bestMove2 = validAttackingMoves2[0];
+                            if (bestMove2 !== undefined) {
+                                if (this.tiles[bestMove2.to.x][bestMove2.to.y].value <= valueOfAttackedSquare) {
+                                    bestMove = validAttackingMoves[nextBestMove];
+                                    nextBestMove++;
+                                    break;
                                 }
                             }
-                        }      
-    
-                        let validAttackingMoves2 = [];
-                        for (let c = 0; c < possibleMovables2.length; c++) {
-                            let movesTo2 = this.tiles[possibleMovables2[c].i][possibleMovables2[c].j].findLegalMoves(this.tiles);
-                            for (let j = movesTo2.length - 1; j >= 0; j--) {
-                                if (this.tiles[movesTo2[j].x][movesTo2[j].y] !== undefined) {
-                                    validAttackingMoves2.push({from: possibleMovables2[c], to: movesTo2[j]});
-                                } 
-                            }
                         }
-                        //dit sorteert de array validAttackingMoves2
-                        validAttackingMoves2 = this.arraySorter(validAttackingMoves2);
-                        let bestMove2 = validAttackingMoves2[0];
-                        if(bestMove2 != undefined){
-                            //value hieronder is van black
-                            //console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
-                            //value hieronder is van white
-                            //console.log(valueOfAttackedSquare);
-                            if(this.tiles[bestMove2.to.x][bestMove2.to.y].value <= valueOfAttackedSquare){
-    
-                            }
-                        }    
                         // TOT AAN HIER
                         this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
                         calculating = false;
-                    } 
-                }                      
+                    }
+                }
             }
-                        
+
+            let movesTo = [];            
             if (possibleMovables.length !== 0 && rMGActive){
                 let a = possibleMovables[int(random(0,possibleMovables.length))];
                 movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
@@ -333,4 +294,34 @@ arraySorter(arrayToSort) {
     return arrayToSort
 }
 
+findAttackingMoves(nameArray){
+    console.log(`validAttackMoves${nameArray}`);
+    let validAttackingMoves = [];
+    let possibleMovables = [];
+    let validAttackMoves = `validAttackMoves${nameArray}`;
+    for(let i = 0; i<8; i++){
+        for(let j = 0; j<8; j++){
+            if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
+                this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                if(this.legalMoves != 0){
+                    possibleMovables.push ({i,j});
+                }
+            }
+        }
+    }
+    for (let c = 0; c < possibleMovables.length; c++) {
+        let movesTo = this.tiles[possibleMovables[c].i][possibleMovables[c].j].findLegalMoves(this.tiles);
+        for (let j = movesTo.length - 1; j >= 0; j--) {
+            if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
+                validAttackingMoves.push({from: possibleMovables[c], to: movesTo[j]});
+            } 
+        }
+    }
+    validAttackingMoves = this.arraySorter(validAttackingMoves);
+    console.log(validAttackingMoves);
+    console.log(possibleMovables);
+    return { [validAttackMoves]: validAttackingMoves, possibleMovables };
 }
+
+}
+
