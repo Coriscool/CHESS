@@ -10,6 +10,9 @@
   "scripts": {
     "dev": "live-server --port=3000"
   },
+  "prettier": {
+    "tabWidth": 4
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Coriscool/CHESS.git"

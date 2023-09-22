@@ -1,6 +1,6 @@
 export const SIZE = 800;
 export const COLOUR = {
-    BLACK: 'black',
+    BLACK: "black",
     //AI: 'AI',
-    WHITE: 'white'
+    WHITE: "white",
 };
