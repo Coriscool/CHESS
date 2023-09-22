@@ -1,17 +1,14 @@
-import CheckFinder from './CheckFinder.js';
-import { COLOUR } from './constants.js';
-import Piece from './Piece.js';
-import Rook from './Rook.js';
+import CheckFinder from "./CheckFinder.js";
+import Piece from "./Piece.js";
+import Rook from "./Rook.js";
 export default class King extends Piece {
-    constructor(x, y, colour, sprite) {
-        super(x, y, colour, sprite);
-        this.type = 'king';
+    constructor(x, y, colour, sprite, value) {
+        super(x, y, colour, sprite, value);
+        this.type = "king";
     }
-
 
     findMoves(tiles) {
         let moves = [];
-
 
         moves.push(this.getMove(1, 0, tiles));
         moves.push(this.getMove(-1, 0, tiles));
@@ -23,7 +20,7 @@ export default class King extends Piece {
         moves.push(this.getMove(1, 1, tiles));
         moves.push(...this.getCastleMoves(tiles));
 
-        return moves.filter(n => n);
+        return moves.filter((n) => n);
     }
 
     getMove(xDir, yDir, tiles) {
@@ -63,9 +60,7 @@ export default class King extends Piece {
         return moves;
     }
 
-
     isPiecesBetween(isLongCastle, tiles) {
-
         if (isLongCastle) {
             for (let i = 1; i < this.x; i++) {
                 if (tiles[i][this.y]) {
@@ -86,30 +81,28 @@ export default class King extends Piece {
             if (toX < this.x) {
                 // long castle
                 tiles[0][this.y].move(toX + 1, this.y, tiles);
-
             } else {
-                // short castle 
+                // short castle
                 tiles[7][this.y].move(toX - 1, this.y, tiles);
             }
         }
         super.move(toX, toY, tiles);
     }
 
-
     moveIsCastle(toX) {
-        return toX == (this.x - 2) || toX == (this.x + 2);
+        return toX == this.x - 2 || toX == this.x + 2;
     }
 
     // special case where castling is not allowed when checked
     findLegalMoves(tiles) {
         const legalMoves = super.findLegalMoves(tiles);
-        for (let i = legalMoves.length -1; i >= 0; i--) {
+        for (let i = legalMoves.length - 1; i >= 0; i--) {
             const currentMove = legalMoves[i];
             if (currentMove.x == this.x - 2 || currentMove.x == this.x + 2) {
                 if (CheckFinder.isCurrentPlayerInCheck(tiles, this.colour)) {
                     legalMoves.splice(i, 1);
                 }
-            } 
+            }
         }
         return legalMoves;
     }

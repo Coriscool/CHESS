@@ -1,10 +1,8 @@
-import { COLOUR } from './constants.js';
-import Piece from './Piece.js';
+import Piece from "./Piece.js";
 export default class Rook extends Piece {
-    constructor(x, y, colour, sprite) {
-        super(x, y, colour, sprite);
+    constructor(x, y, colour, sprite, value) {
+        super(x, y, colour, sprite, value);
     }
-
 
     findMoves(tiles) {
         let moves = [];
@@ -22,11 +20,11 @@ export default class Rook extends Piece {
         for (let i = this.y + 1; i < 8; i++) {
             if (tiles[this.x][i]) {
                 if (tiles[this.x][i].colour !== this.colour) {
-                    moves.push({x : this.x, y: i});         
+                    moves.push({ x: this.x, y: i });
                 }
                 return moves;
             }
-            moves.push({x : this.x, y: i});
+            moves.push({ x: this.x, y: i });
         }
         return moves;
     }
@@ -36,11 +34,11 @@ export default class Rook extends Piece {
         for (let i = this.y - 1; i >= 0; i--) {
             if (tiles[this.x][i]) {
                 if (tiles[this.x][i].colour !== this.colour) {
-                    moves.push({x: this.x, y: i});                    
+                    moves.push({ x: this.x, y: i });
                 }
                 return moves;
             }
-            moves.push({x: this.x, y: i});
+            moves.push({ x: this.x, y: i });
         }
         return moves;
     }
@@ -50,11 +48,11 @@ export default class Rook extends Piece {
         for (let i = this.x - 1; i >= 0; i--) {
             if (tiles[i][this.y]) {
                 if (tiles[i][this.y].colour !== this.colour) {
-                    moves.push({x: i, y: this.y});     
+                    moves.push({ x: i, y: this.y });
                 }
                 return moves;
             }
-            moves.push({x: i, y: this.y});
+            moves.push({ x: i, y: this.y });
         }
         return moves;
     }
@@ -64,11 +62,11 @@ export default class Rook extends Piece {
         for (let i = this.x + 1; i < 8; i++) {
             if (tiles[i][this.y]) {
                 if (tiles[i][this.y].colour !== this.colour) {
-                    moves.push({x: i, y: this.y});   
+                    moves.push({ x: i, y: this.y });
                 }
                 return moves;
             }
-            moves.push({x: i, y: this.y});
+            moves.push({ x: i, y: this.y });
         }
         return moves;
     }
