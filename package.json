@@ -4,9 +4,6 @@
   "description": "",
   "main": "board.js",
   "type": "module",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "dev": "live-server --port=3000"
   },

@@ -15,8 +15,29 @@ export default class Board {
         this.isInCheck = false;
     }
 
+    findLegalMoves(colour) {
+        let legalMoves = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (
+                    this.tiles[i][j] != undefined &&
+                    this.tiles[i][j].colour == colour
+                ) {
+                    this.legalMoves = this.tiles[i][j].findLegalMoves(
+                        this.tiles
+                    );
+                    if (this.legalMoves != 0) {
+                        legalMoves.push({ i, j });
+                    }
+                }
+            }
+            fasdf;
+        }
+        return legalMoves;
+    }
+
     onClick(clientX, clientY) {
-        let calculating = false;
+        let calculating = true;
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         this.update_selected(x, y);
@@ -27,7 +48,6 @@ export default class Board {
         // calculating = true;
         // let currentPosition = this.tiles; unused variable
         let possibleMovables = [];
-        let movesTo = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if (
@@ -43,6 +63,8 @@ export default class Board {
                 }
             }
         }
+        console.log(possibleMovables);
+        console.log(this.findLegalMoves(COLOUR.BLACK));
 
         if (possibleMovables.length === 0 && !this.isInCheck) {
             console.log("Draw by stalemate");
@@ -86,7 +108,6 @@ export default class Board {
         let bestMove = AttackingMoves[0];
         if (bestMove !== undefined) {
             while (calculating) {
-                console.log("Dfs");
                 // let valueOfAttackedSquare =
                 //  this.tiles[bestMove.to.x][bestMove.to.y].value; this variable was unused
                 rngActive = false;
@@ -151,8 +172,9 @@ export default class Board {
         }
 
         if (rngActive) {
+            console.log("rng");
             let a = possibleMovables[int(random(0, possibleMovables.length))];
-            movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+            let movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
             let b = movesTo[int(random(0, movesTo.length))];
             this.move(this.tiles[a.i][a.j], b);
         }
@@ -382,4 +404,4 @@ export default class Board {
     }
 }
 
-/* globals textAlign CENTER textSize rectMode push fill rect pop textFont text noLoop noStroke circle int random abs */
+///* globals textAlign CENTER textSize rectMode push fill rect pop textFont text noLoop noStroke circle int random abs */
