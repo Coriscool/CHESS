@@ -48,7 +48,7 @@ export default class Board {
                     AttackingMoves.push({
                         from: moveablePieces[j],
                         to: legalMoves[i],
-                        ownValue: piece.value,
+                        valueAfterMove: this.tiles[legalMoves[i].x][legalMoves[i].y].value,
                     });
                 }
             }
@@ -101,9 +101,7 @@ export default class Board {
             this.DoRandomMove(moveableAi);
             return;
         }
-        // console.log(attackingMovesAi);
-        attackingMovesAi = this.sortArrayByToValue(attackingMovesAi);
-        // console.log(attackingMovesAi);
+        // attackingMovesAi = this.sortArrayByToValue(attackingMovesAi);
 
         //HIER WORDT VOOR WHITE
         let defendingMovesPlayer = [];
@@ -117,78 +115,51 @@ export default class Board {
             }
         }
 
-        // console.log(defendingMovesPlayer);
+        // defendingMovesPlayer = this.sortArrayByToValue(defendingMovesPlayer);
         /*defendingMovesPlayer.forEach((m) => {
-            console.log(this.tiles[m.to.x][m.to.y].value);
+            console.log(m.to);
         });*/
-        // console.log(defendingMovesPlayer.length);
-        defendingMovesPlayer = this.sortArrayByToValue(defendingMovesPlayer);
-        // console.log(defendingMovesPlayer.length);
-        // console.log("mid");
-        /*defendingMovesPlayer.forEach((m) => {
-            console.log(this.tiles[m.to.x][m.to.y].value);
-        });*/
-        console.log("end");
-        // console.log(defendingMovesPlayer);
 
-        let bestMove = attackingMovesAi[0];
-        let bestMoveChanged = false;
-
+        let bestMoves = [...attackingMovesAi];
+        let i = 0;
         attackingMovesAi.forEach((aiMove) => {
             // console.log(aiMove.to);
             defendingMovesPlayer.forEach((playerMove) => {
                 // console.log(playerMove.to);
                 if (
-                    aiMove.to.x === playerMove.to.y &&
+                    aiMove.to.x === playerMove.to.x &&
                     aiMove.to.y === playerMove.to.y
                 ) {
-                    let attackedPieceValue = abs(
-                        this.tiles[aiMove.to.x][aiMove.to.y].value
-                    );
-
-                    let aiValue = abs(aiMove.ownValue);
-
                     let totalValue = this.getValueAfterMove(aiMove);
+                    bestMoves[i].valueAfterMove = totalValue;
 
-                    let debug = true;
+                    let debug = false;
                     if (debug) {
-                        console.log(
-                            "attacked piece value = " +
-                                attackedPieceValue +
-                                " at " +
-                                aiMove.to.x +
-                                ", " +
-                                aiMove.to.y
-                        );
-                        console.log(
-                            "attacker value = " +
-                                aiValue +
-                                " at " +
-                                aiMove.from.i +
-                                ", " +
-                                aiMove.from.j
-                        );
+                        let attackedPieceValue = abs(
+                            this.tiles[aiMove.to.x][aiMove.to.y].value
+                        );    
+                        let aiValue = abs(this.tiles[aiMove.from.i][aiMove.from.j].value);
+    
+                        console.log(`attacked piece value ${attackedPieceValue} at ${aiMove.to.x}, ${aiMove.to.y}`);
+                        console.log(`attacker value ${aiValue} at ${aiMove.from.i}, ${aiMove.from.j}`);
                         console.log("total value = " + totalValue);
-                    }
-
-                    let bestMoveValue = this.getValueAfterMove(bestMove);
-
-                    if (totalValue > bestMoveValue) {
-                        bestMove = aiMove;
-                        bestMoveChanged = true;
                     }
                 }
             });
+            i++;
         });
 
-        let bestMoveValue = this.tiles[bestMove.to.x][bestMove.to.y].value;
-        if (bestMoveChanged) {
-            bestMoveValue = this.getValueAfterMove(bestMove);
-        }
-        // console.log("best move " + bestMove);
-        // console.log("best value" + bestMoveValue);
+        bestMoves.sort(function (a, b) {
+            return b.valueAfterMove - a.valueAfterMove;
+        });
+        // console.log(bestMoves);
 
-        if (bestMoveValue >= 0) {
+        let bestMove = bestMoves[0];
+
+        console.log(`best move from ${bestMove.from.i}, ${bestMove.from.j} to ${bestMove.to.x}, ${bestMove.to.y}`);
+        console.log("best value = " + bestMove.valueAfterMove);
+
+        if (bestMove.valueAfterMove >= 0) {
             this.move(
                 this.tiles[bestMove.from.i][bestMove.from.j],
                 bestMove.to
