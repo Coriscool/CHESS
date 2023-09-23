@@ -23,21 +23,25 @@ export default class Rook extends Piece {
         for (let i = this.y + 1; i < 8; i++) {
             if (tiles[this.x][i] && tiles[this.x][i].colour === this.colour) {
                 moves.push({ x: this.x, y: i });
+                break;
             }
         }
         for (let i = this.y - 1; i >= 0; i--) {
             if (tiles[this.x][i] && tiles[this.x][i].colour === this.colour) {
                 moves.push({ x: this.x, y: i });
+                break;
             }
         }
         for (let i = this.x - 1; i >= 0; i--) {
             if (tiles[i][this.y] && tiles[i][this.y].colour === this.colour) {
                 moves.push({ x: i, y: this.y });
+                break;
             }
         }
         for (let i = this.x + 1; i < 8; i++) {
             if (tiles[i][this.y] && tiles[i][this.y].colour === this.colour) {
                 moves.push({ x: i, y: this.y });
+                break;
             }
         }
         return moves;

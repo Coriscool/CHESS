@@ -48,7 +48,7 @@ export default class Board {
                     AttackingMoves.push({
                         from: moveablePieces[j],
                         to: legalMoves[i],
-                        value: piece.value,
+                        ownValue: piece.value,
                     });
                 }
             }
@@ -65,6 +65,7 @@ export default class Board {
     }
 
     DoRandomMove(moves) {
+        console.warn("did random move");
         let from = moves[int(random(0, moves.length))];
         let legalMoves = this.tiles[from.i][from.j].findLegalMoves(this.tiles);
         let to = legalMoves[int(random(0, legalMoves.length))];
@@ -91,13 +92,13 @@ export default class Board {
         }
 
         let attackingMovesAi = this.findAttackingMoves(moveableAi);
-
         if (attackingMovesAi.length === 0) {
             this.DoRandomMove(moveableAi);
             return;
         }
-
-        attackingMovesAi = this.sortArrayByValue(attackingMovesAi);
+        // console.log(attackingMovesAi);
+        attackingMovesAi = this.sortArrayByToValue(attackingMovesAi);
+        // console.log(attackingMovesAi);
 
         //HIER WORDT VOOR WHITE
         let defendingMovesPlayer = [];
@@ -111,14 +112,22 @@ export default class Board {
             }
         }
 
-        defendingMovesPlayer = this.sortArrayByValue(defendingMovesPlayer);
+        // console.log(defendingMovesPlayer);
+        /*defendingMovesPlayer.forEach((m) => {
+            console.log(this.tiles[m.to.x][m.to.y].value);
+        });*/
+        // console.log(defendingMovesPlayer.length);
+        defendingMovesPlayer = this.sortArrayByToValue(defendingMovesPlayer);
+        // console.log(defendingMovesPlayer.length);
+        // console.log("mid");
+        /*defendingMovesPlayer.forEach((m) => {
+            console.log(this.tiles[m.to.x][m.to.y].value);
+        });*/
+        // console.log("end");
         // console.log(defendingMovesPlayer);
 
-        /*let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
-        let attackingMovesPlayer = this.findAttackingMoves(moveablePlayer);
-        attackingMovesPlayer = this.sortArray(attackingMovesPlayer);*/
-
         let bestMove = attackingMovesAi[0];
+        console.log(bestMove);
         attackingMovesAi.forEach((aiMove) => {
             // console.log(aiMove.to);
             defendingMovesPlayer.forEach((playerMove) => {
@@ -130,39 +139,69 @@ export default class Board {
                     let attackedPieceValue = abs(
                         this.tiles[aiMove.to.x][aiMove.to.y].value
                     );
-                    console.log("attacked piece value = " + attackedPieceValue);
 
-                    let aiValue = abs(aiMove.value);
-                    console.log("attacker value = " + aiValue);
+                    let aiValue = abs(aiMove.ownValue);
 
-                    /*let playerValue =
-                            this.tiles[playerMove.from][playerMove.from];*/
                     let totalValue = attackedPieceValue - aiValue;
-                    console.log("total value = " + totalValue);
 
-                    if (totalValue > bestMove.value) {
+                    let debug = true;
+                    if (debug) {
+                        console.log(
+                            "attacked piece value = " +
+                                attackedPieceValue +
+                                " at " +
+                                aiMove.to.x +
+                                ", " +
+                                aiMove.to.y
+                        );
+                        console.log(
+                            "attacker value = " +
+                                aiValue +
+                                " at " +
+                                aiMove.from.i +
+                                ", " +
+                                aiMove.from.j
+                        );
+                        console.log("total value = " + totalValue);
+                    }
+
+                    let bestMoveValue =
+                        this.tiles[bestMove.to.x][bestMove.to.y].value;
+
+                    if (totalValue > bestMoveValue) {
                         bestMove = aiMove;
                     }
                 }
             });
         });
-        console.log("next");
 
-        // this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
-        this.DoRandomMove(moveableAi);
+        let bestMoveValue = this.tiles[bestMove.to.x][bestMove.to.y].value;
+        if (bestMoveValue > 0) {
+            this.move(
+                this.tiles[bestMove.from.i][bestMove.from.j],
+                bestMove.to
+            );
+        } else {
+            this.DoRandomMove(moveableAi);
+        }
     }
 
-    sortArrayByValue(array) {
+    sortArrayByToValue(array) {
         let t = this;
         array.sort(function (a, b) {
             let c = t.tiles[a.to.x][a.to.y];
             let d = t.tiles[b.to.x][b.to.y];
             if (c === undefined || d === undefined) {
-                alert("tried to sort undefined");
+                console.warn("tried to sort undefined");
                 return;
             }
             return abs(d.value) - abs(c.value);
         });
+        /*console.log("mid");
+        array.forEach((m) => {
+            console.log(this.tiles[m.to.x][m.to.y].value);
+        });
+        console.log("end");*/
         return array;
     }
 
