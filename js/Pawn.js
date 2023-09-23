@@ -1,6 +1,7 @@
-import { COLOUR } from "./constants.js";
 import Piece from "./Piece.js";
 import Queen from "./Queen.js";
+import { COLOUR } from "./constants.js";
+
 export default class Pawn extends Piece {
     constructor(x, y, colour, sprite, value, flag) {
         super(x, y, colour, sprite, value, flag);
@@ -8,15 +9,7 @@ export default class Pawn extends Piece {
     }
 
     getDefendingMoves(tiles) {
-        let legalMoves = [];
-
-        let colour = COLOUR.WHITE;
-        if (this.colour === COLOUR.WHITE) {
-            colour = COLOUR.BLACK;
-        }
-
-        legalMoves.push(...this.findAttacks(tiles, colour));
-        return legalMoves;
+        return this.findAttacks(tiles);
     }
 
     findMoves(tiles) {
@@ -36,6 +29,23 @@ export default class Pawn extends Piece {
         }
         legalMoves.push(...this.findAttacks(tiles, this.colour));
         return legalMoves;
+    }
+
+    findDefends(tiles) {
+        let attacks = [];
+        if (this.x - 1 >= 0) {
+            const diagonalLeft = tiles[this.x - 1][this.y + this.direction];
+            if (diagonalLeft && diagonalLeft.colour === this.colour) {
+                attacks.push({ x: this.x - 1, y: this.y + this.direction });
+            }
+        }
+
+        if (this.x + 1 < 8) {
+            const diagonalRight = tiles[this.x + 1][this.y + this.direction];
+            if (diagonalRight && diagonalRight.colour === this.colour) {
+                attacks.push({ x: this.x + 1, y: this.y + this.direction });
+            }
+        }
     }
 
     findAttacks(tiles, colour) {

@@ -1,5 +1,4 @@
 import Piece from "./Piece.js";
-import { COLOUR } from "./constants.js";
 export default class Queen extends Piece {
     constructor(x, y, colour, sprite, value) {
         super(x, y, colour, sprite, value);
@@ -7,19 +6,14 @@ export default class Queen extends Piece {
 
     getDefendingMoves(tiles) {
         let moves = [];
-        let colour = COLOUR.WHITE;
-        if (this.colour === COLOUR.WHITE) {
-            colour = COLOUR.BLACK;
-        }
-
-        moves.push(...this.findAllMoves(1, -1, tiles, colour));
-        moves.push(...this.findAllMoves(-1, -1, tiles, colour));
-        moves.push(...this.findAllMoves(1, 1, tiles, colour));
-        moves.push(...this.findAllMoves(-1, 1, tiles, colour));
-        moves.push(...this.findAllMoves(1, 0, tiles, colour));
-        moves.push(...this.findAllMoves(0, -1, tiles, colour));
-        moves.push(...this.findAllMoves(-1, 0, tiles, colour));
-        moves.push(...this.findAllMoves(0, 1, tiles, colour));
+        moves.push(this.findDefendMoves(1, -1, tiles));
+        moves.push(this.findDefendMoves(-1, -1, tiles));
+        moves.push(this.findDefendMoves(1, 1, tiles));
+        moves.push(this.findDefendMoves(-1, 1, tiles));
+        moves.push(this.findDefendMoves(1, 0, tiles));
+        moves.push(this.findDefendMoves(0, -1, tiles));
+        moves.push(this.findDefendMoves(-1, 0, tiles));
+        moves.push(this.findDefendMoves(0, 1, tiles));
         return moves;
     }
 
@@ -34,6 +28,21 @@ export default class Queen extends Piece {
         moves.push(...this.findAllMoves(-1, 0, tiles, this.colour));
         moves.push(...this.findAllMoves(0, 1, tiles, this.colour));
         return moves;
+    }
+
+    findDefendMoves(xDir, yDir, tiles) {
+        for (let i = 1; i < 8; i++) {
+            let newX = this.x + xDir * i;
+            let newY = this.y + yDir * i;
+
+            if (this.isOffBoard(newX, newY)) {
+                return;
+            }
+
+            if (tiles[newX][newY] && tiles[newX][newY].colour === this.colour) {
+                return { x: newX, y: newY };
+            }
+        }
     }
 
     findAllMoves(xDir, yDir, tiles, colour) {

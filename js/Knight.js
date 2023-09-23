@@ -1,5 +1,4 @@
 import Piece from "./Piece.js";
-import { COLOUR } from "./constants.js";
 
 export default class Knight extends Piece {
     constructor(x, y, colour, sprite, value) {
@@ -8,21 +7,16 @@ export default class Knight extends Piece {
 
     getDefendingMoves(tiles) {
         let moves = [];
-        let colour = COLOUR.WHITE;
-        if (this.colour === COLOUR.WHITE) {
-            colour = COLOUR.BLACK;
-        }
+        moves.push(this.getDefend(2, -1, tiles));
+        moves.push(this.getDefend(1, -2, tiles));
+        moves.push(this.getDefend(-1, -2, tiles));
+        moves.push(this.getDefend(-2, -1, tiles));
+        moves.push(this.getDefend(-2, 1, tiles));
+        moves.push(this.getDefend(-1, 2, tiles));
+        moves.push(this.getDefend(1, 2, tiles));
+        moves.push(this.getDefend(2, 1, tiles));
 
-        moves.push(this.getMove(2, -1, tiles, colour));
-        moves.push(this.getMove(1, -2, tiles, colour));
-        moves.push(this.getMove(-1, -2, tiles, colour));
-        moves.push(this.getMove(-2, -1, tiles, colour));
-        moves.push(this.getMove(-2, 1, tiles, colour));
-        moves.push(this.getMove(-1, 2, tiles, colour));
-        moves.push(this.getMove(1, 2, tiles, colour));
-        moves.push(this.getMove(2, 1, tiles, colour));
-
-        return moves.filter((n) => n);
+        return moves;
     }
 
     findMoves(tiles) {
@@ -38,6 +32,17 @@ export default class Knight extends Piece {
         moves.push(this.getMove(2, 1, tiles, this.colour));
 
         return moves.filter((n) => n);
+    }
+
+    getDefend(xDir, yDir, tiles) {
+        let newX = this.x + xDir;
+        let newY = this.y + yDir;
+        if (this.isOffBoard(newX, newY)) {
+            return;
+        }
+        if (tiles[newX][newY] && tiles[newX][newY].colour === this.colour) {
+            return { x: newX, y: newY };
+        }
     }
 
     getMove(xDir, yDir, tiles, colour) {

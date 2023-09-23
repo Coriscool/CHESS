@@ -1,22 +1,11 @@
 import Piece from "./Piece.js";
-import { COLOUR } from "./constants.js";
 export default class Rook extends Piece {
     constructor(x, y, colour, sprite, value) {
         super(x, y, colour, sprite, value);
     }
 
     getDefendingMoves(tiles) {
-        let moves = [];
-        let colour = COLOUR.WHITE;
-        if (this.colour === COLOUR.WHITE) {
-            colour = COLOUR.BLACK;
-        }
-
-        moves.push(...this.findForwardMoves(tiles, colour));
-        moves.push(...this.findBackwardMoves(tiles, colour));
-        moves.push(...this.findRightMoves(tiles, colour));
-        moves.push(...this.findLeftMoves(tiles, colour));
-        return moves;
+        return this.findDefendMoves(tiles);
     }
 
     findMoves(tiles) {
@@ -26,6 +15,31 @@ export default class Rook extends Piece {
         moves.push(...this.findBackwardMoves(tiles, this.colour));
         moves.push(...this.findRightMoves(tiles, this.colour));
         moves.push(...this.findLeftMoves(tiles, this.colour));
+        return moves;
+    }
+
+    findDefendMoves(tiles) {
+        let moves = [];
+        for (let i = this.y + 1; i < 8; i++) {
+            if (tiles[this.x][i] && tiles[this.x][i].colour === this.colour) {
+                moves.push({ x: this.x, y: i });
+            }
+        }
+        for (let i = this.y - 1; i >= 0; i--) {
+            if (tiles[this.x][i] && tiles[this.x][i].colour === this.colour) {
+                moves.push({ x: this.x, y: i });
+            }
+        }
+        for (let i = this.x - 1; i >= 0; i--) {
+            if (tiles[i][this.y] && tiles[i][this.y].colour === this.colour) {
+                moves.push({ x: i, y: this.y });
+            }
+        }
+        for (let i = this.x + 1; i < 8; i++) {
+            if (tiles[i][this.y] && tiles[i][this.y].colour === this.colour) {
+                moves.push({ x: i, y: this.y });
+            }
+        }
         return moves;
     }
 

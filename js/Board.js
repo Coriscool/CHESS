@@ -373,10 +373,8 @@ export default class Board {
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
     sortArrayByValue(array) {
-        // array.forEach((n) => console.log(this.tiles[n.to.x][n.to.y].value));
         let t = this;
         array.sort(function (a, b) {
-            console.log(b);
             let c = abs(t.tiles[a.to.x][a.to.y].value);
             let d = abs(t.tiles[b.to.x][b.to.y].value);
             return d - c;

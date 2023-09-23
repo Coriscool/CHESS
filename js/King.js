@@ -1,7 +1,6 @@
 import CheckFinder from "./CheckFinder.js";
 import Piece from "./Piece.js";
 import Rook from "./Rook.js";
-import { COLOUR } from "./constants.js";
 
 export default class King extends Piece {
     constructor(x, y, colour, sprite, value) {
@@ -11,22 +10,16 @@ export default class King extends Piece {
 
     getDefendingMoves(tiles) {
         let moves = [];
+        moves.push(this.getDefend(1, 0, tiles));
+        moves.push(this.getDefend(-1, 0, tiles));
+        moves.push(this.getDefend(0, 1, tiles));
+        moves.push(this.getDefend(0, -1, tiles));
+        moves.push(this.getDefend(1, -1, tiles));
+        moves.push(this.getDefend(-1, -1, tiles));
+        moves.push(this.getDefend(-1, 1, tiles));
+        moves.push(this.getDefend(1, 1, tiles));
 
-        let colour = COLOUR.WHITE;
-        if (this.colour === COLOUR.WHITE) {
-            colour = COLOUR.BLACK;
-        }
-
-        moves.push(this.getMove(1, 0, tiles, colour));
-        moves.push(this.getMove(-1, 0, tiles, colour));
-        moves.push(this.getMove(0, 1, tiles, colour));
-        moves.push(this.getMove(0, -1, tiles, colour));
-        moves.push(this.getMove(1, -1, tiles, colour));
-        moves.push(this.getMove(-1, -1, tiles, colour));
-        moves.push(this.getMove(-1, 1, tiles, colour));
-        moves.push(this.getMove(1, 1, tiles, colour));
-
-        return moves.filter((n) => n);
+        return moves;
     }
 
     findMoves(tiles) {
@@ -43,6 +36,17 @@ export default class King extends Piece {
         moves.push(...this.getCastleMoves(tiles));
 
         return moves.filter((n) => n);
+    }
+
+    getDefend(xDir, yDir, tiles) {
+        let newX = this.x + xDir;
+        let newY = this.y + yDir;
+        if (this.isOffBoard(newX, newY)) {
+            return;
+        }
+        if (tiles[newX][newY] && tiles[newX][newY].colour === this.colour) {
+            return { x: newX, y: newY };
+        }
     }
 
     getMove(xDir, yDir, tiles, colour) {
