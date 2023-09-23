@@ -9,7 +9,7 @@ export default class King extends Piece {
         this.type = "king";
     }
 
-    findDefendingMoves(tiles) {
+    getDefendingMoves(tiles) {
         let moves = [];
 
         let colour = COLOUR.WHITE;

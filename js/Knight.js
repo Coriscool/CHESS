@@ -6,7 +6,7 @@ export default class Knight extends Piece {
         super(x, y, colour, sprite, value);
     }
 
-    findDefendingMoves(tiles) {
+    getDefendingMoves(tiles) {
         let moves = [];
         let colour = COLOUR.WHITE;
         if (this.colour === COLOUR.WHITE) {

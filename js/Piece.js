@@ -28,8 +28,17 @@ export default class Piece {
     }
 
     findDefendingMoves(tiles) {
-        let moves = this.findDefendingMoves(tiles);
-        moves.filter((n) => n);
+        let moves = this.getDefendingMoves(tiles);
+        moves = moves
+            .filter((n) => n)
+            .map((m) => {
+                let from = { i: this.x, j: this.y };
+                return {
+                    from,
+                    to: m,
+                    value: tiles[from.i][from.j].value,
+                };
+            });
         return moves;
     }
 

@@ -7,7 +7,7 @@ export default class Pawn extends Piece {
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
     }
 
-    findDefendingMoves(tiles) {
+    getDefendingMoves(tiles) {
         let legalMoves = [];
 
         let colour = COLOUR.WHITE;

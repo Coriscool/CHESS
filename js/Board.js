@@ -76,6 +76,23 @@ export default class Board {
         const y = Math.floor(clientY / 100);
         this.update_selected(x, y);
 
+        //HIER WORDT VOOR WHITE
+        let defendingMovesPlayer = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                let piece = this.tiles[i][j];
+                if (piece && piece.colour == COLOUR.WHITE) {
+                    let defendingMoves = piece.findDefendingMoves(this.tiles);
+                    // if (defendingMoves.length !== 0) {
+                    defendingMovesPlayer.push(...defendingMoves);
+                    // }
+                }
+            }
+        }
+        // console.log(defendingMovesPlayer);
+
+        defendingMovesPlayer = this.sortArrayByValue(defendingMovesPlayer);
+
         if (this.turn !== COLOUR.BLACK) {
             return;
         }
@@ -97,24 +114,21 @@ export default class Board {
             return;
         }
 
-        attackingMovesAi = this.sortArray(attackingMovesAi);
+        attackingMovesAi = this.sortArrayByValue(attackingMovesAi);
 
-        //HIER WORDT VOOR WHITE
+        /*//HIER WORDT VOOR WHITE
         let defendingMovesPlayer = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 let piece = this.tiles[i][j];
-                if (piece === undefined) {
-                    continue;
-                }
-                if (piece.colour == COLOUR.WHITE) {
+                if (piece && piece.colour == COLOUR.WHITE) {
                     let defendingMoves = piece.findDefendingMoves(this.tiles);
                     defendingMoves.push(...defendingMoves);
                 }
             }
         }
         defendingMovesPlayer = this.sortArray(defendingMovesPlayer);
-        console.log(defendingMovesPlayer);
+        console.log(defendingMovesPlayer);*/
 
         /*let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
         let attackingMovesPlayer = this.findAttackingMoves(moveablePlayer);
@@ -122,11 +136,10 @@ export default class Board {
 
         let bestMove = attackingMovesAi[0];
         attackingMovesAi.forEach((aiMove) => {
-            console.log(aiMove);
+            // console.log(aiMove);
             defendingMovesPlayer.forEach((playerMove) => {
-                console.log(playerMove);
+                // console.log(playerMove);
                 if (aiMove.to === playerMove.to) {
-                    console.log("fds");
                     alert("lets go");
 
                     let toValue = this.tiles[aiMove.to][aiMove.to].value;
@@ -142,7 +155,6 @@ export default class Board {
                 }
             });
         });
-        console.log("next");
 
         this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
     }
@@ -360,10 +372,11 @@ export default class Board {
     }
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
-    sortArray(array) {
+    sortArrayByValue(array) {
         // array.forEach((n) => console.log(this.tiles[n.to.x][n.to.y].value));
         let t = this;
         array.sort(function (a, b) {
+            console.log(b);
             let c = abs(t.tiles[a.to.x][a.to.y].value);
             let d = abs(t.tiles[b.to.x][b.to.y].value);
             return d - c;
