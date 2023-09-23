@@ -100,14 +100,30 @@ export default class Board {
         attackingMovesAi = this.sortArray(attackingMovesAi);
 
         //HIER WORDT VOOR WHITE
-        let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
+        let defendingMovesPlayer = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                let piece = this.tiles[i][j];
+                if (piece === undefined) {
+                    continue;
+                }
+                if (piece.colour == COLOUR.WHITE) {
+                    let defendingMoves = piece.findDefendingMoves(this.tiles);
+                    defendingMoves.push(...defendingMoves);
+                }
+            }
+        }
+        defendingMovesPlayer = this.sortArray(defendingMovesPlayer);
+        console.log(defendingMovesPlayer);
+
+        /*let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
         let attackingMovesPlayer = this.findAttackingMoves(moveablePlayer);
-        attackingMovesPlayer = this.sortArray(attackingMovesPlayer);
+        attackingMovesPlayer = this.sortArray(attackingMovesPlayer);*/
 
         let bestMove = attackingMovesAi[0];
         attackingMovesAi.forEach((aiMove) => {
             console.log(aiMove);
-            attackingMovesPlayer.forEach((playerMove) => {
+            defendingMovesPlayer.forEach((playerMove) => {
                 console.log(playerMove);
                 if (aiMove.to === playerMove.to) {
                     console.log("fds");

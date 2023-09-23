@@ -1,29 +1,52 @@
 import CheckFinder from "./CheckFinder.js";
 import Piece from "./Piece.js";
 import Rook from "./Rook.js";
+import { COLOUR } from "./constants.js";
+
 export default class King extends Piece {
     constructor(x, y, colour, sprite, value) {
         super(x, y, colour, sprite, value);
         this.type = "king";
     }
 
+    findDefendingMoves(tiles) {
+        alert("FSDf");
+        let moves = [];
+
+        let colour = COLOUR.WHITE;
+        if (this.colour === COLOUR.WHITE) {
+            colour = COLOUR.BLACK;
+        }
+
+        moves.push(this.getMove(1, 0, tiles, colour));
+        moves.push(this.getMove(-1, 0, tiles, colour));
+        moves.push(this.getMove(0, 1, tiles, colour));
+        moves.push(this.getMove(0, -1, tiles, colour));
+        moves.push(this.getMove(1, -1, tiles, colour));
+        moves.push(this.getMove(-1, -1, tiles, colour));
+        moves.push(this.getMove(-1, 1, tiles, colour));
+        moves.push(this.getMove(1, 1, tiles, colour));
+
+        return moves.filter((n) => n);
+    }
+
     findMoves(tiles) {
         let moves = [];
 
-        moves.push(this.getMove(1, 0, tiles));
-        moves.push(this.getMove(-1, 0, tiles));
-        moves.push(this.getMove(0, 1, tiles));
-        moves.push(this.getMove(0, -1, tiles));
-        moves.push(this.getMove(1, -1, tiles));
-        moves.push(this.getMove(-1, -1, tiles));
-        moves.push(this.getMove(-1, 1, tiles));
-        moves.push(this.getMove(1, 1, tiles));
+        moves.push(this.getMove(1, 0, tiles, this.colour));
+        moves.push(this.getMove(-1, 0, tiles, this.colour));
+        moves.push(this.getMove(0, 1, tiles, this.colour));
+        moves.push(this.getMove(0, -1, tiles, this.colour));
+        moves.push(this.getMove(1, -1, tiles, this.colour));
+        moves.push(this.getMove(-1, -1, tiles, this.colour));
+        moves.push(this.getMove(-1, 1, tiles, this.colour));
+        moves.push(this.getMove(1, 1, tiles, this.colour));
         moves.push(...this.getCastleMoves(tiles));
 
         return moves.filter((n) => n);
     }
 
-    getMove(xDir, yDir, tiles) {
+    getMove(xDir, yDir, tiles, colour) {
         let newX = this.x + xDir;
         let newY = this.y + yDir;
         if (this.isOffBoard(newX, newY)) {
@@ -31,9 +54,10 @@ export default class King extends Piece {
         }
 
         if (tiles[newX][newY]) {
-            if (tiles[newX][newY].colour !== this.colour) {
+            if (tiles[newX][newY].colour !== colour) {
                 return { x: newX, y: newY };
             }
+            console.log("Fs");
         } else {
             return { x: newX, y: newY };
         }

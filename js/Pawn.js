@@ -7,6 +7,18 @@ export default class Pawn extends Piece {
         this.direction = this.colour === COLOUR.BLACK ? 1 : -1;
     }
 
+    findDefendingMoves(tiles) {
+        let legalMoves = [];
+
+        let colour = COLOUR.WHITE;
+        if (this.colour === COLOUR.WHITE) {
+            colour = COLOUR.BLACK;
+        }
+
+        legalMoves.push(...this.findAttacks(tiles, colour));
+        return legalMoves;
+    }
+
     findMoves(tiles) {
         let legalMoves = [];
         const forwardMove = { x: this.x, y: this.y + this.direction };
@@ -22,22 +34,22 @@ export default class Pawn extends Piece {
                 }
             }
         }
-        legalMoves.push(...this.findAttacks(tiles));
+        legalMoves.push(...this.findAttacks(tiles, this.colour));
         return legalMoves;
     }
 
-    findAttacks(tiles) {
+    findAttacks(tiles, colour) {
         let attacks = [];
         if (this.x - 1 >= 0) {
             const diagonalLeft = tiles[this.x - 1][this.y + this.direction];
-            if (diagonalLeft && diagonalLeft.colour !== this.colour) {
+            if (diagonalLeft && diagonalLeft.colour !== colour) {
                 attacks.push({ x: this.x - 1, y: this.y + this.direction });
             }
         }
 
         if (this.x + 1 < 8) {
             const diagonalRight = tiles[this.x + 1][this.y + this.direction];
-            if (diagonalRight && diagonalRight.colour !== this.colour) {
+            if (diagonalRight && diagonalRight.colour !== colour) {
                 attacks.push({ x: this.x + 1, y: this.y + this.direction });
             }
         }
@@ -49,7 +61,7 @@ export default class Pawn extends Piece {
                     tiles[this.x + 1][this.y].sprite == "♙"
                 ) {
                     if (tiles[this.x + 1][this.y].flag) {
-                        if (tiles[this.x + 1][this.y].colour !== this.colour) {
+                        if (tiles[this.x + 1][this.y].colour !== colour) {
                             attacks.push({
                                 x: this.x + 1,
                                 y: this.y + this.direction,
@@ -67,7 +79,7 @@ export default class Pawn extends Piece {
                     tiles[this.x - 1][this.y].sprite == "♙"
                 ) {
                     if (tiles[this.x - 1][this.y].flag) {
-                        if (tiles[this.x - 1][this.y].colour !== this.colour) {
+                        if (tiles[this.x - 1][this.y].colour !== colour) {
                             attacks.push({
                                 x: this.x - 1,
                                 y: this.y + this.direction,

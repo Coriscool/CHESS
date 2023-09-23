@@ -27,10 +27,17 @@ export default class Piece {
         tiles[fromX][fromY] = undefined;
     }
 
+    findDefendingMoves(tiles) {
+        let moves = this.findDefendingMoves(tiles);
+        moves.filter((n) => n);
+        return moves;
+    }
+
     findLegalMoves(tiles) {
         let moves = this.findMoves(tiles);
         for (let i = moves.length - 1; i >= 0; i--) {
             const currentMove = moves[i];
+            // console.log(currentMove);
             if (
                 CheckFinder.movePutsPlayerInCheck(
                     this.x,
