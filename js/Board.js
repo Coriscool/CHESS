@@ -65,11 +65,17 @@ export default class Board {
     }
 
     DoRandomMove(moves) {
-        console.warn("did random move");
+        console.log("did random move");
         let from = moves[int(random(0, moves.length))];
         let legalMoves = this.tiles[from.i][from.j].findLegalMoves(this.tiles);
         let to = legalMoves[int(random(0, legalMoves.length))];
         this.move(this.tiles[from.i][from.j], to);
+    }
+
+    getValueAfterMove(move) {
+        let attackedPieceValue = abs(this.tiles[move.to.x][move.to.y].value);
+        let attackerValue = abs(this.tiles[move.from.i][move.from.j].value);
+        return attackedPieceValue - attackerValue;
     }
 
     onClick(clientX, clientY) {
@@ -83,7 +89,6 @@ export default class Board {
 
         // moveable black pieces
         let moveableAi = this.findMoveablePieces(COLOUR.BLACK);
-
         if (moveableAi.length === 0) {
             if (!this.isInCheck) {
                 this.Stalemate();
@@ -123,11 +128,12 @@ export default class Board {
         /*defendingMovesPlayer.forEach((m) => {
             console.log(this.tiles[m.to.x][m.to.y].value);
         });*/
-        // console.log("end");
+        console.log("end");
         // console.log(defendingMovesPlayer);
 
         let bestMove = attackingMovesAi[0];
-        console.log(bestMove);
+        let bestMoveChanged = false;
+
         attackingMovesAi.forEach((aiMove) => {
             // console.log(aiMove.to);
             defendingMovesPlayer.forEach((playerMove) => {
@@ -142,7 +148,7 @@ export default class Board {
 
                     let aiValue = abs(aiMove.ownValue);
 
-                    let totalValue = attackedPieceValue - aiValue;
+                    let totalValue = this.getValueAfterMove(aiMove);
 
                     let debug = true;
                     if (debug) {
@@ -165,18 +171,24 @@ export default class Board {
                         console.log("total value = " + totalValue);
                     }
 
-                    let bestMoveValue =
-                        this.tiles[bestMove.to.x][bestMove.to.y].value;
+                    let bestMoveValue = this.getValueAfterMove(bestMove);
 
                     if (totalValue > bestMoveValue) {
                         bestMove = aiMove;
+                        bestMoveChanged = true;
                     }
                 }
             });
         });
 
         let bestMoveValue = this.tiles[bestMove.to.x][bestMove.to.y].value;
-        if (bestMoveValue > 0) {
+        if (bestMoveChanged) {
+            bestMoveValue = this.getValueAfterMove(bestMove);
+        }
+        // console.log("best move " + bestMove);
+        // console.log("best value" + bestMoveValue);
+
+        if (bestMoveValue >= 0) {
             this.move(
                 this.tiles[bestMove.from.i][bestMove.from.j],
                 bestMove.to
