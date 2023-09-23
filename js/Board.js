@@ -15,8 +15,8 @@ export default class Board {
         this.isInCheck = false;
     }
 
-    findLegalMoves(colour) {
-        let legalMoves = [];
+    findMoveablePieces(colour) {
+        let moveablePieces = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if (
@@ -27,12 +27,33 @@ export default class Board {
                         this.tiles
                     );
                     if (this.legalMoves != 0) {
-                        legalMoves.push({ i, j });
+                        moveablePieces.push({ i, j });
                     }
                 }
             }
         }
-        return legalMoves;
+        return moveablePieces;
+    }
+
+    findAttackingMoves(moveablePieces) {
+        let AttackingMoves = [];
+        for (let j = 0; j < moveablePieces.length; j++) {
+            let legalMoves = this.tiles[moveablePieces[j].i][
+                moveablePieces[j].j
+            ].findLegalMoves(this.tiles);
+
+            for (let i = legalMoves.length - 1; i >= 0; i--) {
+                if (
+                    this.tiles[legalMoves[i].x][legalMoves[i].y] !== undefined
+                ) {
+                    AttackingMoves.push({
+                        from: moveablePieces[j],
+                        to: legalMoves[i],
+                    });
+                }
+            }
+        }
+        return AttackingMoves;
     }
 
     onClick(clientX, clientY) {
@@ -43,11 +64,11 @@ export default class Board {
         if (this.turn !== COLOUR.BLACK) {
             return;
         }
-        // calculating = true;
-        // let currentPosition = this.tiles; unused variable
-        let moveableBlack = this.findLegalMoves(COLOUR.BLACK);
 
-        if (moveableBlack.length === 0 && !this.isInCheck) {
+        // moveable black pieces
+        let moveableAi = this.findMoveablePieces(COLOUR.BLACK);
+
+        if (moveableAi.length === 0 && !this.isInCheck) {
             console.log("Draw by stalemate");
             fill(10, 10, 10);
             textFont("Arial");
@@ -55,98 +76,49 @@ export default class Board {
             noLoop();
         }
 
-        if (moveableBlack.length === 0) {
+        if (moveableAi.length === 0) {
             return;
         }
 
-        let AttackingMoves = [];
-        for (let c = 0; c < moveableBlack.length; c++) {
-            let legalMoves = this.tiles[moveableBlack[c].i][
-                moveableBlack[c].j
-            ].findLegalMoves(this.tiles);
+        let attackingMovesAi = this.findAttackingMoves(moveableAi);
 
-            for (let j = legalMoves.length - 1; j >= 0; j--) {
-                if (
-                    this.tiles[legalMoves[j].x][legalMoves[j].y] !== undefined
-                ) {
-                    AttackingMoves.push({
-                        from: moveableBlack[c],
-                        to: legalMoves[j],
-                    });
+        if (attackingMovesAi.length === 0) {
+            // Chooses random legal move for AI to play
+            let from = moveableAi[int(random(0, moveableAi.length))];
+            let legalMoves = this.tiles[from.i][from.j].findLegalMoves(
+                this.tiles
+            );
+            let to = legalMoves[int(random(0, legalMoves.length))];
+            this.move(this.tiles[from.i][from.j], to);
+            return;
+        }
 
-                    /*console.log(
-                        this.tiles[possibleMovables[c].i][possibleMovables[c].j]
-                    );*/
-                }
-            }
-        }
-        // console.log(validAttackingMoves.length);
-        if (AttackingMoves.length !== 0) {
-            AttackingMoves = this.sortArray(AttackingMoves);
-        }
+        attackingMovesAi = this.sortArray(attackingMovesAi);
 
         let calculating = true;
-        let rngActive = true;
+        let bestMove = attackingMovesAi[0];
 
-        let bestMove = AttackingMoves[0];
-        if (bestMove !== undefined) {
-            while (calculating) {
-                // let valueOfAttackedSquare =
-                //  this.tiles[bestMove.to.x][bestMove.to.y].value; this variable was unused
-                rngActive = false;
+        while (calculating) {
+            //HIER WORDT VOOR WHITE
+            let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
+            let attackingMovesPlayer = this.findAttackingMoves(moveablePlayer);
+            attackingMovesPlayer = this.sortArray(attackingMovesPlayer);
 
-                //HIER WORDT VOOR WHITE
-                let moveableWhite = this.findLegalMoves(COLOUR.WHITE);
-
-                let attackingMoves = [];
-                for (let c = 0; c < moveableWhite.length; c++) {
-                    let legalMoves = this.tiles[moveableWhite[c].i][
-                        moveableWhite[c].j
-                    ].findLegalMoves(this.tiles);
-
-                    for (let j = legalMoves.length - 1; j >= 0; j--) {
-                        if (
-                            this.tiles[legalMoves[j].x][legalMoves[j].y] !==
-                            undefined
-                        ) {
-                            attackingMoves.push({
-                                from: moveableWhite[c],
-                                to: legalMoves[j],
-                            });
-                        }
-                    }
-                }
-
-                //dit sorteert de array validAttackingMoves2
-                attackingMoves = this.sortArray(attackingMoves);
-                let bestMove2 = attackingMoves[0];
-                if (bestMove2 != undefined) {
-                    //value hieronder is van black
-                    //console.log(this.tiles[bestMove2.to.x][bestMove2.to.y].value);
-                    //value hieronder is van white
-                    //console.log(valueOfAttackedSquare);
-                    /*if (
-                                this.tiles[bestMove2.to.x][bestMove2.to.y]
-                                    .value <= valueOfAttackedSquare
-                            ) {
-                            }*/
-                }
-                // TOT AAN HIER
-                this.move(
-                    this.tiles[bestMove.from.i][bestMove.from.j],
-                    bestMove.to
-                );
-                calculating = false;
-            }
+            this.move(
+                this.tiles[bestMove.from.i][bestMove.from.j],
+                bestMove.to
+            );
+            calculating = false;
         }
 
-        if (rngActive) {
+        /*if (rngActive) {
             console.log("rng");
-            let a = moveableBlack[int(random(0, moveableBlack.length))];
-            let movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
-            let b = movesTo[int(random(0, movesTo.length))];
+            // Chooses random legal move for AI to play
+            let a = moveableAi[int(random(0, moveableAi.length))];
+            let legalMoves = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+            let b = legalMoves[int(random(0, legalMoves.length))];
             this.move(this.tiles[a.i][a.j], b);
-        }
+        }*/
     }
 
     update_selected(x, y) {
@@ -363,14 +335,16 @@ export default class Board {
     //♟♙♜♖♝♗♞♘♚♔♛♕
 
     sortArray(array) {
-        array = array.map((value) =>
-            abs(this.tiles[value.to.x][value.to.y].value)
-        );
-        array = array.sort(function (a, b) {
-            return a - b;
+        // array.forEach((n) => console.log(this.tiles[n.to.x][n.to.y].value));
+        let t = this;
+        array.sort(function (a, b) {
+            let c = abs(t.tiles[a.to.x][a.to.y].value);
+            let d = abs(t.tiles[b.to.x][b.to.y].value);
+            return d - c;
         });
         return array;
     }
 }
 
+// Don't delete this, needed for p5 functions
 /* globals textAlign CENTER textSize rectMode push fill rect pop textFont text noLoop noStroke circle int random abs */
