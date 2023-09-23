@@ -10,7 +10,6 @@ export default class King extends Piece {
     }
 
     findDefendingMoves(tiles) {
-        alert("FSDf");
         let moves = [];
 
         let colour = COLOUR.WHITE;
@@ -57,7 +56,6 @@ export default class King extends Piece {
             if (tiles[newX][newY].colour !== colour) {
                 return { x: newX, y: newY };
             }
-            console.log("Fs");
         } else {
             return { x: newX, y: newY };
         }

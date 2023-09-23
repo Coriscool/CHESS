@@ -17,6 +17,7 @@ export default class Bishop extends Piece {
         moves.push(...this.findAllMoves(-1, -1, tiles, colour));
         moves.push(...this.findAllMoves(1, 1, tiles), colour);
         moves.push(...this.findAllMoves(-1, 1, tiles), colour);
+
         return moves;
     }
 
@@ -24,8 +25,9 @@ export default class Bishop extends Piece {
         let moves = [];
         moves.push(...this.findAllMoves(1, -1, tiles, this.colour));
         moves.push(...this.findAllMoves(-1, -1, tiles, this.colour));
-        moves.push(...this.findAllMoves(1, 1, tiles), this.colour);
-        moves.push(...this.findAllMoves(-1, 1, tiles), this.colour);
+        moves.push(...this.findAllMoves(1, 1, tiles, this.colour));
+        moves.push(...this.findAllMoves(-1, 1, tiles, this.colour));
+
         return moves;
     }
 
@@ -36,11 +38,34 @@ export default class Bishop extends Piece {
             let newY = this.y + yDir * i;
 
             if (this.isOffBoard(newX, newY)) {
+                console.log(moves);
                 return moves;
             }
 
             if (tiles[newX][newY]) {
                 if (tiles[newX][newY].colour !== colour) {
+                    moves.push({ x: newX, y: newY });
+                }
+                console.log(moves);
+                return moves;
+            }
+            moves.push({ x: newX, y: newY });
+        }
+        return moves;
+    }
+
+    findAlldMoves(xDir, yDir, tiles) {
+        let moves = [];
+        for (let i = 1; i < 8; i++) {
+            let newX = this.x + xDir * i;
+            let newY = this.y + yDir * i;
+
+            if (this.isOffBoard(newX, newY)) {
+                return moves;
+            }
+
+            if (tiles[newX][newY]) {
+                if (tiles[newX][newY].colour !== this.colour) {
                     moves.push({ x: newX, y: newY });
                 }
                 return moves;
