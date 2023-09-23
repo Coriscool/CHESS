@@ -15,13 +15,119 @@ export default class Board {
         this.isInCheck = false;
     }
 
+    PlayRandomMove(moves) {
+        console.log("did random move");
+        let from = moves[int(random(0, moves.length))];
+        let legalMoves = this.tiles[from.i][from.j].findLegalMoves(this.tiles);
+        let to = legalMoves[int(random(0, legalMoves.length))];
+        this.move(this.tiles[from.i][from.j], to);
+    }
+
+    getValueAfterMove(move) {
+        let attackedPieceValue = abs(this.tiles[move.to.x][move.to.y].value);
+        let attackerValue = abs(this.tiles[move.from.i][move.from.j].value);
+        return attackedPieceValue - attackerValue;
+    }
+
+    onClick(clientX, clientY) {
+        const x = Math.floor(clientX / 100);
+        const y = Math.floor(clientY / 100);
+        this.update_selected(x, y);
+
+        if (this.turn !== COLOUR.BLACK) {
+            return;
+        }
+
+        // find moveable black pieces
+        let moveableAi = this.findMoveablePieces(COLOUR.BLACK);
+        if (moveableAi.length === 0) {
+            if (!this.isInCheck) {
+                this.Stalemate();
+            }
+            return;
+        }
+
+        // find all moves that defend a piece from own colour
+        let defendingMovesPlayer = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                let piece = this.tiles[i][j];
+                if (piece && piece.colour == COLOUR.WHITE) {
+                    let defendingMoves = piece.findDefendingMoves(this.tiles);
+                    defendingMovesPlayer.push(...defendingMoves);
+                }
+            }
+        }
+        /*defendingMovesPlayer.forEach((m) => {
+            console.log(m.to);
+        });*/
+
+        // find attacking moves
+        let attackingMovesAi = this.findAttackingMoves(moveableAi);
+        if (attackingMovesAi.length === 0) {
+            this.PlayRandomMove(moveableAi);
+            return;
+        }
+
+        // check if attackingMoves are defended and update bestMoves[] accordingly
+        let bestMoves = [...attackingMovesAi];
+        let i = 0;
+        attackingMovesAi.forEach((aiMove) => {
+            // console.log(aiMove.to);
+            defendingMovesPlayer.forEach((playerMove) => {
+                // console.log(playerMove.to);
+                if (
+                    aiMove.to.x === playerMove.to.x &&
+                    aiMove.to.y === playerMove.to.y
+                ) {
+                    let totalValue = this.getValueAfterMove(aiMove);
+                    bestMoves[i].valueAfterMove = totalValue;
+
+                    // prints debug information, not needed if not debugging
+                    let debug = false;
+                    if (debug) {
+                        let attackedPieceValue = abs(
+                            this.tiles[aiMove.to.x][aiMove.to.y].value
+                        );    
+                        let aiValue = abs(this.tiles[aiMove.from.i][aiMove.from.j].value);
+    
+                        console.log(`attacked piece value ${attackedPieceValue} at ${aiMove.to.x}, ${aiMove.to.y}`);
+                        console.log(`attacker value ${aiValue} at ${aiMove.from.i}, ${aiMove.from.j}`);
+                        console.log("total value = " + totalValue);
+                    }
+                }
+            });
+            i++;
+        });
+        // sort bestMoves so the best move is at the first index
+        bestMoves.sort(function (a, b) {
+            return b.valueAfterMove - a.valueAfterMove;
+        });
+        // console.log(bestMoves);
+
+        let bestMove = bestMoves[0];
+
+        console.log(`best move from ${bestMove.from.i}, ${bestMove.from.j} to ${bestMove.to.x}, ${bestMove.to.y}`);
+        console.log("best value = " + bestMove.valueAfterMove);
+
+        // play best attacking move if doesn't lose anything, otherwise play random move
+        if (bestMove.valueAfterMove >= 0) {
+            this.move(
+                this.tiles[bestMove.from.i][bestMove.from.j],
+                bestMove.to
+            );
+        } else {
+            this.PlayRandomMove(moveableAi);
+        }
+    }
+
     findMoveablePieces(colour) {
         let moveablePieces = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if (
                     this.tiles[i][j] != undefined &&
-                    this.tiles[i][j].colour == colour
+                    this.tiles[i][j].colour === colour
                 ) {
                     this.legalMoves = this.tiles[i][j].findLegalMoves(
                         this.tiles
@@ -62,130 +168,6 @@ export default class Board {
         textFont("Arial");
         text("Draw by stalemate", 400, 400, 500, 500);
         noLoop();
-    }
-
-    DoRandomMove(moves) {
-        console.log("did random move");
-        let from = moves[int(random(0, moves.length))];
-        let legalMoves = this.tiles[from.i][from.j].findLegalMoves(this.tiles);
-        let to = legalMoves[int(random(0, legalMoves.length))];
-        this.move(this.tiles[from.i][from.j], to);
-    }
-
-    getValueAfterMove(move) {
-        let attackedPieceValue = abs(this.tiles[move.to.x][move.to.y].value);
-        let attackerValue = abs(this.tiles[move.from.i][move.from.j].value);
-        return attackedPieceValue - attackerValue;
-    }
-
-    onClick(clientX, clientY) {
-        const x = Math.floor(clientX / 100);
-        const y = Math.floor(clientY / 100);
-        this.update_selected(x, y);
-
-        if (this.turn !== COLOUR.BLACK) {
-            return;
-        }
-
-        // moveable black pieces
-        let moveableAi = this.findMoveablePieces(COLOUR.BLACK);
-        if (moveableAi.length === 0) {
-            if (!this.isInCheck) {
-                this.Stalemate();
-            }
-            return;
-        }
-
-        let attackingMovesAi = this.findAttackingMoves(moveableAi);
-        if (attackingMovesAi.length === 0) {
-            this.DoRandomMove(moveableAi);
-            return;
-        }
-        // attackingMovesAi = this.sortArrayByToValue(attackingMovesAi);
-
-        //HIER WORDT VOOR WHITE
-        let defendingMovesPlayer = [];
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                let piece = this.tiles[i][j];
-                if (piece && piece.colour == COLOUR.WHITE) {
-                    let defendingMoves = piece.findDefendingMoves(this.tiles);
-                    defendingMovesPlayer.push(...defendingMoves);
-                }
-            }
-        }
-
-        // defendingMovesPlayer = this.sortArrayByToValue(defendingMovesPlayer);
-        /*defendingMovesPlayer.forEach((m) => {
-            console.log(m.to);
-        });*/
-
-        let bestMoves = [...attackingMovesAi];
-        let i = 0;
-        attackingMovesAi.forEach((aiMove) => {
-            // console.log(aiMove.to);
-            defendingMovesPlayer.forEach((playerMove) => {
-                // console.log(playerMove.to);
-                if (
-                    aiMove.to.x === playerMove.to.x &&
-                    aiMove.to.y === playerMove.to.y
-                ) {
-                    let totalValue = this.getValueAfterMove(aiMove);
-                    bestMoves[i].valueAfterMove = totalValue;
-
-                    let debug = false;
-                    if (debug) {
-                        let attackedPieceValue = abs(
-                            this.tiles[aiMove.to.x][aiMove.to.y].value
-                        );    
-                        let aiValue = abs(this.tiles[aiMove.from.i][aiMove.from.j].value);
-    
-                        console.log(`attacked piece value ${attackedPieceValue} at ${aiMove.to.x}, ${aiMove.to.y}`);
-                        console.log(`attacker value ${aiValue} at ${aiMove.from.i}, ${aiMove.from.j}`);
-                        console.log("total value = " + totalValue);
-                    }
-                }
-            });
-            i++;
-        });
-
-        bestMoves.sort(function (a, b) {
-            return b.valueAfterMove - a.valueAfterMove;
-        });
-        // console.log(bestMoves);
-
-        let bestMove = bestMoves[0];
-
-        console.log(`best move from ${bestMove.from.i}, ${bestMove.from.j} to ${bestMove.to.x}, ${bestMove.to.y}`);
-        console.log("best value = " + bestMove.valueAfterMove);
-
-        if (bestMove.valueAfterMove >= 0) {
-            this.move(
-                this.tiles[bestMove.from.i][bestMove.from.j],
-                bestMove.to
-            );
-        } else {
-            this.DoRandomMove(moveableAi);
-        }
-    }
-
-    sortArrayByToValue(array) {
-        let t = this;
-        array.sort(function (a, b) {
-            let c = t.tiles[a.to.x][a.to.y];
-            let d = t.tiles[b.to.x][b.to.y];
-            if (c === undefined || d === undefined) {
-                console.warn("tried to sort undefined");
-                return;
-            }
-            return abs(d.value) - abs(c.value);
-        });
-        /*console.log("mid");
-        array.forEach((m) => {
-            console.log(this.tiles[m.to.x][m.to.y].value);
-        });
-        console.log("end");*/
-        return array;
     }
 
     update_selected(x, y) {
