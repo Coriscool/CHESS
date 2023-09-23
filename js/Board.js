@@ -76,23 +76,6 @@ export default class Board {
         const y = Math.floor(clientY / 100);
         this.update_selected(x, y);
 
-        //HIER WORDT VOOR WHITE
-        let defendingMovesPlayer = [];
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                let piece = this.tiles[i][j];
-                if (piece && piece.colour == COLOUR.WHITE) {
-                    let defendingMoves = piece.findDefendingMoves(this.tiles);
-                    // if (defendingMoves.length !== 0) {
-                    defendingMovesPlayer.push(...defendingMoves);
-                    // }
-                }
-            }
-        }
-        // console.log(defendingMovesPlayer);
-
-        defendingMovesPlayer = this.sortArrayByValue(defendingMovesPlayer);
-
         if (this.turn !== COLOUR.BLACK) {
             return;
         }
@@ -116,19 +99,20 @@ export default class Board {
 
         attackingMovesAi = this.sortArrayByValue(attackingMovesAi);
 
-        /*//HIER WORDT VOOR WHITE
+        //HIER WORDT VOOR WHITE
         let defendingMovesPlayer = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 let piece = this.tiles[i][j];
                 if (piece && piece.colour == COLOUR.WHITE) {
                     let defendingMoves = piece.findDefendingMoves(this.tiles);
-                    defendingMoves.push(...defendingMoves);
+                    defendingMovesPlayer.push(...defendingMoves);
                 }
             }
         }
-        defendingMovesPlayer = this.sortArray(defendingMovesPlayer);
-        console.log(defendingMovesPlayer);*/
+
+        defendingMovesPlayer = this.sortArrayByValue(defendingMovesPlayer);
+        // console.log(defendingMovesPlayer);
 
         /*let moveablePlayer = this.findMoveablePieces(COLOUR.WHITE);
         let attackingMovesPlayer = this.findAttackingMoves(moveablePlayer);
@@ -136,18 +120,25 @@ export default class Board {
 
         let bestMove = attackingMovesAi[0];
         attackingMovesAi.forEach((aiMove) => {
-            // console.log(aiMove);
+            // console.log(aiMove.to);
             defendingMovesPlayer.forEach((playerMove) => {
-                // console.log(playerMove);
-                if (aiMove.to === playerMove.to) {
-                    alert("lets go");
+                // console.log(playerMove.to);
+                if (
+                    aiMove.to.x === playerMove.to.y &&
+                    aiMove.to.y === playerMove.to.y
+                ) {
+                    let attackedPieceValue = abs(
+                        this.tiles[aiMove.to.x][aiMove.to.y].value
+                    );
+                    console.log("attacked piece value = " + attackedPieceValue);
 
-                    let toValue = this.tiles[aiMove.to][aiMove.to].value;
-                    let aiValue = aiMove.value;
+                    let aiValue = abs(aiMove.value);
+                    console.log("attacker value = " + aiValue);
+
                     /*let playerValue =
                             this.tiles[playerMove.from][playerMove.from];*/
-                    let totalValue = toValue - aiValue;
-                    console.log(totalValue);
+                    let totalValue = attackedPieceValue - aiValue;
+                    console.log("total value = " + totalValue);
 
                     if (totalValue > bestMove.value) {
                         bestMove = aiMove;
@@ -155,8 +146,24 @@ export default class Board {
                 }
             });
         });
+        console.log("next");
 
-        this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+        // this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+        this.DoRandomMove(moveableAi);
+    }
+
+    sortArrayByValue(array) {
+        let t = this;
+        array.sort(function (a, b) {
+            let c = t.tiles[a.to.x][a.to.y];
+            let d = t.tiles[b.to.x][b.to.y];
+            if (c === undefined || d === undefined) {
+                alert("tried to sort undefined");
+                return;
+            }
+            return abs(d.value) - abs(c.value);
+        });
+        return array;
     }
 
     update_selected(x, y) {
@@ -371,16 +378,6 @@ export default class Board {
         return evaluation;
     }
     //♟♙♜♖♝♗♞♘♚♔♛♕
-
-    sortArrayByValue(array) {
-        let t = this;
-        array.sort(function (a, b) {
-            let c = abs(t.tiles[a.to.x][a.to.y].value);
-            let d = abs(t.tiles[b.to.x][b.to.y].value);
-            return d - c;
-        });
-        return array;
-    }
 }
 
 // Don't delete this, needed for p5 functions
