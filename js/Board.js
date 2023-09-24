@@ -15,23 +15,6 @@ export default class Board {
         this.isInCheck = false;
     }
 
-    playRandomMove(colour) {
-        console.warn("did random move");
-        const moveablePieces = this.findMoveablePieces(colour);
-        const piece = moveablePieces[int(random(0, moveablePieces.length))];
-        const legalMoves = this.tiles[piece.x][piece.y].findLegalMoves(
-            this.tiles
-        );
-        const to = legalMoves[int(random(0, legalMoves.length))];
-        this.move(this.tiles[piece.x][piece.y], to);
-    }
-
-    getValueAfterMove(move) {
-        const attackedPieceValue = abs(this.tiles[move.to.x][move.to.y].value);
-        const attackerValue = abs(this.tiles[move.from.x][move.from.y].value);
-        return attackedPieceValue - attackerValue;
-    }
-
     onClick(clientX, clientY) {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
@@ -87,21 +70,6 @@ export default class Board {
             );
         } else {
             this.playSafeMove(COLOUR.BLACK);
-        }
-    }
-
-    playSafeMove(colour) {
-        let safeMove = this.findSafeMove(colour);
-        if (safeMove) {
-            console.log(
-                `safe move from ${safeMove.from.x}, ${safeMove.from.y} to ${safeMove.to.x}, ${safeMove.to.y}`
-            );
-            this.move(
-                this.tiles[safeMove.from.x][safeMove.from.y],
-                safeMove.to
-            );
-        } else {
-            this.playRandomMove(colour);
         }
     }
 
@@ -164,14 +132,10 @@ export default class Board {
             for (let j = 0; j < 8; j++) {
                 if (
                     this.tiles[i][j] != undefined &&
-                    this.tiles[i][j].colour === colour
+                    this.tiles[i][j].colour === colour &&
+                    this.tiles[i][j].findLegalMoves(this.tiles).length > 0
                 ) {
-                    this.legalMoves = this.tiles[i][j].findLegalMoves(
-                        this.tiles
-                    );
-                    if (this.legalMoves != 0) {
-                        moveablePieces.push({ x: i, y: j });
-                    }
+                    moveablePieces.push({ x: i, y: j });
                 }
             }
         }
@@ -226,6 +190,38 @@ export default class Board {
             }
         }
         return defendingMoves;
+    }
+
+    playSafeMove(colour) {
+        let safeMove = this.findSafeMove(colour);
+        if (safeMove) {
+            console.log(
+                `safe move from ${safeMove.from.x}, ${safeMove.from.y} to ${safeMove.to.x}, ${safeMove.to.y}`
+            );
+            this.move(
+                this.tiles[safeMove.from.x][safeMove.from.y],
+                safeMove.to
+            );
+        } else {
+            this.playRandomMove(colour);
+        }
+    }
+
+    playRandomMove(colour) {
+        console.warn("did random move");
+        const moveablePieces = this.findMoveablePieces(colour);
+        const piece = moveablePieces[int(random(0, moveablePieces.length))];
+        const legalMoves = this.tiles[piece.x][piece.y].findLegalMoves(
+            this.tiles
+        );
+        const to = legalMoves[int(random(0, legalMoves.length))];
+        this.move(this.tiles[piece.x][piece.y], to);
+    }
+
+    getValueAfterMove(move) {
+        const attackedPieceValue = abs(this.tiles[move.to.x][move.to.y].value);
+        const attackerValue = abs(this.tiles[move.from.x][move.from.y].value);
+        return attackedPieceValue - attackerValue;
     }
 
     Stalemate() {
@@ -309,17 +305,17 @@ export default class Board {
                 const x = this.getPos(i);
                 const y = this.getPos(j);
 
+                let r = 240,
+                    g = 217,
+                    b = 240;
                 if ((i + j) % 2 != 0) {
-                    push();
-                    fill(181, 136, 99);
-                    rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
-                    pop();
-                } else {
-                    push();
-                    fill(240, 217, 181);
-                    rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
-                    pop();
+                    (r = 181), (g = 136), (b = 99);
                 }
+                push();
+                fill(r, g, b);
+                rect(x, y, this.sizeOfSquare, this.sizeOfSquare);
+                pop();
+
                 if (currentTile) {
                     currentTile.draw(x, y);
                 }
@@ -374,38 +370,28 @@ export default class Board {
             for (let i = 0; i < 8; i++) {
                 for (let j = 0; j < 8; j++) {
                     if (this.tiles[i][j] != undefined) {
-                        if (this.tiles[i][j].sprite == "♟") {
-                            if (
-                                this.tiles[i][j].flag &&
-                                to.y == j - 1 &&
-                                to.x == i
-                            ) {
-                                this.tiles[i][j] = undefined;
-                                continue;
-                            }
-                            this.tiles[i][j].flag = false;
+                        let offset = -1;
+                        if (this.tiles[i][j].sprite === "♙") {
+                            offset = 1;
                         }
-                        if (this.tiles[i][j].sprite == "♙") {
-                            if (
-                                this.tiles[i][j].flag &&
-                                to.y == j + 1 &&
-                                to.x == i
-                            ) {
-                                this.tiles[i][j] = undefined;
-                                continue;
-                            }
-                            this.tiles[i][j].flag = false;
+
+                        if (
+                            this.tiles[i][j].flag &&
+                            to.y == j + offset &&
+                            to.x == i
+                        ) {
+                            this.tiles[i][j] = undefined;
+                            continue;
                         }
+                        this.tiles[i][j].flag = false;
                     }
                 }
             }
+            if (from.y - to.y == 2 || from.y - to.y == -2) {
+                this.tiles[from.x][from.y].flag = true;
+            }
         }
-        if (
-            (from.y - to.y == 2 || from.y - to.y == -2) &&
-            (from.sprite == "♟" || from.sprite == "♙")
-        ) {
-            this.tiles[from.x][from.y].flag = true;
-        }
+
         this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
         this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
         this.selected = undefined;
@@ -431,21 +417,6 @@ export default class Board {
 
     isOffBoard(x, y) {
         return x > 7 || x < 0 || y > 7 || y < 0;
-    }
-
-    evaluator() {
-        let evaluation = 0;
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if (this.tiles[i][j] != undefined) {
-                    evaluation += this.tiles[i][j].value;
-                }
-            }
-        }
-        // if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
-        //     evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
-        // }
-        return evaluation;
     }
     //♟♙♜♖♝♗♞♘♚♔♛♕
 }
