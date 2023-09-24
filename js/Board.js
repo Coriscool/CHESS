@@ -15,9 +15,10 @@ export default class Board {
         this.isInCheck = false;
     }
 
-    PlayRandomMove(moves) {
+    PlayRandomMove(colour) {
         console.log("did random move");
-        let from = moves[int(random(0, moves.length))];
+        let moveablePieces = this.findMoveablePieces(colour);
+        let from = moveablePieces[int(random(0, moveablePieces.length))];
         let legalMoves = this.tiles[from.i][from.j].findLegalMoves(this.tiles);
         let to = legalMoves[int(random(0, legalMoves.length))];
         this.move(this.tiles[from.i][from.j], to);
@@ -38,76 +39,69 @@ export default class Board {
             return;
         }
 
-        // find moveable black pieces
-        let moveableAi = this.findMoveablePieces(COLOUR.BLACK);
-        if (moveableAi.length === 0) {
-            if (!this.isInCheck) {
-                this.Stalemate();
-            }
-            return;
-        }
+        // check if own pieces are hanging
+        let attackingMovesPlayer = this.findAttackingMoves(COLOUR.WHITE); // find attacking moves of player
+        let defendingMovesAi = this.findDefendingMoves(COLOUR.BLACK); // find defending moves of player
 
-        // find all moves that defend a piece from own colour
-        let defendingMovesPlayer = [];
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                let piece = this.tiles[i][j];
-                if (piece && piece.colour == COLOUR.WHITE) {
-                    let defendingMoves = piece.findDefendingMoves(this.tiles);
-                    defendingMovesPlayer.push(...defendingMoves);
-                }
-            }
-        }
-        /*defendingMovesPlayer.forEach((m) => {
-            console.log(m.to);
-        });*/
+        // valueAfterMove * -1 because ai is defending, not attacking, so positive value for attacker is negative value for ai
+        let defensiveMoves = attackingMovesPlayer.map((m) => {
+            m.valueAfterMove *= -1;
+            return m;
+        });
 
-        // find attacking moves
-        let attackingMovesAi = this.findAttackingMoves(moveableAi);
-        if (attackingMovesAi.length === 0) {
-            this.PlayRandomMove(moveableAi);
-            return;
-        }
-
-        // check if attackingMoves are defended and update bestMoves[] accordingly
-        let bestMoves = [...attackingMovesAi];
-        let i = 0;
-        attackingMovesAi.forEach((aiMove) => {
-            // console.log(aiMove.to);
-            defendingMovesPlayer.forEach((playerMove) => {
-                // console.log(playerMove.to);
+        // calculate value from saving hanging pieces
+        let j = 0;
+        attackingMovesPlayer.forEach((playerMove) => {
+            defendingMovesAi.forEach((aiMove) => {
                 if (
                     aiMove.to.x === playerMove.to.x &&
                     aiMove.to.y === playerMove.to.y
                 ) {
-                    let totalValue = this.getValueAfterMove(aiMove);
-                    bestMoves[i].valueAfterMove = totalValue;
+                    // value got from saving hangin piece
+                    defensiveMoves[j].valueAfterMove =
+                        this.getValueAfterMove(playerMove);
+                }
+            });
+            j++;
+        });
+        console.log(defensiveMoves);
 
-                    // prints debug information, not needed if not debugging
-                    let debug = false;
-                    if (debug) {
-                        let attackedPieceValue = abs(
-                            this.tiles[aiMove.to.x][aiMove.to.y].value
-                        );    
-                        let aiValue = abs(this.tiles[aiMove.from.i][aiMove.from.j].value);
-    
-                        console.log(`attacked piece value ${attackedPieceValue} at ${aiMove.to.x}, ${aiMove.to.y}`);
-                        console.log(`attacker value ${aiValue} at ${aiMove.from.i}, ${aiMove.from.j}`);
-                        console.log("total value = " + totalValue);
-                    }
+        let attackingMovesAi = this.findAttackingMoves(COLOUR.BLACK); // find attacking moves for ai (black)
+        let defendingMovesPlayer = this.findDefendingMoves(COLOUR.WHITE); // find defending moves for player (white)
+
+        // check if attackingMoves are defended and update attackingMoves[] value accordingly
+        let i = 0;
+        attackingMovesAi.forEach((aiMove) => {
+            defendingMovesPlayer.forEach((playerMove) => {
+                if (
+                    aiMove.to.x === playerMove.to.x &&
+                    aiMove.to.y === playerMove.to.y
+                ) {
+                    attackingMovesAi[i].valueAfterMove =
+                        this.getValueAfterMove(aiMove);
                 }
             });
             i++;
         });
+        let bestMoves = defensiveMoves.concat(...attackingMovesAi);
+
+        // If no moves that win material are found do random move
+        if (bestMoves.length === 0) {
+            this.PlayRandomMove(COLOUR.BLACK);
+            return;
+        }
+
         // sort bestMoves so the best move is at the first index
         bestMoves.sort(function (a, b) {
             return b.valueAfterMove - a.valueAfterMove;
         });
+
         // console.log(bestMoves);
+        /*let bestMove = bestMoves[0];
 
-        let bestMove = bestMoves[0];
-
-        console.log(`best move from ${bestMove.from.i}, ${bestMove.from.j} to ${bestMove.to.x}, ${bestMove.to.y}`);
+        console.log(
+            `best move from ${bestMove.from.i}, ${bestMove.from.j} to ${bestMove.to.x}, ${bestMove.to.y}`
+        );
         console.log("best value = " + bestMove.valueAfterMove);
 
         // play best attacking move if doesn't lose anything, otherwise play random move
@@ -117,8 +111,9 @@ export default class Board {
                 bestMove.to
             );
         } else {
-            this.PlayRandomMove(moveableAi);
-        }
+            this.PlayRandomMove(COLOUR.BLACK);
+        }*/
+        this.PlayRandomMove(COLOUR.BLACK);
     }
 
     findMoveablePieces(colour) {
@@ -141,25 +136,55 @@ export default class Board {
         return moveablePieces;
     }
 
-    findAttackingMoves(moveablePieces) {
+    findAttackingMoves(colour) {
+        let moveFound = false;
         let AttackingMoves = [];
-        for (let j = 0; j < moveablePieces.length; j++) {
-            let piece = this.tiles[moveablePieces[j].i][moveablePieces[j].j];
-            let legalMoves = piece.findLegalMoves(this.tiles);
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                let piece = this.tiles[i][j];
+                if (piece === undefined || piece.colour !== colour) {
+                    continue;
+                }
+                let legalMoves = piece.findLegalMoves(this.tiles);
+                if (legalMoves.length > 0) {
+                    moveFound = true;
+                }
 
-            for (let i = legalMoves.length - 1; i >= 0; i--) {
-                if (
-                    this.tiles[legalMoves[i].x][legalMoves[i].y] !== undefined
-                ) {
-                    AttackingMoves.push({
-                        from: moveablePieces[j],
-                        to: legalMoves[i],
-                        valueAfterMove: this.tiles[legalMoves[i].x][legalMoves[i].y].value,
-                    });
+                for (let c = legalMoves.length - 1; c >= 0; c--) {
+                    let to = legalMoves[c];
+                    if (this.tiles[to.x][to.y]) {
+                        AttackingMoves.push({
+                            from: { i, j },
+                            to: to,
+                            valueAfterMove: this.tiles[to.x][to.y].value,
+                        });
+                    }
                 }
             }
         }
+
+        if (!moveFound) {
+            if (!this.isInCheck) {
+                this.Stalemate();
+            }
+        }
         return AttackingMoves;
+    }
+
+    findDefendingMoves(colour) {
+        let defendingMoves = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                let piece = this.tiles[i][j];
+                if (piece && piece.colour === colour) {
+                    let defendingMovesPiece = piece.findDefendingMoves(
+                        this.tiles
+                    );
+                    defendingMoves.push(...defendingMovesPiece);
+                }
+            }
+        }
+        return defendingMoves;
     }
 
     Stalemate() {
