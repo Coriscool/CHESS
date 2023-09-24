@@ -22,14 +22,14 @@ export default class Knight extends Piece {
     findMoves(tiles) {
         let moves = [];
 
-        moves.push(this.getMove(2, -1, tiles, this.colour));
-        moves.push(this.getMove(1, -2, tiles, this.colour));
-        moves.push(this.getMove(-1, -2, tiles, this.colour));
-        moves.push(this.getMove(-2, -1, tiles, this.colour));
-        moves.push(this.getMove(-2, 1, tiles, this.colour));
-        moves.push(this.getMove(-1, 2, tiles, this.colour));
-        moves.push(this.getMove(1, 2, tiles, this.colour));
-        moves.push(this.getMove(2, 1, tiles, this.colour));
+        moves.push(this.getMove(2, -1, tiles));
+        moves.push(this.getMove(1, -2, tiles));
+        moves.push(this.getMove(-1, -2, tiles));
+        moves.push(this.getMove(-2, -1, tiles));
+        moves.push(this.getMove(-2, 1, tiles));
+        moves.push(this.getMove(-1, 2, tiles));
+        moves.push(this.getMove(1, 2, tiles));
+        moves.push(this.getMove(2, 1, tiles));
 
         return moves.filter((n) => n);
     }
@@ -45,7 +45,7 @@ export default class Knight extends Piece {
         }
     }
 
-    getMove(xDir, yDir, tiles, colour) {
+    getMove(xDir, yDir, tiles) {
         let newX = this.x + xDir;
         let newY = this.y + yDir;
         if (this.isOffBoard(newX, newY)) {
@@ -53,7 +53,7 @@ export default class Knight extends Piece {
         }
 
         if (tiles[newX][newY]) {
-            if (tiles[newX][newY].colour !== colour) {
+            if (tiles[newX][newY].colour !== this.colour) {
                 return { x: newX, y: newY };
             }
         } else {

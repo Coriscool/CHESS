@@ -19,14 +19,14 @@ export default class Queen extends Piece {
 
     findMoves(tiles) {
         let moves = [];
-        moves.push(...this.findAllMoves(1, -1, tiles, this.colour));
-        moves.push(...this.findAllMoves(-1, -1, tiles, this.colour));
-        moves.push(...this.findAllMoves(1, 1, tiles, this.colour));
-        moves.push(...this.findAllMoves(-1, 1, tiles, this.colour));
-        moves.push(...this.findAllMoves(1, 0, tiles, this.colour));
-        moves.push(...this.findAllMoves(0, -1, tiles, this.colour));
-        moves.push(...this.findAllMoves(-1, 0, tiles, this.colour));
-        moves.push(...this.findAllMoves(0, 1, tiles, this.colour));
+        moves.push(...this.findAllMoves(1, -1, tiles));
+        moves.push(...this.findAllMoves(-1, -1, tiles));
+        moves.push(...this.findAllMoves(1, 1, tiles));
+        moves.push(...this.findAllMoves(-1, 1, tiles));
+        moves.push(...this.findAllMoves(1, 0, tiles));
+        moves.push(...this.findAllMoves(0, -1, tiles));
+        moves.push(...this.findAllMoves(-1, 0, tiles));
+        moves.push(...this.findAllMoves(0, 1, tiles));
         return moves;
     }
 
@@ -45,7 +45,7 @@ export default class Queen extends Piece {
         }
     }
 
-    findAllMoves(xDir, yDir, tiles, colour) {
+    findAllMoves(xDir, yDir, tiles) {
         let moves = [];
         for (let i = 1; i < 8; i++) {
             let newX = this.x + xDir * i;
@@ -56,7 +56,7 @@ export default class Queen extends Piece {
             }
 
             if (tiles[newX][newY]) {
-                if (tiles[newX][newY].colour !== colour) {
+                if (tiles[newX][newY].colour !== this.colour) {
                     moves.push({ x: newX, y: newY });
                 }
                 return moves;

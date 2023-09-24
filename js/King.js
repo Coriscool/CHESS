@@ -25,14 +25,14 @@ export default class King extends Piece {
     findMoves(tiles) {
         let moves = [];
 
-        moves.push(this.getMove(1, 0, tiles, this.colour));
-        moves.push(this.getMove(-1, 0, tiles, this.colour));
-        moves.push(this.getMove(0, 1, tiles, this.colour));
-        moves.push(this.getMove(0, -1, tiles, this.colour));
-        moves.push(this.getMove(1, -1, tiles, this.colour));
-        moves.push(this.getMove(-1, -1, tiles, this.colour));
-        moves.push(this.getMove(-1, 1, tiles, this.colour));
-        moves.push(this.getMove(1, 1, tiles, this.colour));
+        moves.push(this.getMove(1, 0, tiles));
+        moves.push(this.getMove(-1, 0, tiles));
+        moves.push(this.getMove(0, 1, tiles));
+        moves.push(this.getMove(0, -1, tiles));
+        moves.push(this.getMove(1, -1, tiles));
+        moves.push(this.getMove(-1, -1, tiles));
+        moves.push(this.getMove(-1, 1, tiles));
+        moves.push(this.getMove(1, 1, tiles));
         moves.push(...this.getCastleMoves(tiles));
 
         return moves.filter((n) => n);
@@ -49,7 +49,7 @@ export default class King extends Piece {
         }
     }
 
-    getMove(xDir, yDir, tiles, colour) {
+    getMove(xDir, yDir, tiles) {
         let newX = this.x + xDir;
         let newY = this.y + yDir;
         if (this.isOffBoard(newX, newY)) {
@@ -57,7 +57,7 @@ export default class King extends Piece {
         }
 
         if (tiles[newX][newY]) {
-            if (tiles[newX][newY].colour !== colour) {
+            if (tiles[newX][newY].colour !== this.colour) {
                 return { x: newX, y: newY };
             }
         } else {

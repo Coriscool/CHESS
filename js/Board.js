@@ -132,7 +132,6 @@ export default class Board {
             opp_colour = COLOUR.BLACK;
         }
         const allMoves = this.findAllNonAttackingMoves(opp_colour);
-        // console.log("lall moves length " + allMoves.length);
         let moveablePieces = this.findMoveablePieces(colour);
 
         while (moveablePieces.length > 0) {
@@ -146,18 +145,13 @@ export default class Board {
                 const index = int(random(0, legalMoves.length));
                 const to = legalMoves[index];
 
-                let undefended = true;
-                allMoves.forEach((move) => {
-                    if (move.x === to.x && move.y === to.y) {
-                        undefended = false;
-                    }
-                });
+                const undefended = allMoves.find(
+                    (move) => move.x === to.x && move.y === to.y
+                );
                 if (undefended) {
-                    /*console.log(
-                        `move is ${move.from.x}, ${move.from.y} to ${move.to.x}, ${move.to.y}`
-                    );*/
                     return { from, to };
                 }
+
                 legalMoves = legalMoves.slice(index + 1);
             }
             moveablePieces = moveablePieces.slice(index + 1);

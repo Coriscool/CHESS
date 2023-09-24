@@ -11,10 +11,10 @@ export default class Rook extends Piece {
     findMoves(tiles) {
         let moves = [];
 
-        moves.push(...this.findForwardMoves(tiles, this.colour));
-        moves.push(...this.findBackwardMoves(tiles, this.colour));
-        moves.push(...this.findRightMoves(tiles, this.colour));
-        moves.push(...this.findLeftMoves(tiles, this.colour));
+        moves.push(...this.findForwardMoves(tiles));
+        moves.push(...this.findBackwardMoves(tiles));
+        moves.push(...this.findRightMoves(tiles));
+        moves.push(...this.findLeftMoves(tiles));
         return moves;
     }
 
@@ -47,11 +47,11 @@ export default class Rook extends Piece {
         return moves;
     }
 
-    findForwardMoves(tiles, colour) {
+    findForwardMoves(tiles) {
         let moves = [];
         for (let i = this.y + 1; i < 8; i++) {
             if (tiles[this.x][i]) {
-                if (tiles[this.x][i].colour !== colour) {
+                if (tiles[this.x][i].colour !== this.colour) {
                     moves.push({ x: this.x, y: i });
                 }
                 return moves;
@@ -61,11 +61,11 @@ export default class Rook extends Piece {
         return moves;
     }
 
-    findBackwardMoves(tiles, colour) {
+    findBackwardMoves(tiles) {
         let moves = [];
         for (let i = this.y - 1; i >= 0; i--) {
             if (tiles[this.x][i]) {
-                if (tiles[this.x][i].colour !== colour) {
+                if (tiles[this.x][i].colour !== this.colour) {
                     moves.push({ x: this.x, y: i });
                 }
                 return moves;
@@ -75,11 +75,11 @@ export default class Rook extends Piece {
         return moves;
     }
 
-    findLeftMoves(tiles, colour) {
+    findLeftMoves(tiles) {
         let moves = [];
         for (let i = this.x - 1; i >= 0; i--) {
             if (tiles[i][this.y]) {
-                if (tiles[i][this.y].colour !== colour) {
+                if (tiles[i][this.y].colour !== this.colour) {
                     moves.push({ x: i, y: this.y });
                 }
                 return moves;
@@ -89,11 +89,11 @@ export default class Rook extends Piece {
         return moves;
     }
 
-    findRightMoves(tiles, colour) {
+    findRightMoves(tiles) {
         let moves = [];
         for (let i = this.x + 1; i < 8; i++) {
             if (tiles[i][this.y]) {
-                if (tiles[i][this.y].colour !== colour) {
+                if (tiles[i][this.y].colour !== this.colour) {
                     moves.push({ x: i, y: this.y });
                 }
                 return moves;
