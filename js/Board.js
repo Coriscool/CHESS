@@ -110,7 +110,6 @@ export default class Board {
                 for (const move of this.legalMoves) {
                     push();
                     noStroke();
-                    //rect(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare, this.sizeOfSquare);
                     circle(this.getPos(move.x), this.getPos(move.y), this.sizeOfSquare/4);
                     pop();
                 }
@@ -133,7 +132,6 @@ export default class Board {
         }
         if(this.turn === COLOUR.BLACK){
             let Boardstate = this.tiles;
-            console.log(this.tiles);
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -156,16 +154,11 @@ export default class Board {
                         let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
                         if (possibleMovables2.length !== 0) {
                             let bestMove2 = validAttackingMoves2[0];
-                            console.log(bestMove2);
                             if (bestMove2 !== undefined) {
-                                console.log(abs(this.tiles[bestMove1.from.i][bestMove1.from.j].value) + ' value van black piece');
-                                console.log(abs(valueOfAttackedSquare) + ' value van white piece');
                                 if (abs(this.tiles[bestMove1.from.i][bestMove1.from.j].value) > abs(valueOfAttackedSquare)) {
-                                    console.log(bestMove1);
                                     bestMove1 = validAttackingMoves1[nextBestMove];
                                     nextBestMove++;
-                                    console.log(bestMove1);
-                                    resetBoard(Boardstate);
+                                    this.resetBoard(Boardstate);
                                     break;
                                 }
                             }
@@ -272,7 +265,6 @@ evaluator() {
     // }
     return evaluation;
 }
-    //♟♙♜♖♝♗♞♘♚♔♛♕
 
 arraySorter(arrayToSort) {
     let attackingMove_1 = [];
@@ -339,9 +331,47 @@ findAttackingMoves(nameArray, colour){
     return { [validAttackingMoves]: validAttackMoves, [possibleMovables]: possibleMovable };
 }
 
-resetBoard(){
-    
+resetBoard(BoardneedsToBecome) {
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            const pieceData = BoardneedsToBecome[i][j];
+            if (pieceData) {
+                let newPiece;
+                switch (pieceData.sprite) {
+                    case '♟':
+                    case '♙':
+                        newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    case '♜':
+                    case '♖':
+                        newPiece = new Rook(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    case '♝':
+                    case '♗':
+                        newPiece = new Bishop(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    case '♞':
+                    case '♘':
+                        newPiece = new Knight(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    case '♚':
+                    case '♔':
+                        newPiece = new King(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    case '♛':
+                    case '♕':
+                        newPiece = new Queen(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        break;
+                    default:
+                        newPiece = undefined;
+                        break;
+                }
+                this.tiles[i][j] = newPiece;
+            } else {
+                this.tiles[i][j] = undefined;
+            }
+        }
+    }
 }
-
 }
-
+//♟♙♜♖♝♗♞♘♚♔♛♕
