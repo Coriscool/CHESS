@@ -142,29 +142,43 @@ export default class Board {
                 noLoop();
             }
             let rMGActive = true;
-            if (possibleMovables1.length !== 0) {
+            if (possibleMovables1.length !== 1) {
                 let bestMove1 = validAttackingMoves1[0];
                 if (bestMove1 !== undefined) {
                     let calculating = true;
-                    let nextBestMove = 1;
+                    //let nextBestMove = 1;
                     while (calculating) {
-                        let valueOfAttackedSquare = this.tiles[bestMove1.to.x][bestMove1.to.y].value;
-            
-                        //HIER WORDT VOOR WHITE
-                        let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
-                        if (possibleMovables2.length !== 0) {
-                            let bestMove2 = validAttackingMoves2[0];
-                            if (bestMove2 !== undefined) {
-                                if (abs(this.tiles[bestMove1.from.i][bestMove1.from.j].value) > abs(valueOfAttackedSquare)) {
-                                    bestMove1 = validAttackingMoves1[nextBestMove];
-                                    nextBestMove++;
-                                    this.resetBoard(Boardstate);
-                                    break;
-                                }
+                        //let valueOfAttackedSquare = this.tiles[bestMove1.to.x][bestMove1.to.y].value;
+                        //let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
+                        // if (possibleMovables2.length !== 0) {
+                        //     let bestMove2 = validAttackingMoves2[0];
+                        //     if (bestMove2 !== undefined) {
+                        //         if (abs(this.tiles[bestMove1.from.i][bestMove1.from.j].value) > abs(valueOfAttackedSquare)) {
+                        //             bestMove1 = validAttackingMoves1[nextBestMove];
+                        //             nextBestMove++;
+                        //             this.resetBoard(Boardstate);
+                        //             break;
+                        //         }
+                        //     }
+                        // }
+                        for(let j = 0; j < validAttackingMoves1.length; j++) {
+                            console.log(' ');
+                            let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
+                            console.log(valueOfWhitePiece);
+                            this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
+                            
+                            let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
+                            if(validAttackingMoves2.length !== 0){
+                                let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
+                                console.log(valueOfBlackPiece);
+                                validAttackingMoves1.valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+                                console.log(validAttackingMoves1.valueOfMove);
                             }
+                            this.tiles = Boardstate
+                            //this.resetBoard(Boardstate);
                         }
-                        // TOT AAN HIER
-                        this.move(this.tiles[bestMove1.from.i][bestMove1.from.j], bestMove1.to);
+
+                        //this.move(this.tiles[bestMove1.from.i][bestMove1.from.j], bestMove1.to);
                         rMGActive = false;
                         calculating = false;
                     }
@@ -323,7 +337,7 @@ findAttackingMoves(nameArray, colour){
         let movesTo = this.tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(this.tiles);
         for (let j = movesTo.length - 1; j >= 0; j--) {
             if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
-                validAttackMoves.push({from: possibleMovable[c], to: movesTo[j]});
+                validAttackMoves.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
             } 
         }
     }
