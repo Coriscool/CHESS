@@ -131,7 +131,7 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            let Boardstate = this.tiles;
+            let Boardstate = JSON.parse(JSON.stringify(this.tiles));
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -142,44 +142,42 @@ export default class Board {
                 noLoop();
             }
             let rMGActive = true;
+            let movesThatShouldNotBeMade = [];
             if (possibleMovables1.length !== 1) {
-                let bestMove1 = validAttackingMoves1[0];
-                if (bestMove1 !== undefined) {
+                if (validAttackingMoves1.length !== 0) {
                     let calculating = true;
-                    //let nextBestMove = 1;
                     while (calculating) {
-                        //let valueOfAttackedSquare = this.tiles[bestMove1.to.x][bestMove1.to.y].value;
-                        //let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
-                        // if (possibleMovables2.length !== 0) {
-                        //     let bestMove2 = validAttackingMoves2[0];
-                        //     if (bestMove2 !== undefined) {
-                        //         if (abs(this.tiles[bestMove1.from.i][bestMove1.from.j].value) > abs(valueOfAttackedSquare)) {
-                        //             bestMove1 = validAttackingMoves1[nextBestMove];
-                        //             nextBestMove++;
-                        //             this.resetBoard(Boardstate);
-                        //             break;
-                        //         }
-                        //     }
-                        // }
+                        let maxMoveValue = 0;
+                        let bestMoveIndex = -1;
                         for(let j = 0; j < validAttackingMoves1.length; j++) {
-                            console.log(' ');
                             let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
-                            console.log(valueOfWhitePiece);
                             this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
-                            
                             let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
+                            let moveValue = valueOfWhitePiece;
                             if(validAttackingMoves2.length !== 0){
-                                let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
-                                console.log(valueOfBlackPiece);
-                                validAttackingMoves1.valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
-                                console.log(validAttackingMoves1.valueOfMove);
+                                for(let i = 0; i < validAttackingMoves1.length; i++) {
+                                    let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
+                                    moveValue += valueOfBlackPiece;
+                                    validAttackingMoves1[j].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+                                }
                             }
-                            this.tiles = Boardstate
-                            //this.resetBoard(Boardstate);
+                            validAttackingMoves1[j].valueOfMove = moveValue;
+                            if (moveValue >= maxMoveValue) {
+                                console.log(moveValue);
+                                maxMoveValue = moveValue;
+                                bestMoveIndex = j;
+                            }
+                            else {
+                                movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
+                            }
+                            //dit verpest enpassant denk ik
+                            this.resetBoard(Boardstate);
                         }
-
-                        //this.move(this.tiles[bestMove1.from.i][bestMove1.from.j], bestMove1.to);
-                        rMGActive = false;
+                        if (bestMoveIndex !== -1) {
+                            console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
+                            this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
+                            rMGActive = false;
+                        }
                         calculating = false;
                     }
                 }
@@ -187,13 +185,22 @@ export default class Board {
 
             let movesTo = [];            
             if (possibleMovables1.length !== 0 && rMGActive){
-                let a = possibleMovables1[int(random(0,possibleMovables1.length))];
-                movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
-                let b = movesTo[int(random(0,movesTo.length))];
-                this.move(this.tiles[a.i][a.j], b);
+                let noMoveFound = true;
+                while(noMoveFound){
+                    console.log('Random move made');
+                    let a = possibleMovables1[int(random(0,possibleMovables1.length))];
+                    movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+                    movesTo = movesTo.filter(move => !movesThatShouldNotBeMade.includes(move));
+                    if (movesTo.length > 0) {
+                        let b = movesTo[int(random(0,movesTo.length))];
+                        this.move(this.tiles[a.i][a.j], b);
+                        noMoveFound = false;
+                    }
+                }
             }
 
             //console.log(currentPosition);
+            this.turn = COLOUR.WHITE;
             calculating = false;
         }
     }
