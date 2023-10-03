@@ -131,7 +131,10 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            let Boardstate = JSON.parse(JSON.stringify(this.tiles));
+            let boardstate = [];
+            for (let i = 0; i < this.tiles.length; i++) {
+                boardstate[i] = this.tiles[i].slice();
+            }
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -152,19 +155,24 @@ export default class Board {
                         let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
                         this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
                         let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
-                        let moveValue = valueOfWhitePiece;
+                        let moveValue = undefined;
+                        validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
                         console.log(valueOfWhitePiece, ' +');
                         if(validAttackingMoves2.length !== 0){
-                            for(let i = 0; i < validAttackingMoves1.length; i++) {
-                                let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
-                                // deze line onder moet ergens anders, want het wordt nu te vaak gerepeat...
-                                moveValue += valueOfBlackPiece;
+                            let whiteCanTakeBack = false
+                            let valueOfBlackPiece = 0;
+                            for(let i = 0; i < validAttackingMoves2.length; i++) {
+                                valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
+                                whiteCanTakeBack = true;
+                            }
+                            if(whiteCanTakeBack){
                                 console.log(valueOfBlackPiece, ' =');
-                                validAttackingMoves1[j].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+                                validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
                             }
                         }
-                        validAttackingMoves1[j].valueOfMove = moveValue;
-                        console.log(moveValue);
+                        console.log(validAttackingMoves1[j].valueOfMove);
+                        moveValue = validAttackingMoves1[j].valueOfMove;
+                        //validAttackingMoves1[j].valueOfMove = moveValue;
                         if (moveValue >= maxMoveValue) {
                             console.log(moveValue);
                             maxMoveValue = moveValue;
@@ -173,11 +181,9 @@ export default class Board {
                         else {
                             movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
                         }
-                        //dit verpest enpassant
-                        console.log(this.tiles[0][5]);
-                        this.resetBoard(Boardstate);
-                        console.log(this.tiles[0][5]);
+                        this.resetBoard(boardstate);
                     }
+                    // Deze if statement zorgt voor bugs...
                     if (bestMoveIndex !== -1) {
                         console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
                         this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
@@ -194,6 +200,7 @@ export default class Board {
                     console.log('Random move made');
                     let a = possibleMovables1[int(random(0,possibleMovables1.length))];
                     movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+                    // de line hieronder is gegenereerd door ChatGPT:
                     movesTo = movesTo.filter(move => !movesThatShouldNotBeMade.includes(move));
                     if (movesTo.length > 0) {
                         let b = movesTo[int(random(0,movesTo.length))];
@@ -202,8 +209,6 @@ export default class Board {
                     }
                 }
             }
-
-            //console.log(currentPosition);
             this.turn = COLOUR.WHITE;
             calculating = false;
         }
@@ -285,9 +290,6 @@ evaluator() {
             }
         }
     }
-    // if(wherePieceMovesTo != undefined && this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y] != undefined){
-    //     evaluation -= this.tiles[wherePieceMovesTo.x][wherePieceMovesTo.y].value;
-    // }
     return evaluation;
 }
 
@@ -356,55 +358,14 @@ findAttackingMoves(nameArray, colour){
     return { [validAttackingMoves]: validAttackMoves, [possibleMovables]: possibleMovable };
 }
 
-//Deze functie is opgeschoont door ChatGPT
+//Deze functie is gemaakt door ChatGPT
 resetBoard(BoardneedsToBecome) {
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            const pieceData = BoardneedsToBecome[i][j];
-            if (pieceData) {
-                let newPiece;
-                switch (pieceData.sprite) {
-                    case '♟':
-                    case '♙':
-                        if(i === 1 || i === 6){
-                            console.log('hi');
-                            newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value, false);
-                        }
-                        else{
-                            console.log('asfaodfu');
-                            newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value, true);
-                        }
-                        break;
-                    case '♜':
-                    case '♖':
-                        newPiece = new Rook(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
-                        break;
-                    case '♝':
-                    case '♗':
-                        newPiece = new Bishop(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
-                        break;
-                    case '♞':
-                    case '♘':
-                        newPiece = new Knight(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
-                        break;
-                    case '♚':
-                    case '♔':
-                        newPiece = new King(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
-                        break;
-                    case '♛':
-                    case '♕':
-                        newPiece = new Queen(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
-                        break;
-                    default:
-                        newPiece = undefined;
-                        break;
-                }
-                this.tiles[i][j] = newPiece;
-            } else {
-                this.tiles[i][j] = undefined;
-            }
-        }
+    console.log(BoardneedsToBecome);
+    this.tiles = [];
+    for (let i = 0; i < BoardneedsToBecome.length; i++) {
+        this.tiles[i] = BoardneedsToBecome[i].slice();
     }
+    console.log(this.tiles);
 }
 }
 //♟♙♜♖♝♗♞♘♚♔♛♕
