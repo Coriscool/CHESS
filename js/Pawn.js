@@ -13,7 +13,8 @@ export default class Pawn extends Piece {
         const forwardMove = { x: this.x, y: this.y + this.direction};
         if (!tiles[forwardMove.x][forwardMove.y]) {
             legalMoves.push(forwardMove);
-            if (!this.hasMoved) {
+            // hier stond !hasMoved, dit klopt nog niet
+            if (!tiles[this.x][this.y].flag) {
                 const twoSquareMove = {x: this.x, y: this.y + (this.direction*2)};
                 if (!tiles[this.x][twoSquareMove.y]) {
                     legalMoves.push(twoSquareMove);

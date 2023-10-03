@@ -143,43 +143,47 @@ export default class Board {
             }
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
-            if (possibleMovables1.length !== 1) {
-                if (validAttackingMoves1.length !== 0) {
-                    let calculating = true;
-                    while (calculating) {
-                        let maxMoveValue = 0;
-                        let bestMoveIndex = -1;
-                        for(let j = 0; j < validAttackingMoves1.length; j++) {
-                            let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
-                            this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
-                            let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
-                            let moveValue = valueOfWhitePiece;
-                            if(validAttackingMoves2.length !== 0){
-                                for(let i = 0; i < validAttackingMoves1.length; i++) {
-                                    let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
-                                    moveValue += valueOfBlackPiece;
-                                    validAttackingMoves1[j].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
-                                }
+            if (validAttackingMoves1.length !== 0) {
+                let calculating = true;
+                while (calculating) {
+                    let maxMoveValue = 0;
+                    let bestMoveIndex = -1;
+                    for(let j = 0; j < validAttackingMoves1.length; j++) {
+                        let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
+                        this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
+                        let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
+                        let moveValue = valueOfWhitePiece;
+                        console.log(valueOfWhitePiece, ' +');
+                        if(validAttackingMoves2.length !== 0){
+                            for(let i = 0; i < validAttackingMoves1.length; i++) {
+                                let valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
+                                // deze line onder moet ergens anders, want het wordt nu te vaak gerepeat...
+                                moveValue += valueOfBlackPiece;
+                                console.log(valueOfBlackPiece, ' =');
+                                validAttackingMoves1[j].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
                             }
-                            validAttackingMoves1[j].valueOfMove = moveValue;
-                            if (moveValue >= maxMoveValue) {
-                                console.log(moveValue);
-                                maxMoveValue = moveValue;
-                                bestMoveIndex = j;
-                            }
-                            else {
-                                movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
-                            }
-                            //dit verpest enpassant denk ik
-                            this.resetBoard(Boardstate);
                         }
-                        if (bestMoveIndex !== -1) {
-                            console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
-                            this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
-                            rMGActive = false;
+                        validAttackingMoves1[j].valueOfMove = moveValue;
+                        console.log(moveValue);
+                        if (moveValue >= maxMoveValue) {
+                            console.log(moveValue);
+                            maxMoveValue = moveValue;
+                            bestMoveIndex = j;
                         }
-                        calculating = false;
+                        else {
+                            movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
+                        }
+                        //dit verpest enpassant
+                        console.log(this.tiles[0][5]);
+                        this.resetBoard(Boardstate);
+                        console.log(this.tiles[0][5]);
                     }
+                    if (bestMoveIndex !== -1) {
+                        console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
+                        this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
+                        rMGActive = false;
+                    }
+                    calculating = false;
                 }
             }
 
@@ -352,6 +356,7 @@ findAttackingMoves(nameArray, colour){
     return { [validAttackingMoves]: validAttackMoves, [possibleMovables]: possibleMovable };
 }
 
+//Deze functie is opgeschoont door ChatGPT
 resetBoard(BoardneedsToBecome) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -361,7 +366,14 @@ resetBoard(BoardneedsToBecome) {
                 switch (pieceData.sprite) {
                     case '♟':
                     case '♙':
-                        newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value);
+                        if(i === 1 || i === 6){
+                            console.log('hi');
+                            newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value, false);
+                        }
+                        else{
+                            console.log('asfaodfu');
+                            newPiece = new Pawn(i, j, pieceData.colour, pieceData.sprite, pieceData.value, true);
+                        }
                         break;
                     case '♜':
                     case '♖':
