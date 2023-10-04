@@ -131,10 +131,8 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            let boardstate = [];
-            for (let i = 0; i < this.tiles.length; i++) {
-                boardstate[i] = this.tiles[i].slice();
-            }
+            let boardstate = [...this.tiles];
+            console.log(boardstate);
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -147,14 +145,14 @@ export default class Board {
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
             if (validAttackingMoves1.length !== 0) {
-                let calculating = true;
-                while (calculating) {
+                //let calculating = true;
+                //while (calculating) {
                     let maxMoveValue = 0;
                     let bestMoveIndex = -1;
                     for(let j = 0; j < validAttackingMoves1.length; j++) {
                         let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
                         this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
-                        let {validAttackingMoves2, possibleMovables2} = this.findAttackingMoves(2, 'WHITE');
+                        let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
                         let moveValue = undefined;
                         validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
                         console.log(valueOfWhitePiece, ' +');
@@ -169,10 +167,13 @@ export default class Board {
                                 console.log(valueOfBlackPiece, ' =');
                                 validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
                             }
+                            //deze line mag weg later
+                            else {
+                                console.log(0, ' =');
+                            }
                         }
                         console.log(validAttackingMoves1[j].valueOfMove);
                         moveValue = validAttackingMoves1[j].valueOfMove;
-                        //validAttackingMoves1[j].valueOfMove = moveValue;
                         if (moveValue >= maxMoveValue) {
                             console.log(moveValue);
                             maxMoveValue = moveValue;
@@ -181,16 +182,18 @@ export default class Board {
                         else {
                             movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
                         }
+                        // werkt nog steeds niet...
                         this.resetBoard(boardstate);
                     }
                     // Deze if statement zorgt voor bugs...
+                    console.log(bestMoveIndex);
                     if (bestMoveIndex !== -1) {
                         console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
                         this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
                         rMGActive = false;
                     }
-                    calculating = false;
-                }
+                    //calculating = false;
+                //}
             }
 
             let movesTo = [];            
@@ -358,13 +361,11 @@ findAttackingMoves(nameArray, colour){
     return { [validAttackingMoves]: validAttackMoves, [possibleMovables]: possibleMovable };
 }
 
-//Deze functie is gemaakt door ChatGPT
 resetBoard(BoardneedsToBecome) {
-    console.log(BoardneedsToBecome);
+    console.log(this.tiles);
     this.tiles = [];
-    for (let i = 0; i < BoardneedsToBecome.length; i++) {
-        this.tiles[i] = BoardneedsToBecome[i].slice();
-    }
+    this.tiles = [...BoardneedsToBecome];
+    console.log(BoardneedsToBecome);
     console.log(this.tiles);
 }
 }
