@@ -131,8 +131,15 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            let boardstate = [...this.tiles];
-            console.log(boardstate);
+            let boardstate = [];
+            for (let i = 0; i < this.tiles.length; i++) {
+                let arrayToCopy = [];
+                for (let j = 0; j < this.tiles[i].length; j++) {
+                    arrayToCopy.push(this.tiles[i][j]);
+                }
+                boardstate.push(arrayToCopy.slice());
+            }
+            console.log(boardstate);    
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -145,12 +152,14 @@ export default class Board {
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
             if (validAttackingMoves1.length !== 0) {
-                //let calculating = true;
-                //while (calculating) {
+                let calculating = true;
+                while (calculating) {
                     let maxMoveValue = 0;
                     let bestMoveIndex = -1;
                     for(let j = 0; j < validAttackingMoves1.length; j++) {
                         let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
+                        console.log(validAttackingMoves1[j]);
+                        console.log(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
                         this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
                         let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
                         let moveValue = undefined;
@@ -184,16 +193,19 @@ export default class Board {
                         }
                         // werkt nog steeds niet...
                         this.resetBoard(boardstate);
+                        // Thije deze line onder kan weg tenzij jij betere ideeën hebt, de bedoeling is dat this.resetBoard(boardstate); het bord reset naar boardstate.
+                        // de line hieronder zet het stuk terug waar het stond maar reset niet het stuk wat het heeft gepakt. Ik denk ook dat op de long run een board resetter handiger is?
+                        //this.move(this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y], validAttackingMoves1[j].from);
                     }
-                    // Deze if statement zorgt voor bugs...
+                    // Deze if statement zorgt voor bugs... laat maar waarschijnlijk komt het door de resetBoard functie
                     console.log(bestMoveIndex);
                     if (bestMoveIndex !== -1) {
                         console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
                         this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
                         rMGActive = false;
                     }
-                    //calculating = false;
-                //}
+                    calculating = false;
+                }
             }
 
             let movesTo = [];            
@@ -262,7 +274,13 @@ export default class Board {
             this.tiles[from.x][from.y].flag = true;   
         }
         this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
-        this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
+        //DEZE IF STATEMENT WAS ER NIET EN OOK NIET WAT IN DE ELSE STAAT
+        if(to.i === undefined){
+            this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
+        }
+        else {
+            this.tiles[from.x][from.y].userMove(to.i, to.j, this.tiles);
+        }
         this.selected = undefined;
 
         this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, this.turn);
@@ -362,11 +380,17 @@ findAttackingMoves(nameArray, colour){
 }
 
 resetBoard(BoardneedsToBecome) {
-    console.log(this.tiles);
+    console.log(this.tiles, ' before');
     this.tiles = [];
-    this.tiles = [...BoardneedsToBecome];
-    console.log(BoardneedsToBecome);
-    console.log(this.tiles);
+    for (let i = 0; i < BoardneedsToBecome.length; i++) {
+        let arrayToCopy = [];
+        for (let j = 0; j < BoardneedsToBecome[i].length; j++) {
+            arrayToCopy.push(BoardneedsToBecome[i][j]);
+        }
+        this.tiles.push(arrayToCopy.slice());
+    }
+    console.log(BoardneedsToBecome, ' This is boardstate');
+    console.log(this.tiles, ' should be equal to here above --> if(thisworks){this = boardstate}');
 }
 }
 //♟♙♜♖♝♗♞♘♚♔♛♕
