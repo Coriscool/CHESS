@@ -131,15 +131,11 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            let boardstate = [];
-            for (let i = 0; i < this.tiles.length; i++) {
-                let arrayToCopy = [];
-                for (let j = 0; j < this.tiles[i].length; j++) {
-                    arrayToCopy.push(this.tiles[i][j]);
-                }
-                boardstate.push(arrayToCopy.slice());
-            }
-            console.log(boardstate);    
+            //const _ = require('lodash');
+            let boardstate = _.cloneDeep(this.tiles);
+            // let boardstate = [];
+            // boardstate.slice(this.tiles); 
+            console.log(boardstate);
             calculating = true;
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
@@ -381,14 +377,16 @@ findAttackingMoves(nameArray, colour){
 
 resetBoard(BoardneedsToBecome) {
     console.log(this.tiles, ' before');
-    this.tiles = [];
-    for (let i = 0; i < BoardneedsToBecome.length; i++) {
-        let arrayToCopy = [];
-        for (let j = 0; j < BoardneedsToBecome[i].length; j++) {
-            arrayToCopy.push(BoardneedsToBecome[i][j]);
-        }
-        this.tiles.push(arrayToCopy.slice());
-    }
+    // this.tiles = [];
+    // for (let i = 0; i < BoardneedsToBecome.length; i++) {
+    //     let arrayToCopy = [];
+    //     for (let j = 0; j < BoardneedsToBecome[i].length; j++) {
+    //         arrayToCopy.push(BoardneedsToBecome[i][j]);
+    //     }
+    //     this.tiles.push(arrayToCopy.slice());
+    // }
+    //const _ = require('lodash');
+    this.tiles = _.cloneDeep(BoardneedsToBecome);
     console.log(BoardneedsToBecome, ' This is boardstate');
     console.log(this.tiles, ' should be equal to here above --> if(thisworks){this = boardstate}');
 }
