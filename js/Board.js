@@ -131,12 +131,7 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            //const _ = require('lodash');
-            let boardstate = _.cloneDeep(this.tiles);
-            // let boardstate = [];
-            // boardstate.slice(this.tiles); 
-            console.log(boardstate);
-            calculating = true;
+            const boardstate = _.cloneDeep(this.tiles);
             let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
             if (possibleMovables1.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
@@ -148,59 +143,50 @@ export default class Board {
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
             if (validAttackingMoves1.length !== 0) {
-                let calculating = true;
-                while (calculating) {
-                    let maxMoveValue = 0;
-                    let bestMoveIndex = -1;
-                    for(let j = 0; j < validAttackingMoves1.length; j++) {
+                let maxMoveValue = 0;
+                let bestMoveIndex = -1;
+                for(let j = 0; j < validAttackingMoves1.length; j++) {
                         let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
                         console.log(validAttackingMoves1[j]);
-                        console.log(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
                         this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
                         let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
                         let moveValue = undefined;
                         validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
-                        console.log(valueOfWhitePiece, ' +');
+                        console.log(valueOfWhitePiece,  '+');
                         if(validAttackingMoves2.length !== 0){
                             let whiteCanTakeBack = false
-                            let valueOfBlackPiece = 0;
+                            let valueOfBlackPiece = -1;
+                            let maxMoveValue2 = 0;
                             for(let i = 0; i < validAttackingMoves2.length; i++) {
-                                valueOfBlackPiece = this.tiles[validAttackingMoves2[j].to.x][validAttackingMoves2[j].to.y].value;
+                                console.log(validAttackingMoves2[i]);
+                                if (valueOfBlackPiece < maxMoveValue2) {
+                                    valueOfBlackPiece = this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value;
+                                    maxMoveValue2 = valueOfBlackPiece;
+                                    console.log(maxMoveValue2);
+                                }
+                                validAttackingMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
                                 whiteCanTakeBack = true;
                             }
                             if(whiteCanTakeBack){
                                 console.log(valueOfBlackPiece, ' =');
                                 validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
                             }
-                            //deze line mag weg later
-                            else {
-                                console.log(0, ' =');
-                            }
                         }
                         console.log(validAttackingMoves1[j].valueOfMove);
                         moveValue = validAttackingMoves1[j].valueOfMove;
                         if (moveValue >= maxMoveValue) {
-                            console.log(moveValue);
                             maxMoveValue = moveValue;
                             bestMoveIndex = j;
                         }
                         else {
                             movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
                         }
-                        // werkt nog steeds niet...
                         this.resetBoard(boardstate);
-                        // Thije deze line onder kan weg tenzij jij betere ideeën hebt, de bedoeling is dat this.resetBoard(boardstate); het bord reset naar boardstate.
-                        // de line hieronder zet het stuk terug waar het stond maar reset niet het stuk wat het heeft gepakt. Ik denk ook dat op de long run een board resetter handiger is?
-                        //this.move(this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y], validAttackingMoves1[j].from);
                     }
-                    // Deze if statement zorgt voor bugs... laat maar waarschijnlijk komt het door de resetBoard functie
-                    console.log(bestMoveIndex);
-                    if (bestMoveIndex !== -1) {
-                        console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
-                        this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
-                        rMGActive = false;
-                    }
-                    calculating = false;
+                if (bestMoveIndex !== -1) {
+                    console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
+                    this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
+                    rMGActive = false;
                 }
             }
 
@@ -376,7 +362,6 @@ findAttackingMoves(nameArray, colour){
 }
 
 resetBoard(BoardneedsToBecome) {
-    console.log(this.tiles, ' before');
     // this.tiles = [];
     // for (let i = 0; i < BoardneedsToBecome.length; i++) {
     //     let arrayToCopy = [];
@@ -387,8 +372,6 @@ resetBoard(BoardneedsToBecome) {
     // }
     //const _ = require('lodash');
     this.tiles = _.cloneDeep(BoardneedsToBecome);
-    console.log(BoardneedsToBecome, ' This is boardstate');
-    console.log(this.tiles, ' should be equal to here above --> if(thisworks){this = boardstate}');
 }
 }
 //♟♙♜♖♝♗♞♘♚♔♛♕
