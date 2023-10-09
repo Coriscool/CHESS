@@ -131,9 +131,69 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
+            // const boardstate = _.cloneDeep(this.tiles);
+            // let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
+            // //let allMoves = this.findAllMoves(1, 'BLACK');
+            // console.log(allMoves);
+            // if (possibleMovables1.length === 0 && !this.isInCheck) {
+            //     console.log("Draw by stalemate");
+            //     fill(10, 10, 10);
+            //     textFont("Arial");
+            //     text("Draw by stalemate", 400, 400, 500, 500);
+            //     noLoop();
+            // }
+            // let rMGActive = true;
+            // let movesThatShouldNotBeMade = [];
+            // if (validAttackingMoves1.length !== 0) {
+            //     let maxMoveValue = 0;
+            //     let bestMoveIndex = -1;
+            //     for(let j = 0; j < validAttackingMoves1.length; j++) {
+            //             let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
+            //             console.log(validAttackingMoves1[j]);
+            //             this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
+            //             let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
+            //             let moveValue = undefined;
+            //             validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
+            //             console.log(valueOfWhitePiece,  '+');
+            //             if(validAttackingMoves2.length !== 0){
+            //                 let whiteCanTakeBack = false
+            //                 let valueOfBlackPiece = -1;
+            //                 let maxMoveValue2 = 0;
+            //                 for(let i = 0; i < validAttackingMoves2.length; i++) {
+            //                     console.log(validAttackingMoves2[i]);
+            //                     if (valueOfBlackPiece < maxMoveValue2) {
+            //                         valueOfBlackPiece = this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value;
+            //                         maxMoveValue2 = valueOfBlackPiece;
+            //                         console.log(maxMoveValue2);
+            //                     }
+            //                     validAttackingMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+            //                     whiteCanTakeBack = true;
+            //                 }
+            //                 if(whiteCanTakeBack){
+            //                     console.log(valueOfBlackPiece, ' =');
+            //                     validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
+            //                 }
+            //             }
+            //             console.log(validAttackingMoves1[j].valueOfMove);
+            //             moveValue = validAttackingMoves1[j].valueOfMove;
+            //             if (moveValue >= maxMoveValue) {
+            //                 maxMoveValue = moveValue;
+            //                 bestMoveIndex = j;
+            //             }
+            //             else {
+            //                 movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
+            //             }
+            //             this.resetBoard(boardstate);
+            //         }
+            //     if (bestMoveIndex !== -1) {
+            //         console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
+            //         this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
+            //         rMGActive = false;
+            //     }
+            // }
             const boardstate = _.cloneDeep(this.tiles);
-            let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
-            if (possibleMovables1.length === 0 && !this.isInCheck) {
+            let allMoves1 = this.findAllMoves('BLACK');
+            if (allMoves1.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
                 textFont("Arial");
@@ -142,66 +202,73 @@ export default class Board {
             }
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
-            if (validAttackingMoves1.length !== 0) {
+            if (allMoves1.length !== 0) {
                 let maxMoveValue = 0;
                 let bestMoveIndex = -1;
-                for(let j = 0; j < validAttackingMoves1.length; j++) {
-                        let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
-                        console.log(validAttackingMoves1[j]);
-                        this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
+                for(let j = 0; j < allMoves1.length; j++) {
+                    if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] !== undefined){
+                        let valueOfWhitePiece = this.tiles[allMoves1[j].to.x][allMoves1[j].to.y].value;
+                        this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
                         let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
                         let moveValue = undefined;
-                        validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
-                        console.log(valueOfWhitePiece,  '+');
+                        allMoves1[j].valueOfMove = valueOfWhitePiece
                         if(validAttackingMoves2.length !== 0){
                             let whiteCanTakeBack = false
                             let valueOfBlackPiece = -1;
                             let maxMoveValue2 = 0;
                             for(let i = 0; i < validAttackingMoves2.length; i++) {
-                                console.log(validAttackingMoves2[i]);
                                 if (valueOfBlackPiece < maxMoveValue2) {
                                     valueOfBlackPiece = this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value;
                                     maxMoveValue2 = valueOfBlackPiece;
-                                    console.log(maxMoveValue2);
                                 }
                                 validAttackingMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
                                 whiteCanTakeBack = true;
                             }
                             if(whiteCanTakeBack){
-                                console.log(valueOfBlackPiece, ' =');
-                                validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
+                                allMoves1[j].valueOfMove += valueOfBlackPiece;
                             }
                         }
-                        console.log(validAttackingMoves1[j].valueOfMove);
-                        moveValue = validAttackingMoves1[j].valueOfMove;
-                        if (moveValue >= maxMoveValue) {
-                            maxMoveValue = moveValue;
-                            bestMoveIndex = j;
+                        moveValue = allMoves1[j].valueOfMove;
+                        let evaluation = this.evaluator();
+                        console.log(evaluation);
+                        if(evaluation <= 0){
+                            if (moveValue >= maxMoveValue) {
+                                maxMoveValue = moveValue;
+                                bestMoveIndex = j;
+                            }
+                        }
+                        if(evaluation > 0){
+                            if (moveValue > maxMoveValue) {
+                                maxMoveValue = moveValue;
+                                bestMoveIndex = j;
+                            }
                         }
                         else {
-                            movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
+                            movesThatShouldNotBeMade.push(allMoves1[j]);
                         }
                         this.resetBoard(boardstate);
                     }
+                }
                 if (bestMoveIndex !== -1) {
-                    console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
-                    this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
+                    this.move(this.tiles[allMoves1[bestMoveIndex].from.i][allMoves1[bestMoveIndex].from.j], allMoves1[bestMoveIndex].to);
+                    console.log('No random move made');
                     rMGActive = false;
                 }
             }
 
+
             let movesTo = [];            
-            if (possibleMovables1.length !== 0 && rMGActive){
+            if (allMoves1.length !== 0 && rMGActive){
                 let noMoveFound = true;
                 while(noMoveFound){
                     console.log('Random move made');
-                    let a = possibleMovables1[int(random(0,possibleMovables1.length))];
-                    movesTo = this.tiles[a.i][a.j].findLegalMoves(this.tiles);
+                    let a = allMoves1[int(random(0,allMoves1.length))];
+                    movesTo = this.tiles[a.from.i][a.from.j].findLegalMoves(this.tiles);
                     // de line hieronder is gegenereerd door ChatGPT:
                     movesTo = movesTo.filter(move => !movesThatShouldNotBeMade.includes(move));
                     if (movesTo.length > 0) {
                         let b = movesTo[int(random(0,movesTo.length))];
-                        this.move(this.tiles[a.i][a.j], b);
+                        this.move(this.tiles[a.from.i][a.from.j], b);
                         noMoveFound = false;
                     }
                 }
@@ -322,6 +389,38 @@ arraySorter(arrayToSort) {
     arrayToSort = [];
     arrayToSort = arrayToSort.concat(attackingMove_900, attackingMove_10, attackingMove_5, attackingMove_3, attackingMove_1);
     return arrayToSort
+}
+
+findAllMoves (colour) {
+    let possibleMovable = [];
+    let possibleMove = [];
+    for(let i = 0; i<8; i++){
+        for(let j = 0; j<8; j++){
+            if(colour === 'WHITE') {
+                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
+                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                    if(this.legalMoves != 0){
+                        possibleMovable.push ({i,j});
+                    }
+                }
+            }
+            if (colour === 'BLACK') {
+                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
+                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                    if(this.legalMoves != 0){
+                        possibleMovable.push ({i, j});
+                    }
+                }
+            }
+        }
+    }
+    for (let c = 0; c < possibleMovable.length; c++) {  
+        let movesTo = this.tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(this.tiles);
+        for (let j = movesTo.length - 1; j >= 0; j--) {
+            possibleMove.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
+        }
+    }
+    return possibleMove;
 }
 
 findAttackingMoves(nameArray, colour){
