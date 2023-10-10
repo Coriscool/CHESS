@@ -209,42 +209,39 @@ export default class Board {
                     if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] !== undefined){
                         let valueOfWhitePiece = this.tiles[allMoves1[j].to.x][allMoves1[j].to.y].value;
                         this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
-                        let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
-                        let moveValue = undefined;
-                        allMoves1[j].valueOfMove = valueOfWhitePiece
-                        if(validAttackingMoves2.length !== 0){
-                            let whiteCanTakeBack = false
-                            let valueOfBlackPiece = -1;
-                            let maxMoveValue2 = 0;
-                            for(let i = 0; i < validAttackingMoves2.length; i++) {
-                                if (valueOfBlackPiece < maxMoveValue2) {
-                                    valueOfBlackPiece = this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value;
-                                    maxMoveValue2 = valueOfBlackPiece;
+                        let allMoves2 = this.findAllMoves('WHITE');
+                        let moveValue = 1;
+                        for (let i = 0; i < allMoves2.length; i++) {
+                            let valueOfBlackPiece = 0;
+                            if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y] !== undefined) {
+                                if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value < valueOfBlackPiece) {
+                                    valueOfBlackPiece = this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value;
                                 }
-                                validAttackingMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
-                                whiteCanTakeBack = true;
                             }
-                            if(whiteCanTakeBack){
-                                allMoves1[j].valueOfMove += valueOfBlackPiece;
+                            allMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+                            if(allMoves2[i].valueOfMove <= moveValue){
+                                moveValue = allMoves2[i].valueOfMove;
                             }
                         }
-                        moveValue = allMoves1[j].valueOfMove;
-                        let evaluation = this.evaluator();
-                        console.log(evaluation);
-                        if(evaluation <= 0){
+
+                        // Wanneer er meer depth --> .valueofmove moet pas aan het eind van alle calculations worden gewijzigd.
+
+                        // let evaluation = this.evaluator();
+                        // if(evaluation <= 0){
                             if (moveValue >= maxMoveValue) {
                                 maxMoveValue = moveValue;
                                 bestMoveIndex = j;
                             }
-                        }
-                        if(evaluation > 0){
-                            if (moveValue > maxMoveValue) {
-                                maxMoveValue = moveValue;
-                                bestMoveIndex = j;
-                            }
-                        }
+                        // }
+                        // if(evaluation > 0){
+                        //     if (moveValue > maxMoveValue) {
+                        //         maxMoveValue = moveValue;
+                        //         bestMoveIndex = j;
+                        //     }
+                        // }
                         else {
                             movesThatShouldNotBeMade.push(allMoves1[j]);
+                            console.log(movesThatShouldNotBeMade);
                         }
                         this.resetBoard(boardstate);
                     }
@@ -264,7 +261,6 @@ export default class Board {
                     console.log('Random move made');
                     let a = allMoves1[int(random(0,allMoves1.length))];
                     movesTo = this.tiles[a.from.i][a.from.j].findLegalMoves(this.tiles);
-                    // de line hieronder is gegenereerd door ChatGPT:
                     movesTo = movesTo.filter(move => !movesThatShouldNotBeMade.includes(move));
                     if (movesTo.length > 0) {
                         let b = movesTo[int(random(0,movesTo.length))];
