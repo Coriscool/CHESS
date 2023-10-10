@@ -131,66 +131,6 @@ export default class Board {
             this.select(x,y);
         }
         if(this.turn === COLOUR.BLACK){
-            // const boardstate = _.cloneDeep(this.tiles);
-            // let {validAttackingMoves1, possibleMovables1} = this.findAttackingMoves(1, 'BLACK');
-            // //let allMoves = this.findAllMoves(1, 'BLACK');
-            // console.log(allMoves);
-            // if (possibleMovables1.length === 0 && !this.isInCheck) {
-            //     console.log("Draw by stalemate");
-            //     fill(10, 10, 10);
-            //     textFont("Arial");
-            //     text("Draw by stalemate", 400, 400, 500, 500);
-            //     noLoop();
-            // }
-            // let rMGActive = true;
-            // let movesThatShouldNotBeMade = [];
-            // if (validAttackingMoves1.length !== 0) {
-            //     let maxMoveValue = 0;
-            //     let bestMoveIndex = -1;
-            //     for(let j = 0; j < validAttackingMoves1.length; j++) {
-            //             let valueOfWhitePiece = this.tiles[validAttackingMoves1[j].to.x][validAttackingMoves1[j].to.y].value;
-            //             console.log(validAttackingMoves1[j]);
-            //             this.move(this.tiles[validAttackingMoves1[j].from.i][validAttackingMoves1[j].from.j], validAttackingMoves1[j].to);
-            //             let {validAttackingMoves2} = this.findAttackingMoves(2, 'WHITE');
-            //             let moveValue = undefined;
-            //             validAttackingMoves1[j].valueOfMove = valueOfWhitePiece
-            //             console.log(valueOfWhitePiece,  '+');
-            //             if(validAttackingMoves2.length !== 0){
-            //                 let whiteCanTakeBack = false
-            //                 let valueOfBlackPiece = -1;
-            //                 let maxMoveValue2 = 0;
-            //                 for(let i = 0; i < validAttackingMoves2.length; i++) {
-            //                     console.log(validAttackingMoves2[i]);
-            //                     if (valueOfBlackPiece < maxMoveValue2) {
-            //                         valueOfBlackPiece = this.tiles[validAttackingMoves2[i].to.x][validAttackingMoves2[i].to.y].value;
-            //                         maxMoveValue2 = valueOfBlackPiece;
-            //                         console.log(maxMoveValue2);
-            //                     }
-            //                     validAttackingMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
-            //                     whiteCanTakeBack = true;
-            //                 }
-            //                 if(whiteCanTakeBack){
-            //                     console.log(valueOfBlackPiece, ' =');
-            //                     validAttackingMoves1[j].valueOfMove += valueOfBlackPiece;
-            //                 }
-            //             }
-            //             console.log(validAttackingMoves1[j].valueOfMove);
-            //             moveValue = validAttackingMoves1[j].valueOfMove;
-            //             if (moveValue >= maxMoveValue) {
-            //                 maxMoveValue = moveValue;
-            //                 bestMoveIndex = j;
-            //             }
-            //             else {
-            //                 movesThatShouldNotBeMade.push(validAttackingMoves1[j]);
-            //             }
-            //             this.resetBoard(boardstate);
-            //         }
-            //     if (bestMoveIndex !== -1) {
-            //         console.log('Best move:', validAttackingMoves1[bestMoveIndex]);
-            //         this.move(this.tiles[validAttackingMoves1[bestMoveIndex].from.i][validAttackingMoves1[bestMoveIndex].from.j], validAttackingMoves1[bestMoveIndex].to);
-            //         rMGActive = false;
-            //     }
-            // }
             const boardstate = _.cloneDeep(this.tiles);
             let allMoves1 = this.findAllMoves('BLACK');
             if (allMoves1.length === 0 && !this.isInCheck) {
@@ -203,52 +143,53 @@ export default class Board {
             let rMGActive = true;
             let movesThatShouldNotBeMade = [];
             if (allMoves1.length !== 0) {
-                let maxMoveValue = 0;
+                let maxMoveValue = -1000;
                 let bestMoveIndex = -1;
                 for(let j = 0; j < allMoves1.length; j++) {
+                    let valueOfWhitePiece = 0;
                     if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] !== undefined){
-                        let valueOfWhitePiece = this.tiles[allMoves1[j].to.x][allMoves1[j].to.y].value;
-                        this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
-                        let allMoves2 = this.findAllMoves('WHITE');
-                        let moveValue = 1;
-                        for (let i = 0; i < allMoves2.length; i++) {
-                            let valueOfBlackPiece = 0;
-                            if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y] !== undefined) {
-                                if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value < valueOfBlackPiece) {
-                                    valueOfBlackPiece = this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value;
-                                }
-                            }
-                            allMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
-                            if(allMoves2[i].valueOfMove <= moveValue){
-                                moveValue = allMoves2[i].valueOfMove;
-                            }
-                        }
-
-                        // Wanneer er meer depth --> .valueofmove moet pas aan het eind van alle calculations worden gewijzigd.
-
-                        // let evaluation = this.evaluator();
-                        // if(evaluation <= 0){
-                            if (moveValue >= maxMoveValue) {
-                                maxMoveValue = moveValue;
-                                bestMoveIndex = j;
-                            }
-                        // }
-                        // if(evaluation > 0){
-                        //     if (moveValue > maxMoveValue) {
-                        //         maxMoveValue = moveValue;
-                        //         bestMoveIndex = j;
-                        //     }
-                        // }
-                        else {
-                            movesThatShouldNotBeMade.push(allMoves1[j]);
-                            console.log(movesThatShouldNotBeMade);
-                        }
-                        this.resetBoard(boardstate);
+                        valueOfWhitePiece = this.tiles[allMoves1[j].to.x][allMoves1[j].to.y].value;
                     }
+                    this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
+                    let allMoves2 = this.findAllMoves('WHITE');
+                    let moveValue = 1;
+                    for (let i = 0; i < allMoves2.length; i++) {
+                        let valueOfBlackPiece = 0;
+                        if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y] !== undefined) {
+                            if (this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value < valueOfBlackPiece) {
+                                valueOfBlackPiece = this.tiles[allMoves2[i].to.x][allMoves2[i].to.y].value;
+                            }
+                        }
+                        allMoves2[i].valueOfMove = valueOfWhitePiece + valueOfBlackPiece;
+                        if(allMoves2[i].valueOfMove <= moveValue){
+                            moveValue = allMoves2[i].valueOfMove;
+                        }
+                    }
+                    console.log(allMoves1[j].from, allMoves1[j].to, allMoves2);
+                    // Wanneer er meer depth --> .valueofmove moet pas aan het eind van alle calculations worden gewijzigd.
+
+                    // de evaluation lines zorgen ervoor dat ie alleen trade wanneer de eval gelijk is of in favour
+                    // let evaluation = this.evaluator();
+                    // if(evaluation <= 0){
+                        if (moveValue >= maxMoveValue) {
+                            maxMoveValue = moveValue;
+                            bestMoveIndex = j;
+                        }
+                    // }
+                    // if(evaluation > 0){
+                    //     if (moveValue > maxMoveValue) {
+                    //         maxMoveValue = moveValue;
+                    //         bestMoveIndex = j;
+                    //     }
+                    // }
+                    else {
+                        movesThatShouldNotBeMade.push(allMoves1[j]);
+                    }
+                    this.resetBoard(boardstate);
                 }
                 if (bestMoveIndex !== -1) {
                     this.move(this.tiles[allMoves1[bestMoveIndex].from.i][allMoves1[bestMoveIndex].from.j], allMoves1[bestMoveIndex].to);
-                    console.log('No random move made');
+                    console.log('No random move made', allMoves1[bestMoveIndex]);
                     rMGActive = false;
                 }
             }
@@ -359,34 +300,6 @@ evaluator() {
     return evaluation;
 }
 
-arraySorter(arrayToSort) {
-    let attackingMove_1 = [];
-    let attackingMove_3 = [];
-    let attackingMove_5 = [];
-    let attackingMove_10 = [];
-    let attackingMove_900 = []; 
-    for(let i = 0; i<arrayToSort.length; i++){
-        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 1){
-            attackingMove_1.push(arrayToSort[i]);
-        }
-        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 3){
-            attackingMove_3.push(arrayToSort[i]);
-        }
-        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 5){
-            attackingMove_5.push(arrayToSort[i]);
-        }
-        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 10){
-            attackingMove_10.push(arrayToSort[i]);
-        }
-        if(abs(this.tiles[arrayToSort[i].to.x][arrayToSort[i].to.y].value) === 900){
-            attackingMove_900.push(arrayToSort[i]);
-        }
-    }
-    arrayToSort = [];
-    arrayToSort = arrayToSort.concat(attackingMove_900, attackingMove_10, attackingMove_5, attackingMove_3, attackingMove_1);
-    return arrayToSort
-}
-
 findAllMoves (colour) {
     let possibleMovable = [];
     let possibleMove = [];
@@ -419,53 +332,7 @@ findAllMoves (colour) {
     return possibleMove;
 }
 
-findAttackingMoves(nameArray, colour){
-    let validAttackMoves = [];
-    let possibleMovable = [];
-    let validAttackingMoves = `validAttackingMoves${nameArray}`;
-    let possibleMovables = `possibleMovables${nameArray}`;
-    for(let i = 0; i<8; i++){
-        for(let j = 0; j<8; j++){
-            if(colour === 'WHITE') {
-                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
-                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
-                    if(this.legalMoves != 0){
-                        possibleMovable.push ({i,j});
-                    }
-                }
-            }
-            if (colour === 'BLACK') {
-                if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
-                    this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
-                    if(this.legalMoves != 0){
-                        possibleMovable.push ({i,j});
-                    }
-                }
-            }
-        }
-    }
-    for (let c = 0; c < possibleMovable.length; c++) {
-        let movesTo = this.tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(this.tiles);
-        for (let j = movesTo.length - 1; j >= 0; j--) {
-            if (this.tiles[movesTo[j].x][movesTo[j].y] !== undefined) {
-                validAttackMoves.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
-            } 
-        }
-    }
-    validAttackMoves = this.arraySorter(validAttackMoves);
-    return { [validAttackingMoves]: validAttackMoves, [possibleMovables]: possibleMovable };
-}
-
 resetBoard(BoardneedsToBecome) {
-    // this.tiles = [];
-    // for (let i = 0; i < BoardneedsToBecome.length; i++) {
-    //     let arrayToCopy = [];
-    //     for (let j = 0; j < BoardneedsToBecome[i].length; j++) {
-    //         arrayToCopy.push(BoardneedsToBecome[i][j]);
-    //     }
-    //     this.tiles.push(arrayToCopy.slice());
-    // }
-    //const _ = require('lodash');
     this.tiles = _.cloneDeep(BoardneedsToBecome);
 }
 }
