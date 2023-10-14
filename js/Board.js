@@ -267,66 +267,94 @@ export default class Board {
         return possibleMove;
     }
 
-    resetBoard(BoardneedsToBecome) {
-        this.tiles = _.cloneDeep(BoardneedsToBecome);
+    // resetBoard(BoardneedsToBecome) {
+    //     this.tiles = _.cloneDeep(BoardneedsToBecome);
+    // }
+
+    resetBoard(boardstate){
+        console.log(this.tiles[boardstate.from.x][boardstate.from.y]);
+        this.tiles[boardstate.from.x][boardstate.from.y] = JSON.parse(JSON.stringify(boardstate.from));
+        console.log(this.tiles[boardstate.from.x][boardstate.from.y]);
+        console.log(this.tiles[boardstate.toX][boardstate.toY]);
+        if (boardstate.to === undefined) {
+            this.tiles[boardstate.toX][boardstate.toY] = undefined;
+        }
+        else {
+            this.tiles[boardstate.toX][boardstate.toY] = JSON.parse(JSON.stringify(boardstate.to));
+        }
+        console.log(this.tiles[boardstate.toX][boardstate.toY]);
     }
 
     chessLooper (allMoves1, depth, color) {
-        if (allMoves1.length !== 0) {
-            let colour = color;
-            const boardstate = _.cloneDeep(this.tiles);
-            let bestMoveIndex = -1;
-            let bestMove = undefined;
-            let maxMoveValue = undefined;
-            
-            if (colour == COLOUR.BLACK) {
-                colour = COLOUR.WHITE;
-                maxMoveValue = 1000;
-            }
-            else {
-                colour = COLOUR.BLACK;
-                maxMoveValue = -1000;
-            }
-
-            depth = depth - 1;
-
-            for (let j = 0; j < allMoves1.length; j++) {
-                this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
-                
-                if (depth > 0) {
-                    bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour);
-                    allMoves1[j].valueOfMove = bestMove.valueOfMove;
-                }
-                else {
-                    allMoves1[j].valueOfMove = this.evaluator();
-                }
-
-                if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
-                    maxMoveValue = allMoves1[j].valueOfMove;
-                    bestMoveIndex = j;
-                }
-                this.resetBoard(boardstate);
-            }
-            return allMoves1[bestMoveIndex];
-        }
-        else {
+        if (allMoves1.length === 0) {
+            console.log('draw');
             return 'draw';
         }
+        
+        let colour = color;
+        //const boardstate = _.cloneDeep(this.tiles);
+        let bestMoveIndex = -1;
+        let bestMove = undefined;
+        let maxMoveValue = undefined;
+        if (colour == COLOUR.BLACK) {
+            colour = COLOUR.WHITE;
+            maxMoveValue = 1000;
+        }
+        else {
+            colour = COLOUR.BLACK;
+            maxMoveValue = -1000;
+        }
+
+        depth --;
+
+        for (let j = 0; j < allMoves1.length; j++) {
+            let boardstate = undefined;
+            console.log(allMoves1[j]);
+            if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] == undefined){
+                boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: undefined, toX: allMoves1[j].to.x, toY: allMoves1[j].to.y};
+            }
+            else{
+                boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y])), toX: JSON.parse(JSON.stringify(allMoves1[j].to.x)), toY: JSON.parse(JSON.stringify(allMoves1[j].to.y))};
+            }
+            console.log (boardstate);
+            this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
+            
+            if (depth > 0) {
+                bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour);
+                allMoves1[j].valueOfMove = bestMove.valueOfMove;
+            }
+            else {
+                allMoves1[j].valueOfMove = this.evaluator();
+            }
+
+            if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
+                maxMoveValue = allMoves1[j].valueOfMove;
+                bestMoveIndex = j;
+            }
+            this.resetBoard(boardstate);
+        }
+        return allMoves1[bestMoveIndex];
     }
 
+    // shouldITrade (color, moveValue, maxMoveValue) {
+    //     let tradeGood = false;
+    //     if (color === COLOUR.BLACK) {
+    //         if (moveValue <= maxMoveValue) {
+    //             tradeGood = true;
+    //         }
+    //     }
+    //     if (color === COLOUR.WHITE) {
+    //         if (moveValue >= maxMoveValue) {
+    //             tradeGood = true;
+    //         }
+    //     }
+    //     return tradeGood;
+    // }
     shouldITrade (color, moveValue, maxMoveValue) {
-        let tradeGood = false;
         if (color === COLOUR.BLACK) {
-            if (moveValue <= maxMoveValue) {
-                tradeGood = true;
-            }
+            return moveValue <= maxMoveValue;
         }
-        if (color === COLOUR.WHITE) {
-            if (moveValue >= maxMoveValue) {
-                tradeGood = true;
-            }
-        }
-        return tradeGood;
+        return moveValue >= maxMoveValue;
     }
 
 // let aiCalculationComplete = false;
