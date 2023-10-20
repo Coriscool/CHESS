@@ -128,12 +128,14 @@ export default class Board {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         if(!calculating){
+            console.log('You should be able to make a move', this.tiles);
             this.select(x,y);
             //console.clear();
         }
         if(this.turn === COLOUR.BLACK){
             calculating = true;
             let allMoves1 = this.findAllMoves(COLOUR.BLACK);
+            console.log(allMoves1);
             if (allMoves1.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
@@ -142,8 +144,11 @@ export default class Board {
                 noLoop();
             }
             if (allMoves1.length !== 0) {
-                let bestMove = this.chessLooper(allMoves1, 2, COLOUR.BLACK);
-                this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to);
+                const boardstate = _.cloneDeep(this.tiles);
+                let bestMove = this.chessLooper(allMoves1, 2, COLOUR.BLACK, boardstate);
+                if(bestMove !== 'draw' && bestMove !== 'checkmate'){
+                    this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
+                }
             }
             this.turn = COLOUR.WHITE;
             calculating = false;
@@ -161,53 +166,53 @@ export default class Board {
         else if (this.selected) {
             const potentialMove = this.legalMoves.find(e => e.x == x && e.y == y);
             if (potentialMove) {
-                this.move(this.selected, potentialMove);
+                this.move(this.selected, potentialMove, this.tiles);
             } else {
                 this.selected = undefined;
             }
         } 
     }
 
-    move(from, to) {
+    move(from, to, board) {
         if(from.sprite == '♟' || from.sprite == '♙'){
             for(let i = 0; i<8; i++){
                 for(let j = 0; j<8; j++){
-                    if (this.tiles[i][j] != undefined){
-                        if (this.tiles[i][j].sprite == '♟') {
-                            if (this.tiles[i][j].flag && to.y == j-1 && to.x == i) {
-                                this.tiles[i][j] = undefined;
+                    if (board[i][j] != undefined){
+                        if (board[i][j].sprite == '♟') {
+                            if (board[i][j].flag && to.y == j-1 && to.x == i) {
+                                board[i][j] = undefined;
                                 continue;
                             }
-                            this.tiles[i][j].flag = false;
+                            board[i][j].flag = false;
                         }
-                        if (this.tiles[i][j].sprite == '♙') {
-                            if (this.tiles[i][j].flag && to.y == j+1 && to.x == i) {
-                                this.tiles[i][j] = undefined;
+                        if (board[i][j].sprite == '♙') {
+                            if (board[i][j].flag && to.y == j+1 && to.x == i) {
+                                board[i][j] = undefined;
                                 continue;
                             }
-                            this.tiles[i][j].flag = false;
+                            board[i][j].flag = false;
                         }
                     }
                 }
             }
         }
         if ((from.y - to.y == 2 || from.y - to.y == -2) && (from.sprite == '♟' || from.sprite == '♙')) {      
-            this.tiles[from.x][from.y].flag = true;   
+            board[from.x][from.y].flag = true;   
         }
         this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
         //DEZE IF STATEMENT WAS ER NIET EN OOK NIET WAT IN DE ELSE STAAT
         if(to.i === undefined){
-            this.tiles[from.x][from.y].userMove(to.x, to.y, this.tiles);
+            board[from.x][from.y].userMove(to.x, to.y, board);
         }
         else {
-            this.tiles[from.x][from.y].userMove(to.i, to.j, this.tiles);
+            board[from.x][from.y].userMove(to.i, to.j, board);
         }
         this.selected = undefined;
 
-        this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, this.turn);
+        this.isInCheck = CheckFinder.isCurrentPlayerInCheck(board, this.turn);
 
         if (this.isInCheck) {
-            let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
+            let moves = CheckFinder.findMovesForCheckedPlayer(board, this.turn);
             if (moves.length === 0) {
                 fill(10,10,10);
                 textFont('Arial');
@@ -252,7 +257,7 @@ export default class Board {
                     if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
                         this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
                         if(this.legalMoves != 0){
-                            possibleMovable.push ({i, j});
+                            possibleMovable.push ({i,j});
                         }
                     }
                 }
@@ -267,35 +272,37 @@ export default class Board {
         return possibleMove;
     }
 
-    // resetBoard(BoardneedsToBecome) {
-    //     this.tiles = _.cloneDeep(BoardneedsToBecome);
-    // }
-
-    resetBoard(boardstate){
-        console.log(this.tiles[boardstate.from.x][boardstate.from.y]);
-        this.tiles[boardstate.from.x][boardstate.from.y] = JSON.parse(JSON.stringify(boardstate.from));
-        console.log(this.tiles[boardstate.from.x][boardstate.from.y]);
-        console.log(this.tiles[boardstate.toX][boardstate.toY]);
-        if (boardstate.to === undefined) {
-            this.tiles[boardstate.toX][boardstate.toY] = undefined;
-        }
-        else {
-            this.tiles[boardstate.toX][boardstate.toY] = JSON.parse(JSON.stringify(boardstate.to));
-        }
-        console.log(this.tiles[boardstate.toX][boardstate.toY]);
+    resetBoard(BoardNeedsToBecome) {
+        this.tiles = _.cloneDeep(BoardNeedsToBecome);
     }
 
-    chessLooper (allMoves1, depth, color) {
+    chessLooper (allMoves1, depth, color, boardstate) {
+        console.log(allMoves1);
         if (allMoves1.length === 0) {
-            console.log('draw');
-            return 'draw';
+            this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardstate, this.turn);
+            console.log(this.isInCheck);
+            if (this.isInCheck) {
+                fill(10,10,10);
+                textFont('Arial');
+                text('Checkmate',400,400,50,50);
+                noLoop();
+                console.log('could be checkmate');
+                return 'checkmate';
+            }
+            if (!this.isInCheck) {
+                fill(10, 10, 10);
+                textFont("Arial");
+                text("Draw by stalemate", 400, 400, 500, 500);
+                noLoop();
+                console.log('could be draw');
+                return 'draw';
+            }
         }
-        
         let colour = color;
-        //const boardstate = _.cloneDeep(this.tiles);
         let bestMoveIndex = -1;
         let bestMove = undefined;
         let maxMoveValue = undefined;
+
         if (colour == COLOUR.BLACK) {
             colour = COLOUR.WHITE;
             maxMoveValue = 1000;
@@ -305,23 +312,29 @@ export default class Board {
             maxMoveValue = -1000;
         }
 
-        depth --;
+        depth = depth - 1;
 
         for (let j = 0; j < allMoves1.length; j++) {
-            let boardstate = undefined;
-            console.log(allMoves1[j]);
-            if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] == undefined){
-                boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: undefined, toX: allMoves1[j].to.x, toY: allMoves1[j].to.y};
-            }
-            else{
-                boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y])), toX: JSON.parse(JSON.stringify(allMoves1[j].to.x)), toY: JSON.parse(JSON.stringify(allMoves1[j].to.y))};
-            }
-            console.log (boardstate);
-            this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
-            
+            this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, this.tiles);
+            //console.log(boardstate);
+            //this.move(boardstate[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, boardstate);
+
+
             if (depth > 0) {
-                bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour);
-                allMoves1[j].valueOfMove = bestMove.valueOfMove;
+                let copyOfTiles = _.cloneDeep(this.tiles);
+                bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour, copyOfTiles);
+                console.log(bestMove);
+                if  (bestMove == 'draw')    {
+                    console.log(bestMove);
+                    allMoves1[j].valueOfMove = 0;
+                }
+                if  (bestMove == 'checkmate')   {
+                    console.log(bestMove);
+                    allMoves1[j].valueOfMove = maxMoveValue;
+                }
+                else    {
+                    allMoves1[j].valueOfMove = bestMove.valueOfMove;
+                }
             }
             else {
                 allMoves1[j].valueOfMove = this.evaluator();
@@ -329,12 +342,74 @@ export default class Board {
 
             if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
                 maxMoveValue = allMoves1[j].valueOfMove;
+                console.log(allMoves1[j].valueOfMove);
                 bestMoveIndex = j;
             }
             this.resetBoard(boardstate);
         }
         return allMoves1[bestMoveIndex];
     }
+    // resetBoard(boardstate){
+    //     this.tiles[boardstate.from.x][boardstate.from.y] = JSON.parse(JSON.stringify(boardstate.from));
+    //     if (boardstate.to === undefined) {
+    //         this.tiles[boardstate.toX][boardstate.toY] = undefined;
+    //     }
+    //     else {
+    //         this.tiles[boardstate.toX][boardstate.toY] = JSON.parse(JSON.stringify(boardstate.to));
+    //     }
+    // }
+
+    // chessLooper (allMoves1, depth, color) {
+    //     if (allMoves1.length === 0) {
+    //         console.log('draw');
+    //         return 'draw';
+    //     }
+        
+    //     let colour = color;
+    //     //const boardstate = _.cloneDeep(this.tiles);
+    //     let bestMoveIndex = -1;
+    //     let bestMove = undefined;
+    //     let maxMoveValue = undefined;
+    //     if (colour == COLOUR.BLACK) {
+    //         colour = COLOUR.WHITE;
+    //         maxMoveValue = 1000;
+    //     }
+    //     else {
+    //         colour = COLOUR.BLACK;
+    //         maxMoveValue = -1000;
+    //     }
+
+    //     depth --;
+
+    //     for (let j = 0; j < allMoves1.length; j++) {
+    //         let boardstate = undefined;
+    //         if(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y] == undefined){
+    //             boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: undefined, toX: allMoves1[j].to.x, toY: allMoves1[j].to.y};
+    //         }
+    //         else{
+    //             boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y])), toX: JSON.parse(JSON.stringify(allMoves1[j].to.x)), toY: JSON.parse(JSON.stringify(allMoves1[j].to.y))};
+    //         }
+    //         console.log (boardstate);
+    //         this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to);
+            
+    //         if (depth > 0) {
+    //             bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour);
+    //             allMoves1[j].valueOfMove = bestMove.valueOfMove;
+    //         }
+    //         else {
+    //             allMoves1[j].valueOfMove = this.evaluator();
+    //         }
+
+    //         if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
+    //             maxMoveValue = allMoves1[j].valueOfMove;
+    //             bestMoveIndex = j;
+    //         }
+    //         this.resetBoard(boardstate);
+    //     }
+    //     return allMoves1[bestMoveIndex];
+    // }
+
+    
 
     // shouldITrade (color, moveValue, maxMoveValue) {
     //     let tradeGood = false;
@@ -356,47 +431,5 @@ export default class Board {
         }
         return moveValue >= maxMoveValue;
     }
-
-// let aiCalculationComplete = false;
-
-// async function calculateAIMoveAsync() {
-//     return new Promise((resolve, reject) => {
-//         // Simulate AI calculation (replace this with your actual AI logic)
-//         setTimeout(() => {
-//             const bestMove = getBestMove();
-//             resolve(bestMove);
-//         }, 5000); // Simulated 5-second calculation
-//     });
-// }
-
-// function setup() {
-//     createCanvas(400, 400);
-//     noLoop(); // No need to run draw continuously
-
-//     // Calculate AI move asynchronously
-//     calculateAIMoveAsync()
-//         .then((bestMove) => {
-//             makeMove(bestMove);
-//             aiCalculationComplete = true;
-
-//             // Resume the game loop
-//             loop();
-//         })
-//         .catch((error) => {
-//             console.error('AI calculation error:', error);
-//         });
-// }
-
-// function draw() {
-//     // Your main game loop
-//     if (aiCalculationComplete) {
-//         // Continue with the game logic
-//     }
-// }
-
-// function makeMove(move) {
-//     // Implement the logic to make the move on your game board
-// }
-
 }
 //♟♙♜♖♝♗♞♘♚♔♛♕
