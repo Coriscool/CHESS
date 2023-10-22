@@ -128,27 +128,23 @@ export default class Board {
         const x = Math.floor(clientX / 100);
         const y = Math.floor(clientY / 100);
         if(!calculating){
-            console.log('You should be able to make a move', this.tiles);
             this.select(x,y);
             //console.clear();
         }
         if(this.turn === COLOUR.BLACK){
             calculating = true;
-            let allMoves1 = this.findAllMoves(COLOUR.BLACK);
-            console.log(allMoves1);
+            let allMoves1 = this.findAllMoves(COLOUR.BLACK, this.tiles);
             if (allMoves1.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
                 textFont("Arial");
                 text("Draw by stalemate", 400, 400, 500, 500);
-                noLoop();
+                //noLoop();
             }
             if (allMoves1.length !== 0) {
                 const boardstate = _.cloneDeep(this.tiles);
-                let bestMove = this.chessLooper(allMoves1, 2, COLOUR.BLACK, boardstate);
-                if(bestMove !== 'draw' && bestMove !== 'checkmate'){
-                    this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
-                }
+                let bestMove = this.chessLooper(allMoves1, 3, COLOUR.BLACK, boardstate);
+                this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
             }
             this.turn = COLOUR.WHITE;
             calculating = false;
@@ -217,7 +213,7 @@ export default class Board {
                 fill(10,10,10);
                 textFont('Arial');
                 text('Checkmate',400,400,50,50);
-                noLoop();
+                //noLoop();
             }
         }
     }
@@ -240,22 +236,22 @@ export default class Board {
         return evaluation;
     }
 
-    findAllMoves (colour) {
+    findAllMoves (colour, tiles) {
         let possibleMovable = [];
         let possibleMove = [];
         for(let i = 0; i<8; i++){
             for(let j = 0; j<8; j++){
                 if(colour === COLOUR.WHITE) {
-                    if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.WHITE){
-                        this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                    if (tiles[i][j] != undefined && tiles[i][j].colour == COLOUR.WHITE){
+                        this.legalMoves = tiles[i][j].findLegalMoves(tiles);
                         if(this.legalMoves != 0){
                             possibleMovable.push ({i,j});
                         }
                     }
                 }
                 if (colour === COLOUR.BLACK) {
-                    if (this.tiles[i][j] != undefined && this.tiles[i][j].colour == COLOUR.BLACK){
-                        this.legalMoves = this.tiles[i][j].findLegalMoves(this.tiles);
+                    if (tiles[i][j] != undefined && tiles[i][j].colour == COLOUR.BLACK){
+                        this.legalMoves = tiles[i][j].findLegalMoves(tiles);
                         if(this.legalMoves != 0){
                             possibleMovable.push ({i,j});
                         }
@@ -264,7 +260,7 @@ export default class Board {
             }
         }
         for (let c = 0; c < possibleMovable.length; c++) {  
-            let movesTo = this.tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(this.tiles);
+            let movesTo = tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(tiles);
             for (let j = movesTo.length - 1; j >= 0; j--) {
                 possibleMove.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
             }
@@ -277,23 +273,14 @@ export default class Board {
     }
 
     chessLooper (allMoves1, depth, color, boardstate) {
-        console.log(allMoves1);
         if (allMoves1.length === 0) {
             this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardstate, this.turn);
             console.log(this.isInCheck);
             if (this.isInCheck) {
-                fill(10,10,10);
-                textFont('Arial');
-                text('Checkmate',400,400,50,50);
-                noLoop();
                 console.log('could be checkmate');
                 return 'checkmate';
             }
             if (!this.isInCheck) {
-                fill(10, 10, 10);
-                textFont("Arial");
-                text("Draw by stalemate", 400, 400, 500, 500);
-                noLoop();
                 console.log('could be draw');
                 return 'draw';
             }
@@ -319,30 +306,28 @@ export default class Board {
             //console.log(boardstate);
             //this.move(boardstate[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, boardstate);
 
-
             if (depth > 0) {
                 let copyOfTiles = _.cloneDeep(this.tiles);
-                bestMove = this.chessLooper(this.findAllMoves(colour), depth, colour, copyOfTiles);
-                console.log(bestMove);
+                bestMove = this.chessLooper(this.findAllMoves(colour, this.tiles), depth, colour, copyOfTiles);
                 if  (bestMove == 'draw')    {
-                    console.log(bestMove);
+                    console.log(bestMove, 'draw');
                     allMoves1[j].valueOfMove = 0;
                 }
                 if  (bestMove == 'checkmate')   {
-                    console.log(bestMove);
-                    allMoves1[j].valueOfMove = maxMoveValue;
+                    console.log(bestMove, 'checkmate');
+                    allMoves1[j].valueOfMove = -1*maxMoveValue;
                 }
                 else    {
                     allMoves1[j].valueOfMove = bestMove.valueOfMove;
                 }
             }
             else {
+                console.log('calculating...');
                 allMoves1[j].valueOfMove = this.evaluator();
             }
 
             if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
                 maxMoveValue = allMoves1[j].valueOfMove;
-                console.log(allMoves1[j].valueOfMove);
                 bestMoveIndex = j;
             }
             this.resetBoard(boardstate);
