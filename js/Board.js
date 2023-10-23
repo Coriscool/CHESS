@@ -46,6 +46,7 @@ export default class Board {
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
         tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
         //hi
+        //hallo cor
 
         return tiles;
     }
