@@ -130,19 +130,19 @@ export default class Board {
         const Aicolour = COLOUR.BLACK;
         const PlayerColour = COLOUR.WHITE;
         if(!calculating){
-            if (this.isInCheck) {
-                let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
-                if (moves.length === 0) {
-                    console.log('Checkmate');
-                    fill(10,10,10);
-                    textFont('Arial');
-                    text('Checkmate',400,400,500,500);
-                    noLoop();
-                }
-            }
-            else{
+            // if (this.isInCheck) {
+            //     let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
+            //     if (moves.length === 0) {
+            //         console.log('Checkmate');
+            //         fill(10,10,10);
+            //         textFont('Arial');
+            //         text('Checkmate',400,400,500,500);
+            //         noLoop();
+            //     }
+            // }
+            // else{
                 this.select(x,y);
-            }
+            //}
             //console.clear();
         }
         if(this.turn === Aicolour){
@@ -271,14 +271,33 @@ export default class Board {
 
     evaluator() {
         let evaluation = 0;
+        let numberOfQueens = 0;
+        let numberOfRooks = 0;
+        let numberOfBishops = 0;
+        let numberOfPieces = 0;
+        let numberOfKnights = 0;
         for(let i = 0; i<8; i++){
             for(let j = 0; j<8; j++){
                 if(this.tiles[i][j] != undefined){
                     evaluation += this.tiles[i][j].value;
+                    numberOfPieces++;
                 }
+                if(this.tiles[i][j] == '♕' || this.tiles[i][j] == '♛'){
+                    numberOfQueens++;
+                }
+                if(this.tiles[i][j] == '♜' || this.tiles[i][j] == '♖'){
+                    numberOfRooks++;
+                }
+                if(this.tiles[i][j] == '♝' || this.tiles[i][j] == '♗'){
+                    numberOfBishops++;
+                }
+                if(this.tiles[i][j] == '♞' || this.tiles[i][j] == '♘'){
+                    numberOfKnights++;
+                }
+                //♟♙♜♖♝♗♞♘♚♔♛♕
             }
         }
-        return evaluation;
+        return {evaluation, numberOfPieces, numberOfQueens, numberOfRooks, numberOfBishops, numberOfKnights};
     }
 
     resetBoard(BoardNeedsToBecome) {
@@ -306,6 +325,7 @@ export default class Board {
         let bestMoveIndex = -1;
         let bestMove = undefined;
         let maxMoveValue = undefined;
+        let evaluation = this.evaluator();
 
         if (colour == COLOUR.BLACK) {
             colour = COLOUR.WHITE;
@@ -317,9 +337,17 @@ export default class Board {
         }
 
         depth --;
+        if (evaluation.numberOfPieces == 10 || evaluation.numberOfPieces == 11){
+            depth = 4;
+        }
 
         for (let j = 0; j < allMoves1.length; j++) {
             this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, this.tiles);
+
+            if (evaluation.numberOfPieces == 3 && evaluation.numberOfQueens == 1){
+                return this.checkMateForQueen();
+                //allMoves1[bestMoveIndex]
+            }
 
             if (depth > 0) {
                 let copyOfTiles = _.cloneDeep(this.tiles);
@@ -330,9 +358,11 @@ export default class Board {
                 if  (bestMove == 'checkmate')   {
                     if (colour == COLOUR.BLACK) {
                         allMoves1[j].valueOfMove = 500;
+                        console.log(allMoves1[j].valueOfMove);
                     }
                     else {
                         allMoves1[j].valueOfMove = -500;
+                        console.log(allMoves1[j].valueOfMove);
                     }
                 }
                 else    {
@@ -340,7 +370,7 @@ export default class Board {
                 }
             }
             else {
-                allMoves1[j].valueOfMove = this.evaluator();
+                allMoves1[j].valueOfMove = evaluation.evaluation;
             }
 
             if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
@@ -349,10 +379,13 @@ export default class Board {
             }
             this.resetBoard(boardstate);
         }
+        console.log('calculating...');
         return allMoves1[bestMoveIndex];
     }
 
-
+    checkMateForQueen(){
+        
+    }
 
     //Dit hieronder is mijn poging om minder _.deepclone() the gebruiken...
 
