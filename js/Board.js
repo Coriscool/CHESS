@@ -20,31 +20,31 @@ export default class Board {
     //     let tiles = this.createEmptyBoard();
 
     //     for (let i = 0; i < 8; i++) { 
-    //         tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', -1, false);
-    //         tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 1, false);
+    //         tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', -100, false);
+    //         tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 100, false);
     //     }
     //     //♟♙♜♖♝♗♞♘♚♔♛♕
-    //     tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -5);
-    //     tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -5);
-    //     tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
-    //     tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
+    //     tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
+    //     tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
+    //     tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
+    //     tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 525);
 
-    //     tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -3);
-    //     tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -3);
-    //     tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 3);
-    //     tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 3);
+    //     tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -350);
+    //     tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -350);
+    //     tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 350);
+    //     tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 350);
 
 
-    //     tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -3);
-    //     tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -3);
-    //     tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 3);
-    //     tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 3);
+    //     tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -350);
+    //     tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -350);
+    //     tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
+    //     tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
 
-    //     tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -200);
-    //     tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 200);
+    //     tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -10000);
+    //     tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 10000);
 
-    //     tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
-    //     tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
+    //     tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
+    //     tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
 
     //     return tiles;
     // }
@@ -79,8 +79,6 @@ export default class Board {
 
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
         tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
-        //hi
-        //hallo cor
 
         return tiles;
     }
