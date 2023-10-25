@@ -197,7 +197,9 @@ export default class Board {
             }
             if (allMoves1.length !== 0) {
                 const boardstate = _.cloneDeep(this.tiles);
-                let bestMove = this.chessLooper(allMoves1, 2, Aicolour, boardstate);
+                let alpha = -20000
+                let beta = 20000
+                let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
                 this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
             }
             this.turn = PlayerColour;
@@ -306,7 +308,6 @@ export default class Board {
                 possibleMove.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
             }
         }
-        console.log(possibleMove);
         return possibleMove;
     }
 
@@ -359,7 +360,7 @@ export default class Board {
         return moveValue > maxMoveValue;
     }
 
-    chessLooper (allMoves1, depth, color, boardstate, alpha = -20000, beta = 20000) {
+    chessLooper (allMoves1, depth, color, boardstate, alpha, beta) {
         if (allMoves1.length === 0) {
             this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardstate, this.turn);
             if (this.isInCheck) {
@@ -373,8 +374,6 @@ export default class Board {
         let colour = color === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
         let bestMoveIndex = -1;
         let bestMove = undefined;
-        let maxMoveValue = 20000;
-        let minMoveValue = -20000;
         let bestMoveValue = color === COLOUR.WHITE ? -20000 : 20000
         let evaluation = this.evaluator();
         let allLegitMoves = [];
@@ -390,31 +389,29 @@ export default class Board {
         //     maxMoveValue = -20000;
         // }
 
-        //depth --;
+        depth --;
+        if (evaluation.numberOfPieces == 3 && evaluation.numberOfQueens == 1){
+            return this.checkMateForQueen();
+            //console.log(allMoves1[bestMoveIndex]);
+        }
 
         for (let j = 0; j < allMoves1.length; j++) {
             this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, this.tiles);
-
-            if (evaluation.numberOfPieces == 3 && evaluation.numberOfQueens == 1){
-                return this.checkMateForQueen();
-                //console.log(allMoves1[bestMoveIndex]);
-            }
-
+            console.log(depth);
             if (depth > 0) {
                 let copyOfTiles = _.cloneDeep(this.tiles);
-                bestMove = this.chessLooper(this.findAllMoves(colour, this.tiles), depth-1, colour, copyOfTiles, alpha, beta);
+                bestMove = this.chessLooper(this.findAllMoves(colour, this.tiles), depth, colour, copyOfTiles, alpha, beta);
                 if  (bestMove == 'draw')    {
                     allMoves1[j].valueOfMove = 0;
                 }
                 if  (bestMove == 'checkmate')   {
                     if (colour == COLOUR.BLACK) {
                         allMoves1[j].valueOfMove = 20000;
-                        console.log(allMoves1[j].valueOfMove);
                     }
                     else {
                         allMoves1[j].valueOfMove = -20000;
-                        console.log(allMoves1[j].valueOfMove);
                     }
+                    console.log('checkmate');
                 }
                 else    {
                     allMoves1[j].valueOfMove = bestMove.valueOfMove;
@@ -428,7 +425,7 @@ export default class Board {
                 if(allMoves1[j].valueOfMove >= bestMoveValue) {
                     bestMoveValue = allMoves1[j].valueOfMove;
                     alpha = allMoves1[j].valueOfMove;
-                    // allLegitMoves.push(allMoves1[j]);
+                    allLegitMoves.push(allMoves1[j]);
                     bestMoveIndex = j;
                 }
                 //alpha = Math.max(alpha, allMoves1[j].valueOfMove);
@@ -437,15 +434,18 @@ export default class Board {
                 if(allMoves1[j].valueOfMove <= bestMoveValue) {
                     bestMoveValue = allMoves1[j].valueOfMove;
                     beta = allMoves1[j].valueOfMove;
-                    // allLegitMoves.push(allMoves1[j]);
+                    allLegitMoves.push(allMoves1[j]);
                     bestMoveIndex = j;
                 }
                 //beta = Math.min(beta, allMoves1[j].valueOfMove);
             }
-
-            if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
+            if(allMoves1[j].valueOfMove > bestMoveValue) {
                 allLegitMoves.length = 0;
             }
+
+            // if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
+            //     allLegitMoves.length = 0;
+            // }
             // if (this.shouldITradeEqual(color, allMoves1[j].valueOfMove, maxMoveValue)) {
             //     if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
             //         allLegitMoves.length = 0;
@@ -459,16 +459,24 @@ export default class Board {
             //     maxMoveValue = allMoves1[j].valueOfMove;
             //     bestMoveIndex = j;
             // }
+            // if (color === COLOUR.WHITE) {
+            //     if (beta >= alpha) {
+            //         console.log('prune ', alpha, beta);
+            //         break;
+            //     }
+            // }
+            // else {
+                if (beta <= alpha) {
+                    console.log('prune ', alpha, beta);
+                    break;
+                }
+            // }
 
             this.resetBoard(boardstate);
-            if (beta < alpha) {
-                console.log('Prune', alpha, beta);
-                break;
-            }
         }
-        let randomMove = random(allLegitMoves);
+        //let randomMove = random(allLegitMoves);
         //return randomMove;
-        console.log('Depth: ' , depth , ' | Best Move: ' , allMoves1[bestMoveIndex], ' | Colour: ', color);
+        console.log(allMoves1[bestMoveIndex]);
         return allMoves1[bestMoveIndex];
     }
 
@@ -476,6 +484,7 @@ export default class Board {
         if(this.tiles[i][j] == '♚'){
             cosole.log('test');
         }
+    }
     // AlphaBeta(depth, int alpha, int beta) { 
     //     if (depth == 0) {
     //         return Evaluate(); 
@@ -494,12 +503,6 @@ export default class Board {
     //     }
     //     return alpha; 
     // }
-        
-
-
-    checkMateForQueen(){
-        
-    }
 
     //Dit hieronder is mijn poging om minder _.deepclone() the gebruiken...
 
@@ -599,5 +602,7 @@ export default class Board {
     //     }
     //     return allMoves1[bestMoveIndex];
     // }
+
+    //♟♙♜♖♝♗♞♘♚♔♛♕
 }
-//♟♙♜♖♝♗♞♘♚♔♛♕
+
