@@ -81,13 +81,64 @@ export default class Board {
         tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -10000);
         tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 10000);
 
-        tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
-        //tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
         tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
-
         return tiles;
     }
+    valueOfPieces(){
+        let array = [];
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if(this.tiles[i][j].sprite == '♜'){
+                    this.tiles[i][j].value = 525;
+                    this.tiles[i][j].value *= this.arrayMaker()[i][j];
+                }
+            }
+        }
+    }
+
+    // arrayValueChanger(){
+    //     let blackRookArray = [
+    //         [0,0,0,50,50,0,0,0],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [50,100,100,100,100,100,100,50],
+    //         [0,0,0,0,0,0,0,0]
+    //     ];
+    //     let whiteRookArray = [
+    //         [0,0,0,50,50,0,0,0],
+    //         [50,100,100,100,100,100,100,50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [0,0,0,50,50,0,0,0]
+    //     ];
+    //     let blackHorseArray = [
+    //         [0,0,0,50,50,0,0,0],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [50,100,100,100,100,100,100,50],
+    //         [0,0,0,0,0,0,0,0]
+    //     ];
+    //     let whiteHorseArray = [
+    //         [-500,-400,-300,-300,-300,-300,-400,-500],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [-50,0,0,0,0,0,0,-50],
+    //         [50,100,100,100,100,100,100,50],
+    //         [0,0,0,0,0,0,0,0]
+    //     return blackRookarray;
+    // }
     
     createEmptyBoard() {
         let board = [];
@@ -183,7 +234,7 @@ export default class Board {
             // else{
                 this.select(x,y);
             //}
-            console.clear();
+            //console.clear();
         }
         if(this.turn === Aicolour){
             calculating = true;
@@ -199,8 +250,10 @@ export default class Board {
                 const boardstate = _.cloneDeep(this.tiles);
                 let alpha = -20000
                 let beta = 20000
-                let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
-                this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
+                //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
+                let isMaximizingPlayer = true;
+                let bestMove = this.chessLooper(2, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer);
+                //this.move(this.tiles[bestMove.from.i][bestMove.from.j], bestMove.to, this.tiles);
             }
             this.turn = PlayerColour;
             calculating = false;
@@ -323,18 +376,18 @@ export default class Board {
                 if(this.tiles[i][j] != undefined){
                     evaluation += this.tiles[i][j].value;
                     numberOfPieces++;
-                }
-                if(this.tiles[i][j] == '♕' || this.tiles[i][j] == '♛'){
-                    numberOfQueens++;
-                }
-                if(this.tiles[i][j] == '♜' || this.tiles[i][j] == '♖'){
-                    numberOfRooks++;
-                }
-                if(this.tiles[i][j] == '♝' || this.tiles[i][j] == '♗'){
-                    numberOfBishops++;
-                }
-                if(this.tiles[i][j] == '♞' || this.tiles[i][j] == '♘'){
-                    numberOfKnights++;
+                    if(this.tiles[i][j].sprite == '♕' || this.tiles[i][j].sprite == '♛'){
+                        numberOfQueens++;
+                    }
+                    if(this.tiles[i][j].sprite == '♜' || this.tiles[i][j].sprite == '♖'){
+                        numberOfRooks++;
+                    }
+                    if(this.tiles[i][j].sprite == '♝' || this.tiles[i][j].sprite == '♗'){
+                        numberOfBishops++;
+                    }
+                    if(this.tiles[i][j].sprite == '♞' || this.tiles[i][j].sprite == '♘'){
+                        numberOfKnights++;
+                    }
                 }
                 //♟♙♜♖♝♗♞♘♚♔♛♕
             }
@@ -360,128 +413,180 @@ export default class Board {
         return moveValue > maxMoveValue;
     }
 
-    chessLooper (allMoves1, depth, color, boardstate, alpha, beta) {
-        if (allMoves1.length === 0) {
-            this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardstate, this.turn);
-            if (this.isInCheck) {
-                return 'checkmate';
-            }
-            if (!this.isInCheck) {
-                return 'draw';
-            }
+    chessLooper (depth, game, playerColor, alpha, beta, isMaximizingPlayer=true) {
+        // Base case: evaluate board
+        let value = undefined;
+        let cloneOfBoard = undefined;
+        if (depth === 0) {
+            //miss moet evaluation * -1 als zwart
+            value = this.evaluator().evaluation;
+            return [value, null]
         }
 
-        let colour = color === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
-        let bestMoveIndex = -1;
-        let bestMove = undefined;
-        let bestMoveValue = color === COLOUR.WHITE ? -20000 : 20000
-        let evaluation = this.evaluator();
-        let allLegitMoves = [];
-
-        // if (colour == COLOUR.BLACK) {
-        //     colour = COLOUR.WHITE;
-        //     //maxMoveValue = Number.POSITIVE_INFINITY;
-        //     maxMoveValue = 20000;
-        // }
-        // else {
-        //     colour = COLOUR.BLACK;
-        //     //maxMoveValue = Number.NEGATIVE_INFINITY;
-        //     maxMoveValue = -20000;
-        // }
-
-        depth --;
-        if (evaluation.numberOfPieces == 3 && evaluation.numberOfQueens == 1){
-            return this.checkMateForQueen();
-            //console.log(allMoves1[bestMoveIndex]);
+        playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+        // Recursive case: search possible moves
+        var bestMove = null; // best move not set yet
+        var possibleMoves = this.findAllMoves(playerColor, this.tiles);
+        // Set random order for possible moves
+        //possibleMoves.sort(function(a, b){return 0.5 – Math.random()});
+        // Set a default best move value
+        var bestMoveValue = isMaximizingPlayer ? -20000 : 20000;
+        // Search through all possible moves
+        for (var j = 0; j < possibleMoves.length; j++) {
+            var move = possibleMoves[j];
+            console.log(move);
+            // Make the move, but undo before exiting loop
+            this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
+            // Recursively get the value of this move
+            depth--;
+            value = this.chessLooper(depth, game, playerColor, alpha, beta, !isMaximizingPlayer)[0];
+            // Log the value of this move
+            console.log(isMaximizingPlayer ? 'Max: ' : 'Min: ', depth, move, value, bestMove, bestMoveValue);
+        if (isMaximizingPlayer) {
+        // Look for moves that maximize position
+            if (value > bestMoveValue) {
+                bestMoveValue = value;
+                bestMove = move;
+            }
+            alpha = Math.max(alpha, value);
+        } else {
+        // Look for moves that minimize position
+            if (value < bestMoveValue) {
+                bestMoveValue = value;
+                bestMove = move;
+            }
+            beta = Math.min(beta, value);
         }
-
-        for (let j = 0; j < allMoves1.length; j++) {
-            this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, this.tiles);
-            console.log(depth);
-            if (depth > 0) {
-                let copyOfTiles = _.cloneDeep(this.tiles);
-                bestMove = this.chessLooper(this.findAllMoves(colour, this.tiles), depth, colour, copyOfTiles, alpha, beta);
-                if  (bestMove == 'draw')    {
-                    allMoves1[j].valueOfMove = 0;
-                }
-                if  (bestMove == 'checkmate')   {
-                    if (colour == COLOUR.BLACK) {
-                        allMoves1[j].valueOfMove = 20000;
-                    }
-                    else {
-                        allMoves1[j].valueOfMove = -20000;
-                    }
-                    console.log('checkmate');
-                }
-                else    {
-                    allMoves1[j].valueOfMove = bestMove.valueOfMove;
-                }
-            }
-            else {
-                allMoves1[j].valueOfMove = evaluation.evaluation;
-            }
-
-            if (color === COLOUR.WHITE) {
-                if(allMoves1[j].valueOfMove >= bestMoveValue) {
-                    bestMoveValue = allMoves1[j].valueOfMove;
-                    alpha = allMoves1[j].valueOfMove;
-                    allLegitMoves.push(allMoves1[j]);
-                    bestMoveIndex = j;
-                }
-                //alpha = Math.max(alpha, allMoves1[j].valueOfMove);
-            }
-            else {
-                if(allMoves1[j].valueOfMove <= bestMoveValue) {
-                    bestMoveValue = allMoves1[j].valueOfMove;
-                    beta = allMoves1[j].valueOfMove;
-                    allLegitMoves.push(allMoves1[j]);
-                    bestMoveIndex = j;
-                }
-                //beta = Math.min(beta, allMoves1[j].valueOfMove);
-            }
-            if(allMoves1[j].valueOfMove > bestMoveValue) {
-                allLegitMoves.length = 0;
-            }
-
-            // if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
-            //     allLegitMoves.length = 0;
-            // }
-            // if (this.shouldITradeEqual(color, allMoves1[j].valueOfMove, maxMoveValue)) {
-            //     if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
-            //         allLegitMoves.length = 0;
-            //     }
-            //     maxMoveValue = allMoves1[j].valueOfMove;
-            //     allLegitMoves.push(allMoves1[j]);
-            // }
-
-            // deze if statement terug halen en die hierboven weg om random moves weg te halen. Ook de returns omwisselen
-            // if (this.shouldITradeEqual(color, allMoves1[j].valueOfMove, maxMoveValue)) {
-            //     maxMoveValue = allMoves1[j].valueOfMove;
-            //     bestMoveIndex = j;
-            // }
-            // if (color === COLOUR.WHITE) {
-            //     if (beta >= alpha) {
-            //         console.log('prune ', alpha, beta);
-            //         break;
-            //     }
-            // }
-            // else {
-                if (beta <= alpha) {
-                    console.log('prune ', alpha, beta);
-                    break;
-                }
-            // }
-
-            this.resetBoard(boardstate);
+        // Undo previous move
+        this.resetBoard(this.tiles);
+        if (beta <= alpha) {
+            console.log('Prune', alpha, beta);
+            break;
         }
-        //let randomMove = random(allLegitMoves);
-        //return randomMove;
-        console.log(allMoves1[bestMoveIndex]);
-        return allMoves1[bestMoveIndex];
+        }
+        //Log the best move at the current depth
+        //Return the best move, or the only move
+        return [bestMoveValue, bestMove || possibleMoves[0]];
     }
+    
+    // chessLooper (allMoves1, depth, color, boardstate, alpha, beta) {
+    //     if (allMoves1.length === 0) {
+    //         this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardstate, this.turn);
+    //         if (this.isInCheck) {
+    //             return 'checkmate';
+    //         }
+    //         if (!this.isInCheck) {
+    //             return 'draw';
+    //         }
+    //     }
+
+    //     let colour = color === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+    //     let bestMoveIndex = -1;
+    //     let bestMove = undefined;
+    //     let bestMoveValue = color === COLOUR.WHITE ? -20000 : 20000;
+    //     let evaluation = this.evaluator();
+    //     let allLegitMoves = [];
+
+    //     // if (colour == COLOUR.BLACK) {
+    //     //     colour = COLOUR.WHITE;
+    //     //     //maxMoveValue = Number.POSITIVE_INFINITY;
+    //     //     maxMoveValue = 20000;
+    //     // }
+    //     // else {
+    //     //     colour = COLOUR.BLACK;
+    //     //     //maxMoveValue = Number.NEGATIVE_INFINITY;
+    //     //     maxMoveValue = -20000;
+    //     // }
+
+    //     if (evaluation.numberOfPieces == 3 && evaluation.numberOfQueens == 1){
+    //         return this.checkMateForQueen();
+    //         //console.log(allMoves1[bestMoveIndex]);
+    //     }
+
+    //     for (let j = 0; j < allMoves1.length; j++) {
+    //         this.move(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, this.tiles);
+    //         if (depth > 0) {
+    //             let copyOfTiles = _.cloneDeep(this.tiles);
+    //             bestMove = this.chessLooper(this.findAllMoves(colour, this.tiles), depth-1, colour, copyOfTiles, alpha, beta);
+    //             if  (bestMove == 'draw')    {
+    //                 allMoves1[j].valueOfMove = 0;
+    //             }
+    //             if  (bestMove == 'checkmate')   {
+    //                 if (colour == COLOUR.BLACK) {
+    //                     allMoves1[j].valueOfMove = 20000;
+    //                 }
+    //                 else {
+    //                     allMoves1[j].valueOfMove = -20000;
+    //                 }
+    //                 console.log('checkmate');
+    //             }
+    //             else    {
+    //                 allMoves1[j].valueOfMove = bestMove.valueOfMove;
+    //             }
+    //         }
+    //         else {
+    //             allMoves1[j].valueOfMove = evaluation.evaluation;
+    //         }
+
+    //         if (color === COLOUR.WHITE) {
+    //             if(allMoves1[j].valueOfMove >= bestMoveValue) {
+    //                 bestMoveValue = allMoves1[j].valueOfMove;
+    //                 alpha = allMoves1[j].valueOfMove;
+    //                 allLegitMoves.push(allMoves1[j]);
+    //                 bestMoveIndex = j;
+    //             }
+    //             //alpha = Math.max(alpha, allMoves1[j].valueOfMove);
+    //         }
+    //         else {
+    //             if(allMoves1[j].valueOfMove <= bestMoveValue) {
+    //                 bestMoveValue = allMoves1[j].valueOfMove;
+    //                 beta = allMoves1[j].valueOfMove;
+    //                 allLegitMoves.push(allMoves1[j]);
+    //                 bestMoveIndex = j;
+    //             }
+    //             //beta = Math.min(beta, allMoves1[j].valueOfMove);
+    //         }
+    //         if(allMoves1[j].valueOfMove > bestMoveValue) {
+    //             allLegitMoves.length = 0;
+    //         }
+
+    //         // if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
+    //         //     allLegitMoves.length = 0;
+    //         // }
+    //         // if (this.shouldITradeEqual(color, allMoves1[j].valueOfMove, maxMoveValue)) {
+    //         //     if(this.shouldITradeNotEqual(color, allMoves1[j].valueOfMove, maxMoveValue)){
+    //         //         allLegitMoves.length = 0;
+    //         //     }
+    //         //     maxMoveValue = allMoves1[j].valueOfMove;
+    //         //     allLegitMoves.push(allMoves1[j]);
+    //         // }
+
+    //         // deze if statement terug halen en die hierboven weg om random moves weg te halen. Ook de returns omwisselen
+    //         // if (this.shouldITradeEqual(color, allMoves1[j].valueOfMove, maxMoveValue)) {
+    //         //     maxMoveValue = allMoves1[j].valueOfMove;
+    //         //     bestMoveIndex = j;
+    //         // }
+    //         // if (color === COLOUR.WHITE) {
+    //         //     if (beta >= alpha) {
+    //         //         console.log('prune ', alpha, beta);
+    //         //         break;
+    //         //     }
+    //         // }
+    //         // else {
+    //             if (beta <= alpha) {
+    //                 break;
+    //             }
+    //         // }
+
+    //         this.resetBoard(boardstate);
+    //     }
+    //     //let randomMove = random(allLegitMoves);
+    //     //return randomMove;
+    //     return allMoves1[bestMoveIndex];
+    // }
 
     checkMateForQueen(tiles){
-        if(this.tiles[i][j] == '♚'){
+        if(this.tiles[i][j].sprite == '♚'){
             cosole.log('test');
         }
     }
@@ -603,6 +708,5 @@ export default class Board {
     //     return allMoves1[bestMoveIndex];
     // }
 
-    //♟♙♜♖♝♗♞♘♚♔♛♕
-}
+}//♟♙♜♖♝♗♞♘♚♔♛♕
 
