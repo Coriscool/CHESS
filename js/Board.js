@@ -58,17 +58,14 @@ export default class Board {
             tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 100, false);
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
-<<<<<<< HEAD
         // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -5);
         // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -5);
         // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
         // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
-=======
         tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
         tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
         tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
         tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 525);
->>>>>>> 44a43db920de5503d2780e62fe22981a3cc15521
 
         tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -350);
         tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -350);
@@ -84,13 +81,10 @@ export default class Board {
         tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -10000);
         tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 10000);
 
-<<<<<<< HEAD
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -10);
         //tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 10);
-=======
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
         tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
->>>>>>> 44a43db920de5503d2780e62fe22981a3cc15521
 
         return tiles;
     }
@@ -478,12 +472,10 @@ export default class Board {
         return allMoves1[bestMoveIndex];
     }
 
-<<<<<<< HEAD
     checkMateForQueen(tiles){
         if(this.tiles[i][j] == '♚'){
-            cosole.log('hi');
+            cosole.log('test');
         }
-=======
     // AlphaBeta(depth, int alpha, int beta) { 
     //     if (depth == 0) {
     //         return Evaluate(); 
@@ -507,7 +499,6 @@ export default class Board {
 
     checkMateForQueen(){
         
->>>>>>> 44a43db920de5503d2780e62fe22981a3cc15521
     }
 
     //Dit hieronder is mijn poging om minder _.deepclone() the gebruiken...
