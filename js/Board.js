@@ -58,10 +58,6 @@ export default class Board {
             tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 100, false);
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
-        // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -5);
-        // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -5);
-        // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 5);
-        // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 5);
         tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
         tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
         tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
@@ -86,100 +82,222 @@ export default class Board {
         return tiles;
     }
     valueOfPieces(){
-        let array = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 if(this.tiles[i][j].sprite == '♜'){
+                    this.tiles[i][j].value = -525;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♖'){
                     this.tiles[i][j].value = 525;
-                    this.tiles[i][j].value += this.arrayMaker()[i][j];
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♝'){
+                    this.tiles[i][j].value = -350;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♗'){
+                    this.tiles[i][j].value = 350;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♞'){
+                    this.tiles[i][j].value = -350;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♘'){
+                    this.tiles[i][j].value = 350;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♚'){
+                    this.tiles[i][j].value = -10000;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♔'){
+                    this.tiles[i][j].value = 10000;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♛'){
+                    this.tiles[i][j].value = -1000;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♕'){
+                    this.tiles[i][j].value = 1000;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♜'){
+                    this.tiles[i][j].value = 525;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♟'){
+                    this.tiles[i][j].value = -100;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                }
+                if(this.tiles[i][j].sprite == '♙'){
+                    this.tiles[i][j].value = 100;
+                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
                 }
             }
         }
     }
 
-    // arrayValueChanger(){
-    //     let blackRookArray = [
-    //         [0,0,0,50,50,50,0,0],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [50,100,100,100,100,100,100,50],
-    //         [0,0,0,0,0,0,0,0]
-    //     ];
-    //     let whiteRookArray = [
-    //         [0,0,0,50,50,0,0,0],
-    //         [50,100,100,100,100,100,100,50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [-50,0,0,0,0,0,0,-50],
-    //         [0,0,0,50,50,50,0,0]
-    //     ];
-    //     let blackHorseArray = [
-    //         [-500,-400,-300,-300,-300,-300,-400,-500],
-    //         [-400,-200,0,50,50,0,-200,-400],
-    //         [-300,50,100,150,150,100,50,-300],
-    //         [-300,0,150,200,200,150,0,-300],
-    //         [-300,50,150,200,200,150,50,-300],
-    //         [-300,0,100,150,150,100,0,-300],
-    //         [-400,-200,0,0,0,0,-200,-400],
-    //         [-500,-400,-300,-300,-300,-300,-400,-500]
-    //     ];
-    //     let whiteHorseArray = [
-    //         [-500,-400,-300,-300,-300,-300,-400,-500],
-    //         [-400,-200,0,0,0,0,-200,-400],
-    //         [-300,0,100,150,150,100,0,-300],
-    //         [-300,50,150,200,200,150,50,-300],
-    //         [-300,0,150,200,200,150,0,-300],
-    //         [-300,50,100,150,150,100,50,-300],
-    //         [-400,-200,0,50,50,0,-200,-400],
-    //         [-500,-400,-300,-300,-300,-300,-400,-500]
-    //     ];
-    //     let whiteBishopArray = [
-    //         [-200,-100,-100,-100,-100,-100,-100,-200],
-    //         [-100,0,0,0,0,0,0,-100],
-    //         [-100,0,50,100,100,50,0,-100],
-    //         [-100,50,50,100,100,50,50,-100],
-    //         [-100,0,100,100,100,100,0,-100],
-    //         [-100,100,100,100,100,100,100,-100],
-    //         [-100,50,0,0,0,0,50,-100],
-    //         [-200,-100,-100,-100,-100,-100,-100,-200]
-    //     ];
-    //     let blackBishopArray = [
-    //         [-200,-100,-100,-100,-100,-100,-100,-200],
-    //         [-100,50,0,0,0,0,50,-100],
-    //         [-100,100,100,100,100,100,100,-100],
-    //         [-100,0,100,100,100,100,0,-100],
-    //         [-100,50,50,100,100,50,50,-100],
-    //         [-100,0,50,100,100,50,0,-100],
-    //         [-100,0,0,0,0,0,0,-100],
-    //         [-200,-100,-100,-100,-100,-100,-100,-200]
-    //     ];
-    //     let whiteQueenArray = [
-    //         [-200,-100,-100,-50,-50,-100,-100,-200],
-    //         [-100,0,0,0,0,0,0,-100],
-    //         [-100,0,50,50,50,50,0,-100],
-    //         [-50,0,50,50,50,50,0,-50],
-    //         [0,0,50,50,50,50,0,-50],
-    //         [-100,50,50,50,50,50,0,-100],
-    //         [-100,0,50,0,0,0,0,-100],
-    //         [-200,-100,-100,-50,-50,-100,-100,-200]
-    //     ];
-    //     let blackQueenArray = [
-    //         [-200,-100,-100,-50,-50,-100,-100,-200],
-    //         [-100,0,0,0,0,50,0,-100],
-    //         [-100,0,50,50,50,50,0,-100],
-    //         [-50,0,50,50,50,50,0,-50],
-    //         [0,0,50,50,50,50,0,-50],
-    //         [-100,50,50,50,50,50,0,-100],
-    //         [-100,0,0,0,0,0,0,-100],
-    //         [-200,-100,-100,-50,-50,-100,-100,-200]
-    //     ];
-    //     return blackRookarray;
-    // }
+    arrayValueChanger(piece){
+        if(piece == '♜'){
+            let blackRookArray = [
+                [0,0,0,50,50,50,0,0],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [50,100,100,100,100,100,100,50],
+                [0,0,0,0,0,0,0,0]
+            ];
+            return blackRookArray;
+        }
+        if(piece == '♖'){
+            let whiteRookArray = [
+                [0,0,0,50,50,0,0,0],
+                [50,100,100,100,100,100,100,50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [-50,0,0,0,0,0,0,-50],
+                [0,0,0,50,50,50,0,0]
+            ];
+            return whiteRookArray;
+        }
+        if(piece == '♞'){
+            let blackHorseArray = [
+                [-500,-400,-300,-300,-300,-300,-400,-500],
+                [-400,-200,0,50,50,0,-200,-400],
+                [-300,50,100,150,150,100,50,-300],
+                [-300,0,150,200,200,150,0,-300],
+                [-300,50,150,200,200,150,50,-300],
+                [-300,0,100,150,150,100,0,-300],
+                [-400,-200,0,0,0,0,-200,-400],
+                [-500,-400,-300,-300,-300,-300,-400,-500]
+            ];
+            return blackHorseArray;
+        }
+        if(piece == '♘'){
+            let whiteHorseArray = [
+                [-500,-400,-300,-300,-300,-300,-400,-500],
+                [-400,-200,0,0,0,0,-200,-400],
+                [-300,0,100,150,150,100,0,-300],
+                [-300,50,150,200,200,150,50,-300],
+                [-300,0,150,200,200,150,0,-300],
+                [-300,50,100,150,150,100,50,-300],
+                [-400,-200,0,50,50,0,-200,-400],
+                [-500,-400,-300,-300,-300,-300,-400,-500]
+            ];
+            return whiteHorseArray;
+        }
+        if(piece == '♗'){
+            let whiteBishopArray = [
+                [-200,-100,-100,-100,-100,-100,-100,-200],
+                [-100,0,0,0,0,0,0,-100],
+                [-100,0,50,100,100,50,0,-100],
+                [-100,50,50,100,100,50,50,-100],
+                [-100,0,100,100,100,100,0,-100],
+                [-100,100,100,100,100,100,100,-100],
+                [-100,50,0,0,0,0,50,-100],
+                [-200,-100,-100,-100,-100,-100,-100,-200]
+            ];
+            return whiteBishopArray;
+        }
+            if(piece == '♝'){
+            let blackBishopArray = [
+                [-200,-100,-100,-100,-100,-100,-100,-200],
+                [-100,50,0,0,0,0,50,-100],
+                [-100,100,100,100,100,100,100,-100],
+                [-100,0,100,100,100,100,0,-100],
+                [-100,50,50,100,100,50,50,-100],
+                [-100,0,50,100,100,50,0,-100],
+                [-100,0,0,0,0,0,0,-100],
+                [-200,-100,-100,-100,-100,-100,-100,-200]
+            ];
+            return blackBishopArray;
+        }
+            if(piece == '♕'){
+            let whiteQueenArray = [
+                [-200,-100,-100,-50,-50,-100,-100,-200],
+                [-100,0,0,0,0,0,0,-100],
+                [-100,0,50,50,50,50,0,-100],
+                [-50,0,50,50,50,50,0,-50],
+                [0,0,50,50,50,50,0,-50],
+                [-100,50,50,50,50,50,0,-100],
+                [-100,0,50,0,0,0,0,-100],
+                [-200,-100,-100,-50,-50,-100,-100,-200]
+            ];
+            return whiteQueenArray;
+        }
+            if(piece == '♛'){
+            let blackQueenArray = [
+                [-200,-100,-100,-50,-50,-100,-100,-200],
+                [-100,0,0,0,0,50,0,-100],
+                [-100,0,50,50,50,50,0,-100],
+                [-50,0,50,50,50,50,0,0],
+                [-50,0,50,50,50,50,0,-50],
+                [-100,50,50,50,50,50,0,-100],
+                [-100,0,0,0,0,0,0,-100],
+                [-200,-100,-100,-50,-50,-100,-100,-200]
+            ];
+            return blackQueenArray;
+        }
+            if(piece == '♚'){
+            let blackKingArray = [
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-200,-300,-300,-400,-400,-300,-300,-200],
+                [-100,-200,-200,-200,-200,-200,-200,-100],
+                [200,200,0,0,0,0,200,200],
+                [200,300,100,0,0,100,300,200]
+            ];
+            return blackKingArray;
+        }
+            if(piece == '♔'){
+            let whiteKingArray = [
+                [200,300,100,0,0,100,300,200],
+                [200,200,0,0,0,0,200,200],
+                [-100,-200,-200,-200,-200,-200,-200,-100],
+                [-200,-300,-300,-400,-400,-300,-300,-200],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300],
+                [-300,-400,-400,-500,-500,-400,-400,-300]
+            ];
+            return whiteKingArray;
+        }
+            if(piece == '♙'){
+            let whitePawnArray = [
+                [0,   0,   0,   0,   0,   0,   0,   0],
+                [500, 500, 500, 500, 500, 500, 500, 500],
+                [100,100,200,300,300,200,100,100],
+                [50,50,100,250,250,100,50,50],
+                [0,0,0,0,200,200,0,0],
+                [50,-50,-100,0,0,-100,-50,50],
+                [50,100,100,-200,-200,100,100,50],
+                [0,0,0,0,0,0,0,0]
+            ];
+            return whitePawnArray;
+        }
+            if(piece == '♟'){
+            let blackPawnArray = [
+                [0,   0,   0,   0,   0,   0,   0,   0],
+                [50,100,100,-200,-200,100,100,50],
+                [50,-50,-100,0,0,-100,-50,50],        
+                [0,0,0,0,200,200,0,0],
+                [50,50,100,250,250,100,50,50],
+                [100,100,200,300,300,200,100,100],
+                [500, 500, 500, 500, 500, 500, 500, 500],
+                [0,0,0,0,0,0,0,0]
+            ];
+            return blackPawnArray;
+        }
+    }
     
     createEmptyBoard() {
         let board = [];
@@ -276,28 +394,27 @@ export default class Board {
                 this.select(x,y);
             //}
             //console.clear();
-            if(this.turn !== playerColour){
-                console.log('hi');
-                let allMoves1 = this.findAllMoves(playerColour, this.tiles);
-                if (allMoves1.length === 0 && !this.isInCheck) {
-                    console.log("Draw by stalemate");
-                    fill(10, 10, 10);
-                    textFont("Arial");
-                    text("Draw by stalemate", 400, 400, 500, 500);
-                    //noLoop();
-                }
-                if (allMoves1.length !== 0) {
-                    console.log('hi');
-                    //const boardstate = _.cloneDeep(this.tiles);
-                    let alpha = -20000;
-                    let beta = 20000;
-                    //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
-                    let isMaximizingPlayer = false;
-                    let bestMove = this.chessLooper(3, this.tiles, playerColour, alpha, beta, isMaximizingPlayer);
-                    this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
-                }
-                this.turn = Aicolour;
-            }
+            // if(this.turn !== playerColour){
+            //     console.log('hi');
+            //     let allMoves1 = this.findAllMoves(playerColour, this.tiles);
+            //     if (allMoves1.length === 0 && !this.isInCheck) {
+            //         console.log("Draw by stalemate");
+            //         fill(10, 10, 10);
+            //         textFont("Arial");
+            //         text("Draw by stalemate", 400, 400, 500, 500);
+            //         //noLoop();
+            //     }
+            //     if (allMoves1.length !== 0) {
+            //         //const boardstate = _.cloneDeep(this.tiles);
+            //         let alpha = -20000;
+            //         let beta = 20000;
+            //         //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
+            //         let isMaximizingPlayer = false;
+            //         let bestMove = this.chessLooper(3, this.tiles, playerColour, alpha, beta, isMaximizingPlayer);
+            //         this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
+            //     }
+            //     this.turn = Aicolour;
+            // }
         }
         if(this.turn !== Aicolour){
             calculating = true;
@@ -315,7 +432,9 @@ export default class Board {
                 let beta = 20000;
                 //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
                 let isMaximizingPlayer = true;
-                let bestMove = this.chessLooper(3, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer);
+                let evaluation = this.evaluator();
+                
+                let bestMove = this.chessLooper(4, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
                 this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
             }
             this.turn = playerColour;
@@ -476,56 +595,61 @@ export default class Board {
         return moveValue > maxMoveValue;
     }
 
-    chessLooper (depth, game, playerColor, alpha, beta, isMaximizingPlayer) {        
+    chessLooper (depth, game, playerColor, alpha, beta, isMaximizingPlayer, originalEvaluation) {        
         let value = undefined;
+        let evaluation = originalEvaluation
+        playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+        // this.findallmoves is HEEL ineffecient
+        let possibleMoves = this.findAllMoves(playerColor, this.tiles);
         if (depth == 0) {
-            //miss moet evaluation * -1 als zwart
-            value = this.evaluator().evaluation;
-            return [value, null];
+            if (possibleMoves.length === 0) {
+                this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, playerColor);
+                if (this.isInCheck) {
+                    evaluation = 19000;
+                }
+                if (!this.isInCheck) {
+                    evaluation = 0;
+                }
+            }
+            //value = this.evaluator().evaluation;
+            return [evaluation, null];
         }
+
         let tilesCopy = _.cloneDeep(this.tiles);
         isMaximizingPlayer = isMaximizingPlayer === true ? false : true;
-        playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
-        // Recursive case: search possible moves
-        let bestMove = null; // best move not set yet
-        let possibleMoves = this.findAllMoves(playerColor, this.tiles);
-        // Set random order for possible moves
-        //possibleMoves.sort(function(a, b){return 0.5 – Math.random()});
+        let bestMove = null;
         possibleMoves = shuffle(possibleMoves, true);
-        // Set a default best move value
         let bestMoveValue = isMaximizingPlayer ? -20000 : 20000;
-        // Search through all possible moves
+
         for (var j = 0; j < possibleMoves.length; j++) {
             var move = possibleMoves[j];
-            // Make the move, but undo before exiting loop
+            if(this.tiles[move.to.x][move.to.y] !== undefined){
+                evaluation -= this.tiles[move.to.x][move.to.y].value;
+            }
             this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
-            // Recursively get the value of this move
-            //depth--;
-            value = this.chessLooper(depth-1, game, playerColor, alpha, beta, isMaximizingPlayer)[0];
-            // Log the value of this move
+            value = JSON.parse(JSON.stringify(this.chessLooper(depth-1, game, playerColor, alpha, beta, isMaximizingPlayer, evaluation)[0]));
+            if(this.tiles[move.to.x][move.to.y] !== undefined){
+                evaluation = originalEvaluation;
+            }
             if (isMaximizingPlayer) {
-                // Look for moves that maximize position
                 if (value > bestMoveValue) {
                     bestMoveValue = value;
                     bestMove = move;
                 }
                 alpha = Math.max(alpha, value);
             } else {
-                // Look for moves that minimize position
                 if (value < bestMoveValue) {
                     bestMoveValue = value;
                     bestMove = move;
                 }
                 beta = Math.min(beta, value);
             }
-            // Undo previous move
             this.resetBoard(tilesCopy);
 
             if (beta <= alpha) {
                 break;
             }
         }
-        //Log the best move at the current depth
         //Return the best move, or the only move
         return [bestMoveValue, bestMove || possibleMoves[0]];
     }
