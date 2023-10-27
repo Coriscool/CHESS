@@ -79,63 +79,73 @@ export default class Board {
 
         tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
         tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
+
         return tiles;
     }
+
     valueOfPieces(){
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                if(this.tiles[i][j].sprite == '♜'){
-                    this.tiles[i][j].value = -525;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
+                if(this.tiles[i][j] !== undefined){
+                    if(this.tiles[i][j].colour == COLOUR.WHITE){
+                        this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[j][i];
+                    }
+                    if(this.tiles[i][j].colour == COLOUR.BLACK){
+                        this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[j][i];
+                    }
                 }
-                if(this.tiles[i][j].sprite == '♖'){
-                    this.tiles[i][j].value = 525;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♝'){
-                    this.tiles[i][j].value = -350;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♗'){
-                    this.tiles[i][j].value = 350;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♞'){
-                    this.tiles[i][j].value = -350;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♘'){
-                    this.tiles[i][j].value = 350;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♚'){
-                    this.tiles[i][j].value = -10000;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♔'){
-                    this.tiles[i][j].value = 10000;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♛'){
-                    this.tiles[i][j].value = -1000;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♕'){
-                    this.tiles[i][j].value = 1000;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♜'){
-                    this.tiles[i][j].value = 525;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♟'){
-                    this.tiles[i][j].value = -100;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
-                if(this.tiles[i][j].sprite == '♙'){
-                    this.tiles[i][j].value = 100;
-                    this.tiles[i][j].value += this.arrayMaker(this.tiles[i][j].sprite)[i][j];
-                }
+                    // if(this.tiles[i][j].sprite == '♜'){
+                    //     this.tiles[i][j].value = -525;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♖'){
+                    //     this.tiles[i][j].value = 525;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♝'){
+                    //     this.tiles[i][j].value = -350;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♗'){
+                    //     this.tiles[i][j].value = 350;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♞'){
+                    //     this.tiles[i][j].value = -350;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♘'){
+                    //     this.tiles[i][j].value = 350;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♚'){
+                    //     this.tiles[i][j].value = -10000;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♔'){
+                    //     this.tiles[i][j].value = 10000;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♛'){
+                    //     this.tiles[i][j].value = -1000;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♕'){
+                    //     this.tiles[i][j].value = 1000;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♜'){
+                    //     this.tiles[i][j].value = 525;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♟'){
+                    //     this.tiles[i][j].value = -100;
+                    //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
+                    // if(this.tiles[i][j].sprite == '♙'){
+                    //     this.tiles[i][j].value = 100;
+                    //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+                    // }
             }
         }
     }
@@ -198,28 +208,28 @@ export default class Board {
                 [-200,-100,-100,-100,-100,-100,-100,-200],
                 [-100,0,0,0,0,0,0,-100],
                 [-100,0,50,100,100,50,0,-100],
-                [-100,50,50,100,100,50,50,-100],
+                [-100,100,50,100,100,50,100,-100],
                 [-100,0,100,100,100,100,0,-100],
-                [-100,100,100,100,100,100,100,-100],
+                [-100,100,100,0,0,100,100,-100],
                 [-100,50,0,0,0,0,50,-100],
                 [-200,-100,-100,-100,-100,-100,-100,-200]
             ];
             return whiteBishopArray;
         }
-            if(piece == '♝'){
+        if(piece == '♝'){
             let blackBishopArray = [
                 [-200,-100,-100,-100,-100,-100,-100,-200],
                 [-100,50,0,0,0,0,50,-100],
-                [-100,100,100,100,100,100,100,-100],
+                [-100,100,100,0,0,100,100,-100],
                 [-100,0,100,100,100,100,0,-100],
-                [-100,50,50,100,100,50,50,-100],
+                [-100,100,50,100,100,50,100,-100],
                 [-100,0,50,100,100,50,0,-100],
                 [-100,0,0,0,0,0,0,-100],
                 [-200,-100,-100,-100,-100,-100,-100,-200]
             ];
             return blackBishopArray;
         }
-            if(piece == '♕'){
+        if(piece == '♕'){
             let whiteQueenArray = [
                 [-200,-100,-100,-50,-50,-100,-100,-200],
                 [-100,0,0,0,0,0,0,-100],
@@ -232,7 +242,7 @@ export default class Board {
             ];
             return whiteQueenArray;
         }
-            if(piece == '♛'){
+        if(piece == '♛'){
             let blackQueenArray = [
                 [-200,-100,-100,-50,-50,-100,-100,-200],
                 [-100,0,0,0,0,50,0,-100],
@@ -245,8 +255,8 @@ export default class Board {
             ];
             return blackQueenArray;
         }
-            if(piece == '♚'){
-            let blackKingArray = [
+        if(piece == '♔'){
+            let whiteKingArray = [
                 [-300,-400,-400,-500,-500,-400,-400,-300],
                 [-300,-400,-400,-500,-500,-400,-400,-300],
                 [-300,-400,-400,-500,-500,-400,-400,-300],
@@ -254,13 +264,13 @@ export default class Board {
                 [-200,-300,-300,-400,-400,-300,-300,-200],
                 [-100,-200,-200,-200,-200,-200,-200,-100],
                 [200,200,0,0,0,0,200,200],
-                [200,300,100,0,0,100,300,200]
+                [200,300,0,0,0,0,300,200]
             ];
-            return blackKingArray;
+            return whiteKingArray;
         }
-            if(piece == '♔'){
-            let whiteKingArray = [
-                [200,300,100,0,0,100,300,200],
+        if(piece == '♚'){
+            let blackKingArray = [
+                [200,300,0,0,0,0,300,200],
                 [200,200,0,0,0,0,200,200],
                 [-100,-200,-200,-200,-200,-200,-200,-100],
                 [-200,-300,-300,-400,-400,-300,-300,-200],
@@ -269,27 +279,27 @@ export default class Board {
                 [-300,-400,-400,-500,-500,-400,-400,-300],
                 [-300,-400,-400,-500,-500,-400,-400,-300]
             ];
-            return whiteKingArray;
+            return blackKingArray;
         }
-            if(piece == '♙'){
+        if(piece == '♙'){
             let whitePawnArray = [
-                [0,   0,   0,   0,   0,   0,   0,   0],
+                [0,0,0,0,0,0,0,0],
                 [500, 500, 500, 500, 500, 500, 500, 500],
                 [100,100,200,300,300,200,100,100],
                 [50,50,100,250,250,100,50,50],
-                [0,0,0,0,200,200,0,0],
+                [0,0,0,200,200,0,0,0],
                 [50,-50,-100,0,0,-100,-50,50],
                 [50,100,100,-200,-200,100,100,50],
                 [0,0,0,0,0,0,0,0]
             ];
             return whitePawnArray;
         }
-            if(piece == '♟'){
+        if(piece == '♟'){
             let blackPawnArray = [
-                [0,   0,   0,   0,   0,   0,   0,   0],
+                [0,0,0,0,0,0,0,0],
                 [50,100,100,-200,-200,100,100,50],
                 [50,-50,-100,0,0,-100,-50,50],        
-                [0,0,0,0,200,200,0,0],
+                [0,0,0,200,200,0,0,0],
                 [50,50,100,250,250,100,50,50],
                 [100,100,200,300,300,200,100,100],
                 [500, 500, 500, 500, 500, 500, 500, 500],
@@ -433,8 +443,7 @@ export default class Board {
                 //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
                 let isMaximizingPlayer = true;
                 let evaluation = this.evaluator();
-                
-                let bestMove = this.chessLooper(4, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
+                let bestMove = this.chessLooper(2, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
                 this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
             }
             this.turn = playerColour;
@@ -519,22 +528,22 @@ export default class Board {
         let possibleMove = [];
         for(let i = 0; i<8; i++){
             for(let j = 0; j<8; j++){
-                if(colour === COLOUR.WHITE) {
-                    if (tiles[i][j] != undefined && tiles[i][j].colour == COLOUR.WHITE){
+                //if(colour === COLOUR.WHITE) {
+                    if (tiles[i][j] != undefined && tiles[i][j].colour == colour){
                         this.legalMoves = tiles[i][j].findLegalMoves(tiles);
                         if(this.legalMoves != 0){
                             possibleMovable.push ({i,j});
                         }
                     }
-                }
-                if (colour === COLOUR.BLACK) {
-                    if (tiles[i][j] != undefined && tiles[i][j].colour == COLOUR.BLACK){
+                //}
+                //if (colour === COLOUR.BLACK) {
+                    if (tiles[i][j] != undefined && tiles[i][j].colour == colour){
                         this.legalMoves = tiles[i][j].findLegalMoves(tiles);
                         if(this.legalMoves != 0){
                             possibleMovable.push ({i,j});
                         }
                     }
-                }
+                //}
             }
         }
         for (let c = 0; c < possibleMovable.length; c++) {  
@@ -557,6 +566,12 @@ export default class Board {
             for(let j = 0; j<8; j++){
                 if(this.tiles[i][j] != undefined){
                     evaluation += this.tiles[i][j].value;
+                    if(this.tiles[i][j].colour == COLOUR.BLACK){
+                        evaluation -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j]/10;
+                    }
+                    else{
+                        evaluation += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j]/10;
+                    }
                     numberOfPieces++;
                     if(this.tiles[i][j].sprite == '♕' || this.tiles[i][j].sprite == '♛'){
                         numberOfQueens++;
@@ -598,23 +613,21 @@ export default class Board {
     chessLooper (depth, game, playerColor, alpha, beta, isMaximizingPlayer, originalEvaluation) {        
         let value = undefined;
         let evaluation = originalEvaluation
-        playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
-        // this.findallmoves is HEEL ineffecient
-        let possibleMoves = this.findAllMoves(playerColor, this.tiles);
         if (depth == 0) {
-            if (possibleMoves.length === 0) {
-                this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, playerColor);
-                if (this.isInCheck) {
-                    evaluation = 19000;
-                }
-                if (!this.isInCheck) {
-                    evaluation = 0;
-                }
-            }
+            // if (possibleMoves.length === 0) {
+            //     this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, playerColor);
+            //     if (this.isInCheck) {
+            //         evaluation = 19000;
+            //     }
+            //     if (!this.isInCheck) {
+            //         evaluation = 0;
+            //     }
+            // }
             //value = this.evaluator().evaluation;
-            return [evaluation, null];
+            return [originalEvaluation, null];
         }
-
+        playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
+        let possibleMoves = this.findAllMoves(playerColor, this.tiles);
         let tilesCopy = _.cloneDeep(this.tiles);
         isMaximizingPlayer = isMaximizingPlayer === true ? false : true;
         let bestMove = null;
@@ -625,7 +638,25 @@ export default class Board {
             var move = possibleMoves[j];
             if(this.tiles[move.to.x][move.to.y] !== undefined){
                 evaluation -= this.tiles[move.to.x][move.to.y].value;
+                console.log(evaluation, 'before');
+                //console.log(this.tiles[move.to.x][move.to.y].value, this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.x][move.to.y]/10);
+                if(this.tiles[move.to.x][move.to.y].colour == COLOUR.BLACK){
+                    evaluation += this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.y][move.to.x]/10;
+                }
+                else{
+                    evaluation -= this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.y][move.to.x]/10;
+                }
+                console.log(evaluation, this.tiles[move.to.x][move.to.y]);
             }
+            if(this.tiles[move.from.i][move.from.j]){
+                if(this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK){
+                    evaluation -= this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite)[move.to.y][move.to.x]/10;
+                }
+                else{
+                    evaluation += this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite)[move.to.y][move.to.x]/10;
+                }
+            }
+
             this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
             value = JSON.parse(JSON.stringify(this.chessLooper(depth-1, game, playerColor, alpha, beta, isMaximizingPlayer, evaluation)[0]));
             if(this.tiles[move.to.x][move.to.y] !== undefined){
