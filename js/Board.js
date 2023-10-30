@@ -638,7 +638,6 @@ export default class Board {
             var move = possibleMoves[j];
             if(this.tiles[move.to.x][move.to.y] !== undefined){
                 evaluation -= this.tiles[move.to.x][move.to.y].value;
-                console.log(evaluation, 'before');
                 //console.log(this.tiles[move.to.x][move.to.y].value, this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.x][move.to.y]/10);
                 if(this.tiles[move.to.x][move.to.y].colour == COLOUR.BLACK){
                     evaluation += this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.y][move.to.x]/10;
@@ -646,9 +645,8 @@ export default class Board {
                 else{
                     evaluation -= this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.y][move.to.x]/10;
                 }
-                console.log(evaluation, this.tiles[move.to.x][move.to.y]);
             }
-            if(this.tiles[move.from.i][move.from.j]){
+            if(this.tiles[move.from.i][move.from.j] !== undefined){
                 if(this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK){
                     evaluation -= this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite)[move.to.y][move.to.x]/10;
                 }
@@ -681,7 +679,6 @@ export default class Board {
                 break;
             }
         }
-        //Return the best move, or the only move
         return [bestMoveValue, bestMove || possibleMoves[0]];
     }
     
