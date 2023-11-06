@@ -290,19 +290,75 @@ export default class Board {
                 [0,0,0,200,200,0,0,0],
                 [50,-50,-100,0,0,-100,-50,50],
                 [50,100,100,-200,-200,100,100,50],
-                [0,0,0,0,0,0,0,0]
+                [50,50,50,50,50,50,50,50]
             ];
             return whitePawnArray;
         }
         if(piece == '♟'){
             let blackPawnArray = [
-                [0,0,0,0,0,0,0,0],
+                [50,50,50,50,50,50,50,50],
                 [50,100,100,-200,-200,100,100,50],
                 [50,-50,-100,0,0,-100,-50,50],        
                 [0,0,0,200,200,0,0,0],
                 [50,50,100,250,250,100,50,50],
                 [100,100,200,300,300,200,100,100],
                 [500, 500, 500, 500, 500, 500, 500, 500],
+                [0,0,0,0,0,0,0,0]
+            ];
+            return blackPawnArray;
+        }
+    }
+
+    arrayValueChangerEnd(piece){
+
+        if(piece == '♔'){
+            let whiteKingArray = [
+                [-20,-10,-10,-10,-10,-10,-10,-20]
+                [-5,0,5,5,5,5,0,-5],
+                [-10,-5,20,30,30,20,-5,-10],
+                [-15,-10,35,45,45,35,-10,-15],
+                [-20,-15,30,40,40,30,-15,-20],
+                [-25,-20,20,25,25,20,-20,-25],
+                [-30,-25,0,0,0,0,-25,-30],
+                [-50,-30,-30,-30,-30,-30,-30,-50],
+            ];
+            return whiteKingArray;
+        }
+        if(piece == '♚'){
+            let blackKingArray = [
+                [-50,-30,-30,-30,-30,-30,-30,-50],
+                [-30,-25,0,0,0,0,-25,-30],
+                [-25,-20,20,25,25,20,-20,-25],
+                [-20,-15,30,40,40,30,-15,-20],
+                [-15,-10,35,45,45,35,-10,-15],
+                [-10,-5,20,30,30,20,-5,-10],
+                [-5,0,5,5,5,5,0,-5],
+                [-20,-10,-10,-10,-10,-10,-10,-20]
+            ];
+            return blackKingArray;
+        }
+        if(piece == '♙'){
+            let whitePawnArray = [
+                [0,0,0,0,0,0,0,0],
+                [10,10,10,10,10,10,10,10],
+                [10,10,10,10,10,10,10,10],
+                [20,20,20,20,20,20,20,20],
+                [30,30,30,30,30,30,30,30],
+                [50,50,50,50,50,50,50,50],
+                [80,80,80,80,80,80,80,80],
+                [90,90,90,90,90,90,90,90]
+            ];
+            return whitePawnArray;
+        }
+        if(piece == '♟'){
+            let blackPawnArray = [
+                [90,90,90,90,90,90,90,90],
+                [80,80,80,80,80,80,80,80],
+                [50,50,50,50,50,50,50,50],        
+                [30,30,30,30,30,30,30,30],
+                [20,20,20,20,20,20,20,20],
+                [10,10,10,10,10,10,10,10],
+                [10,10,10,10,10,10,10,10],
                 [0,0,0,0,0,0,0,0]
             ];
             return blackPawnArray;
@@ -443,7 +499,7 @@ export default class Board {
                 //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
                 let isMaximizingPlayer = true;
                 let evaluation = this.evaluator();
-                let bestMove = this.chessLooper(2, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
+                let bestMove = this.chessLooper(3, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
                 this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
             }
             this.turn = playerColour;
