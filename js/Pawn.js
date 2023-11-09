@@ -72,9 +72,9 @@ export default class Pawn extends Piece {
 
     checkPromotion(y, tiles, x) {
         if (this.colour == COLOUR.BLACK && y == 7) {
-            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛', -10);
+            tiles[x][y] = new Queen(x, y, COLOUR.BLACK, '♛', -1000);
         } else if (this.colour === COLOUR.WHITE && y === 0) {
-            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕', 10);
+            tiles[x][y] = new Queen(x, y, COLOUR.WHITE, '♕', 1000);
         }
     }
 }
