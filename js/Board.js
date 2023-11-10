@@ -235,9 +235,9 @@ export default class Board {
                 [-100,0,0,0,0,0,0,-100],
                 [-100,0,50,50,50,50,0,-100],
                 [-50,0,50,50,50,50,0,-50],
-                [0,0,50,50,50,50,0,-50],
-                [-100,50,50,50,50,50,0,-100],
-                [-100,0,50,0,0,0,0,-100],
+                [-50,0,50,50,50,50,0,-50],
+                [-100,0,50,50,50,50,0,-100],
+                [-100,0,0,0,0,0,0,-100],
                 [-200,-100,-100,-50,-50,-100,-100,-200]
             ];
             return whiteQueenArray;
@@ -247,9 +247,9 @@ export default class Board {
                 [-200,-100,-100,-50,-50,-100,-100,-200],
                 [-100,0,0,0,0,50,0,-100],
                 [-100,0,50,50,50,50,0,-100],
-                [-50,0,50,50,50,50,0,0],
                 [-50,0,50,50,50,50,0,-50],
-                [-100,50,50,50,50,50,0,-100],
+                [-50,0,50,50,50,50,0,-50],
+                [-100,0,50,50,50,50,0,-100],
                 [-100,0,0,0,0,0,0,-100],
                 [-200,-100,-100,-50,-50,-100,-100,-200]
             ];
@@ -428,22 +428,21 @@ export default class Board {
         }
         if(this.turn !== Aicolour){
             calculating = true;
-            let allMoves1 = this.findAllMoves(Aicolour, this.tiles);
-            if (allMoves1.length === 0 && !this.isInCheck) {
+            let allMoves = this.findAllMoves(Aicolour, this.tiles);
+            console.log(allMoves);
+            if (allMoves.length === 0 && !this.isInCheck) {
                 console.log("Draw by stalemate");
                 fill(10, 10, 10);
                 textFont("Arial");
                 text("Draw by stalemate", 400, 400, 500, 500);
                 //noLoop();
             }
-            if (allMoves1.length !== 0) {
-                //const boardstate = _.cloneDeep(this.tiles);
+            if (allMoves.length !== 0) {
                 let alpha = -20000;
                 let beta = 20000;
-                //let bestMove = this.chessLooper(allMoves1, 3, Aicolour, boardstate, alpha, beta);
                 let isMaximizingPlayer = true;
                 let evaluation = this.evaluator();
-                let bestMove = this.chessLooper(2, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
+                let bestMove = this.chessLooper(4, this.tiles, Aicolour, alpha, beta, isMaximizingPlayer, evaluation.evaluation);
                 this.move(this.tiles[bestMove[1].from.i][bestMove[1].from.j], bestMove[1].to, this.tiles);
             }
             this.turn = playerColour;
@@ -528,28 +527,14 @@ export default class Board {
         let possibleMove = [];
         for(let i = 0; i<8; i++){
             for(let j = 0; j<8; j++){
-                //if(colour === COLOUR.WHITE) {
-                    if (tiles[i][j] != undefined && tiles[i][j].colour == colour){
-                        this.legalMoves = tiles[i][j].findLegalMoves(tiles);
-                        if(this.legalMoves != 0){
-                            possibleMovable.push ({i,j});
+                if (tiles[i][j] != undefined && tiles[i][j].colour == colour){
+                    let movesTo = tiles[i][j].findLegalMoves(tiles);
+                    if(movesTo != 0){
+                        for (let c = movesTo.length - 1; c >= 0; c--) {
+                            possibleMove.push({from: {i,j}, to: movesTo[c]});
                         }
                     }
-                //}
-                //if (colour === COLOUR.BLACK) {
-                    if (tiles[i][j] != undefined && tiles[i][j].colour == colour){
-                        this.legalMoves = tiles[i][j].findLegalMoves(tiles);
-                        if(this.legalMoves != 0){
-                            possibleMovable.push ({i,j});
-                        }
-                    }
-                //}
-            }
-        }
-        for (let c = 0; c < possibleMovable.length; c++) {  
-            let movesTo = tiles[possibleMovable[c].i][possibleMovable[c].j].findLegalMoves(tiles);
-            for (let j = movesTo.length - 1; j >= 0; j--) {
-                possibleMove.push({from: possibleMovable[c], to: movesTo[j], valueOfMove: undefined});
+                }
             }
         }
         return possibleMove;
