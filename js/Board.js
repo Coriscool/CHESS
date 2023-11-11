@@ -770,6 +770,9 @@ export default class Board {
     const y = Math.floor(clientY / 100);
     const Aicolour = COLOUR.WHITE;
     const playerColour = COLOUR.WHITE;
+    if (!calculating) {
+      this.select(x, y);
+    }
     if (this.turn !== Aicolour) {
       calculating = true;
       let allMoves = this.findAllMoves(Aicolour, this.tiles);
@@ -802,9 +805,6 @@ export default class Board {
       }
       this.turn = playerColour;
       calculating = false;
-    }
-    if (!calculating) {
-      this.select(x, y);
     }
   }
 
