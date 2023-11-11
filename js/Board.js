@@ -15,15 +15,15 @@ export default class Board {
     this.isInCheck = false;
   }
 
-  createTiles() {
-    let tiles = this.createEmptyBoard();
+  //createTiles() {
+    //let tiles = this.createEmptyBoard();
 
-    for (let i = 0; i < 5; i++) {
-      tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
-      tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
-    }
+    //for (let i = 0; i < 5; i++) {
+    //  tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
+    //  tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
+    //}
     //♟♙♜♖♝♗♞♘♚♔♛♕
-    tiles[1][5] = new Pawn(1, 5, COLOUR.BLACK, "♟", -10, false);
+    //tiles[1][5] = new Pawn(1, 5, COLOUR.BLACK, "♟", -10, false);
     // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
     // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
     // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
@@ -39,47 +39,17 @@ export default class Board {
     // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
     // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
 
-    tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
-    tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
+    //tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
+    //tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
 
     // tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
     // tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
 
-    return tiles;
-  }
+    //return tiles;
+  //}
 
-  // createTiles() {
-  //     //for specific board positions
-  //     let tiles = this.createEmptyBoard();
 
-  //     for (let i = 0; i < 8; i++) {
-  //         tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, '♟', -100, false);
-  //         tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, '♙', 100, false);
-  //     }
-  //     //♟♙♜♖♝♗♞♘♚♔♛♕
-  //     tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
-  //     tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
-  //     tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
-  //     tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 525);
-
-  //     tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -350);
-  //     tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -350);
-  //     tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 350);
-  //     tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 350);
-
-  //     tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -350);
-  //     tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -350);
-  //     tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
-  //     tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
-
-  //     tiles[4][0] = new King(4, 0, COLOUR.BLACK, '♚', -10000);
-  //     tiles[4][7] = new King(4, 7, COLOUR.WHITE, '♔', 10000);
-
-  //     tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
-  //     tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
-
-  //     return tiles;
-  // }
+// COMMENT THIS AWAY WHEN THINGS
 
   createTiles() {
     //for specific board positions
@@ -114,93 +84,6 @@ export default class Board {
     return tiles;
   }
 
-  valueOfPieces() {
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        if (this.tiles[i][j] !== undefined) {
-          if (this.tiles[i][j].colour == COLOUR.WHITE) {
-            this.tiles[i][j].value += this.arrayValueChanger(
-              this.tiles[i][j].sprite
-            )[j][i];
-          }
-          if (this.tiles[i][j].colour == COLOUR.BLACK) {
-            this.tiles[i][j].value -= this.arrayValueChanger(
-              this.tiles[i][j].sprite
-            )[j][i];
-          }
-        }
-      }
-    }
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        if (this.tiles[i][j] !== undefined) {
-          if (this.tiles[i][j].colour == COLOUR.WHITE) {
-            this.tiles[i][j].value += this.arrayValueChangerEnd(
-              this.tiles[i][j].sprite
-            )[j][i];
-          }
-          if (this.tiles[i][j].colour == COLOUR.BLACK) {
-            this.tiles[i][j].value -= this.arrayValueChangerEnd(
-              this.tiles[i][j].sprite
-            )[j][i];
-          }
-        }
-        // if(this.tiles[i][j].sprite == '♜'){
-        //     this.tiles[i][j].value = -525;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♖'){
-        //     this.tiles[i][j].value = 525;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♝'){
-        //     this.tiles[i][j].value = -350;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♗'){
-        //     this.tiles[i][j].value = 350;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♞'){
-        //     this.tiles[i][j].value = -350;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♘'){
-        //     this.tiles[i][j].value = 350;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♚'){
-        //     this.tiles[i][j].value = -10000;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♔'){
-        //     this.tiles[i][j].value = 10000;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♛'){
-        //     this.tiles[i][j].value = -1000;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♕'){
-        //     this.tiles[i][j].value = 1000;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♜'){
-        //     this.tiles[i][j].value = 525;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♟'){
-        //     this.tiles[i][j].value = -100;
-        //     this.tiles[i][j].value -= this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-        // if(this.tiles[i][j].sprite == '♙'){
-        //     this.tiles[i][j].value = 100;
-        //     this.tiles[i][j].value += this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
-        // }
-      }
-    }
-  }
-
   arrayValueChanger(piece) {
     let amountOfPieces = 0;
     for (let i = 0; i < 8; i++) {
@@ -210,169 +93,170 @@ export default class Board {
         }
       }
     }
-    //console.log(amountOfPieces);
     if (amountOfPieces > 24) {
       if (piece == "♜") {
         let blackRookArray = [
-          [0, 0, 0, 50, 50, 50, 0, 0],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [50, 100, 100, 100, 100, 100, 100, 50],
-          [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 5, 5, 5, 0, 0],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [5, 10, 10, 10, 10, 10, 10, 5],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ];
         return blackRookArray;
-      }
-      if (piece == "♖") {
+    }
+    if (piece == "♖") {
         let whiteRookArray = [
-          [0, 0, 0, 50, 50, 0, 0, 0],
-          [50, 100, 100, 100, 100, 100, 100, 50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [0, 0, 0, 50, 50, 50, 0, 0],
+            [0, 0, 0, 5, 5, 0, 0, 0],
+            [5, 10, 10, 10, 10, 10, 10, 5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [0, 0, 0, 5, 5, 5, 0, 0],
         ];
         return whiteRookArray;
-      }
-      if (piece == "♞") {
+    }
+    if (piece == "♞") {
         let blackHorseArray = [
-          [-500, -400, -300, -300, -300, -300, -400, -500],
-          [-400, -200, 0, 50, 50, 0, -200, -400],
-          [-300, 50, 100, 150, 150, 100, 50, -300],
-          [-300, 0, 150, 200, 200, 150, 0, -300],
-          [-300, 50, 150, 200, 200, 150, 50, -300],
-          [-300, 0, 100, 150, 150, 100, 0, -300],
-          [-400, -200, 0, 0, 0, 0, -200, -400],
-          [-500, -400, -300, -300, -300, -300, -400, -500],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
+            [-40, -20, 0, 5, 5, 0, -20, -40],
+            [-30, 5, 10, 15, 15, 10, 5, -30],
+            [-30, 0, 15, 20, 20, 15, 0, -30],
+            [-30, 5, 15, 20, 20, 15, 5, -30],
+            [-30, 0, 10, 15, 15, 10, 0, -30],
+            [-40, -20, 0, 0, 0, 0, -20, -40],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
         ];
         return blackHorseArray;
-      }
-      if (piece == "♘") {
+    }
+    if (piece == "♘") {
         let whiteHorseArray = [
-          [-500, -400, -300, -300, -300, -300, -400, -500],
-          [-400, -200, 0, 0, 0, 0, -200, -400],
-          [-300, 0, 100, 150, 150, 100, 0, -300],
-          [-300, 50, 150, 200, 200, 150, 50, -300],
-          [-300, 0, 150, 200, 200, 150, 0, -300],
-          [-300, 50, 100, 150, 150, 100, 50, -300],
-          [-400, -200, 0, 50, 50, 0, -200, -400],
-          [-500, -400, -300, -300, -300, -300, -400, -500],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
+            [-40, -20, 0, 0, 0, 0, -20, -40],
+            [-30, 0, 10, 15, 15, 10, 0, -30],
+            [-30, 5, 15, 20, 20, 15, 5, -30],
+            [-30, 0, 15, 20, 20, 15, 0, -30],
+            [-30, 5, 10, 15, 15, 10, 5, -30],
+            [-40, -20, 0, 5, 5, 0, -20, -40],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
         ];
         return whiteHorseArray;
-      }
-      if (piece == "♗") {
+    }
+    if (piece == "♗") {
         let whiteBishopArray = [
-          [-200, -100, -100, -100, -100, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-100, 0, 50, 100, 100, 50, 0, -100],
-          [-100, 100, 50, 100, 100, 50, 100, -100],
-          [-100, 0, 100, 100, 100, 100, 0, -100],
-          [-100, 100, 100, 0, 0, 100, 100, -100],
-          [-100, 50, 0, 0, 0, 0, 50, -100],
-          [-200, -100, -100, -100, -100, -100, -100, -200],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-10, 0, 5, 10, 10, 5, 0, -10],
+            [-10, 10, 5, 10, 10, 5, 10, -10],
+            [-10, 0, 10, 10, 10, 10, 0, -10],
+            [-10, 10, 10, 0, 0, 10, 10, -10],
+            [-10, 5, 0, 0, 0, 0, 5, -10],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
         ];
         return whiteBishopArray;
-      }
-      if (piece == "♝") {
+    }
+    if (piece == "♝") {
         let blackBishopArray = [
-          [-200, -100, -100, -100, -100, -100, -100, -200],
-          [-100, 50, 0, 0, 0, 0, 50, -100],
-          [-100, 100, 100, 0, 0, 100, 100, -100],
-          [-100, 0, 100, 100, 100, 100, 0, -100],
-          [-100, 100, 50, 100, 100, 50, 100, -100],
-          [-100, 0, 50, 100, 100, 50, 0, -100],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -100, -100, -100, -100, -200],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
+            [-10, 5, 0, 0, 0, 0, 5, -10],
+            [-10, 10, 10, 0, 0, 10, 10, -10],
+            [-10, 0, 10, 10, 10, 10, 0, -10],
+            [-10, 10, 5, 10, 10, 5, 10, -10],
+            [-10, 0, 5, 10, 10, 5, 0, -10],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
         ];
         return blackBishopArray;
-      }
-      if (piece == "♕") {
+    }
+    if (piece == "♕") {
         let whiteQueenArray = [
-          [-200, -100, -100, -50, -50, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -50, -50, -100, -100, -200],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-10, 0, 5, 5, 5, 5, 0, -10],
+            [-5, 0, 5, 5, 5, 5, 0, -5],
+            [0, 0, 5, 5, 5, 5, 0, -5],
+            [-10, 5, 5, 5, 5, 5, 0, -10],
+            [-10, 0, 5, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
         ];
         return whiteQueenArray;
-      }
-      if (piece == "♛") {
+    }
+    if (piece == "♛") {
         let blackQueenArray = [
-          [-200, -100, -100, -50, -50, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 50, 0, -100],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -50, -50, -100, -100, -200],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 5, 0, -10],
+            [-10, 0, 5, 5, 5, 5, 0, -10],
+            [-5, 0, 5, 5, 5, 5, 0, 0],
+            [-5, 0, 5, 5, 5, 5, 0, -5],
+            [-10, 5, 5, 5, 5, 5, 0, -10],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
         ];
         return blackQueenArray;
-      }
-      if (piece == "♔") {
+    }
+    if (piece == "♔") {
         let whiteKingArray = [
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-200, -300, -300, -400, -400, -300, -300, -200],
-          [-100, -200, -200, -200, -200, -200, -200, -100],
-          [200, 200, 0, 0, 0, 0, 200, 200],
-          [200, 300, 0, 0, 0, 0, 300, 200],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-20, -30, -30, -40, -40, -30, -30, -20],
+            [-10, -20, -20, -20, -20, -20, -20, -10],
+            [20, 20, 0, 0, 0, 0, 20, 20],
+            [20, 30, 0, 0, 0, 0, 30, 20],
         ];
         return whiteKingArray;
-      }
-      if (piece == "♚") {
+    }
+    if (piece == "♚") {
         let blackKingArray = [
-          [200, 300, 0, 0, 0, 0, 300, 200],
-          [200, 200, 0, 0, 0, 0, 200, 200],
-          [-100, -200, -200, -200, -200, -200, -200, -100],
-          [-200, -300, -300, -400, -400, -300, -300, -200],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
-          [-300, -400, -400, -500, -500, -400, -400, -300],
+            [20, 30, 0, 0, 0, 0, 30, 20],
+            [20, 20, 0, 0, 0, 0, 20, 20],
+            [-10, -20, -20, -20, -20, -20, -20, -10],
+            [-20, -30, -30, -40, -40, -30, -30, -20],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
+            [-30, -40, -40, -50, -50, -40, -40, -30],
         ];
         return blackKingArray;
-      }
-      if (piece == "♙") {
+    }
+    if (piece == "♙") {
         let whitePawnArray = [
-          [0, 0, 0, 0, 0, 0, 0, 0],
-          [500, 500, 500, 500, 500, 500, 500, 500],
-          [100, 100, 200, 300, 300, 200, 100, 100],
-          [50, 50, 100, 250, 250, 100, 50, 50],
-          [0, 0, 0, 200, 200, 0, 0, 0],
-          [50, -50, -100, 0, 0, -100, -50, 50],
-          [50, 100, 100, -200, -200, 100, 100, 50],
-          [50, 50, 50, 50, 50, 50, 50, 50],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [50, 50, 50, 50, 50, 50, 50, 50],
+            [10, 10, 20, 30, 30, 20, 10, 10],
+            [5, 5, 10, 25, 25, 10, 5, 5],
+            [0, 0, 0, 20, 20, 0, 0, 0],
+            [5, -5, -10, 0, 0, -10, -5, 5],
+            [5, 10, 10, -20, -20, 10, 10, 5],
+            [5, 5, 5, 5, 5, 5, 5, 5],
         ];
         return whitePawnArray;
-      }
-      if (piece == "♟") {
+    }
+    if (piece == "♟") {
         let blackPawnArray = [
-          [50, 50, 50, 50, 50, 50, 50, 50],
-          [50, 100, 100, -200, -200, 100, 100, 50],
-          [50, -50, -100, 0, 0, -100, -50, 50],
-          [0, 0, 0, 200, 200, 0, 0, 0],
-          [50, 50, 100, 250, 250, 100, 50, 50],
-          [100, 100, 200, 300, 300, 200, 100, 100],
-          [500, 500, 500, 500, 500, 500, 500, 500],
-          [0, 0, 0, 0, 0, 0, 0, 0],
+            [5, 5, 5, 5, 5, 5, 5, 5],
+            [5, 10, 10, -20, -20, 10, 10, 5],
+            [5, -5, -10, 0, 0, -10, -5, 5],
+            [0, 0, 0, 20, 20, 0, 0, 0],
+            [5, 5, 10, 25, 25, 10, 5, 5],
+            [10, 10, 20, 30, 30, 20, 10, 10],
+            [50, 50, 50, 50, 50, 50, 50, 50],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ];
         return blackPawnArray;
-      }
+    }
+    
     }
     if (amountOfPieces < 9) {
       if (piece == "♔") {
         let whiteKingArray = [
-          [-20, -10, -10, -10, -10, -10, -10, -20][(-5, 0, 5, 5, 5, 5, 0, -5)],
+          [-20, -10, -10, -10, -10, -10, -10, -20]
+          [-5, 0, 5, 5, 5, 5, 0, -5],
           [-10, -5, 20, 30, 30, 20, -5, -10],
           [-15, -10, 35, 45, 45, 35, -10, -15],
           [-20, -15, 30, 40, 40, 30, -15, -20],
@@ -398,133 +282,134 @@ export default class Board {
       if (piece == "♙") {
         let whitePawnArray = [
           [0, 0, 0, 0, 0, 0, 0, 0],
+          [5, 5, 5, 5, 5, 5, 5, 5],
+          [5, 5, 5, 5, 5, 5, 5, 5],
           [10, 10, 10, 10, 10, 10, 10, 10],
-          [10, 10, 10, 10, 10, 10, 10, 10],
-          [20, 20, 20, 20, 20, 20, 20, 20],
-          [30, 30, 30, 30, 30, 30, 30, 30],
-          [50, 50, 50, 50, 50, 50, 50, 50],
-          [80, 80, 80, 80, 80, 80, 80, 80],
-          [90, 90, 90, 90, 90, 90, 90, 90],
+          [15, 15, 15, 15, 15, 15, 15, 15],
+          [25, 25, 25, 25, 25, 25, 25, 25],
+          [40, 40, 40, 40, 40, 40, 40, 40],
+          [45, 45, 45, 45, 45, 45, 45, 45],
         ];
         return whitePawnArray;
       }
       if (piece == "♟") {
         let blackPawnArray = [
-          [90, 90, 90, 90, 90, 90, 90, 90],
-          [80, 80, 80, 80, 80, 80, 80, 80],
-          [50, 50, 50, 50, 50, 50, 50, 50],
-          [30, 30, 30, 30, 30, 30, 30, 30],
-          [20, 20, 20, 20, 20, 20, 20, 20],
-          [10, 10, 10, 10, 10, 10, 10, 10],
-          [10, 10, 10, 10, 10, 10, 10, 10],
-          [0, 0, 0, 0, 0, 0, 0, 0],
+            [45, 45, 45, 45, 45, 45, 45, 45],
+            [40, 40, 40, 40, 40, 40, 40, 40],
+            [25, 25, 25, 25, 25, 25, 25, 25],
+            [15, 15, 15, 15, 15, 15, 15, 15],
+            [10, 10, 10, 10, 10, 10, 10, 10],
+            [5, 5, 5, 5, 5, 5, 5, 5],
+            [5, 5, 5, 5, 5, 5, 5, 5],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ];
         return blackPawnArray;
       }
       if (piece == "♜") {
         let blackRookArray = [
-          [0, 0, 0, 50, 50, 50, 0, 0],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [50, 100, 100, 100, 100, 100, 100, 50],
-          [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 5, 5, 5, 0, 0],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [5, 10, 10, 10, 10, 10, 10, 5],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ];
         return blackRookArray;
-      }
-      if (piece == "♖") {
+    }
+    if (piece == "♖") {
         let whiteRookArray = [
-          [0, 0, 0, 50, 50, 0, 0, 0],
-          [50, 100, 100, 100, 100, 100, 100, 50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [-50, 0, 0, 0, 0, 0, 0, -50],
-          [0, 0, 0, 50, 50, 50, 0, 0],
+            [0, 0, 0, 5, 5, 0, 0, 0],
+            [5, 10, 10, 10, 10, 10, 10, 5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [-5, 0, 0, 0, 0, 0, 0, -5],
+            [0, 0, 0, 5, 5, 5, 0, 0],
         ];
         return whiteRookArray;
-      }
-      if (piece == "♞") {
+    }
+    if (piece == "♞") {
         let blackHorseArray = [
-          [-500, -400, -300, -300, -300, -300, -400, -500],
-          [-400, -200, 0, 50, 50, 0, -200, -400],
-          [-300, 50, 100, 150, 150, 100, 50, -300],
-          [-300, 0, 150, 200, 200, 150, 0, -300],
-          [-300, 50, 150, 200, 200, 150, 50, -300],
-          [-300, 0, 100, 150, 150, 100, 0, -300],
-          [-400, -200, 0, 0, 0, 0, -200, -400],
-          [-500, -400, -300, -300, -300, -300, -400, -500],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
+            [-40, -20, 0, 5, 5, 0, -20, -40],
+            [-30, 5, 10, 15, 15, 10, 5, -30],
+            [-30, 0, 15, 20, 20, 15, 0, -30],
+            [-30, 5, 15, 20, 20, 15, 5, -30],
+            [-30, 0, 10, 15, 15, 10, 0, -30],
+            [-40, -20, 0, 0, 0, 0, -20, -40],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
         ];
         return blackHorseArray;
-      }
-      if (piece == "♘") {
+    }
+    if (piece == "♘") {
         let whiteHorseArray = [
-          [-500, -400, -300, -300, -300, -300, -400, -500],
-          [-400, -200, 0, 0, 0, 0, -200, -400],
-          [-300, 0, 100, 150, 150, 100, 0, -300],
-          [-300, 50, 150, 200, 200, 150, 50, -300],
-          [-300, 0, 150, 200, 200, 150, 0, -300],
-          [-300, 50, 100, 150, 150, 100, 50, -300],
-          [-400, -200, 0, 50, 50, 0, -200, -400],
-          [-500, -400, -300, -300, -300, -300, -400, -500],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
+            [-40, -20, 0, 0, 0, 0, -20, -40],
+            [-30, 0, 10, 15, 15, 10, 0, -30],
+            [-30, 5, 15, 20, 20, 15, 5, -30],
+            [-30, 0, 15, 20, 20, 15, 0, -30],
+            [-30, 5, 10, 15, 15, 10, 5, -30],
+            [-40, -20, 0, 5, 5, 0, -20, -40],
+            [-50, -40, -30, -30, -30, -30, -40, -50],
         ];
         return whiteHorseArray;
-      }
-      if (piece == "♗") {
+    }
+    if (piece == "♗") {
         let whiteBishopArray = [
-          [-200, -100, -100, -100, -100, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-100, 0, 50, 100, 100, 50, 0, -100],
-          [-100, 100, 50, 100, 100, 50, 100, -100],
-          [-100, 0, 100, 100, 100, 100, 0, -100],
-          [-100, 100, 100, 0, 0, 100, 100, -100],
-          [-100, 50, 0, 0, 0, 0, 50, -100],
-          [-200, -100, -100, -100, -100, -100, -100, -200],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-10, 0, 5, 10, 10, 5, 0, -10],
+            [-10, 10, 5, 10, 10, 5, 10, -10],
+            [-10, 0, 10, 10, 10, 10, 0, -10],
+            [-10, 10, 10, 0, 0, 10, 10, -10],
+            [-10, 5, 0, 0, 0, 0, 5, -10],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
         ];
         return whiteBishopArray;
-      }
-      if (piece == "♝") {
+    }
+    if (piece == "♝") {
         let blackBishopArray = [
-          [-200, -100, -100, -100, -100, -100, -100, -200],
-          [-100, 50, 0, 0, 0, 0, 50, -100],
-          [-100, 100, 100, 0, 0, 100, 100, -100],
-          [-100, 0, 100, 100, 100, 100, 0, -100],
-          [-100, 100, 50, 100, 100, 50, 100, -100],
-          [-100, 0, 50, 100, 100, 50, 0, -100],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -100, -100, -100, -100, -200],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
+            [-10, 5, 0, 0, 0, 0, 5, -10],
+            [-10, 10, 10, 0, 0, 10, 10, -10],
+            [-10, 0, 10, 10, 10, 10, 0, -10],
+            [-10, 10, 5, 10, 10, 5, 10, -10],
+            [-10, 0, 5, 10, 10, 5, 0, -10],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -10, -10, -10, -10, -20],
         ];
         return blackBishopArray;
-      }
-      if (piece == "♕") {
+    }
+    if (piece == "♕") {
         let whiteQueenArray = [
-          [-200, -100, -100, -50, -50, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [0, 0, 50, 50, 50, 50, 0, -50],
-          [-100, 50, 50, 50, 50, 50, 0, -100],
-          [-100, 0, 50, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -50, -50, -100, -100, -200],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-10, 0, 5, 5, 5, 5, 0, -10],
+            [-5, 0, 5, 5, 5, 5, 0, -5],
+            [0, 0, 5, 5, 5, 5, 0, -5],
+            [-10, 5, 5, 5, 5, 5, 0, -10],
+            [-10, 0, 5, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
         ];
         return whiteQueenArray;
-      }
-      if (piece == "♛") {
+    }
+    if (piece == "♛") {
         let blackQueenArray = [
-          [-200, -100, -100, -50, -50, -100, -100, -200],
-          [-100, 0, 0, 0, 0, 50, 0, -100],
-          [-100, 0, 50, 50, 50, 50, 0, -100],
-          [-50, 0, 50, 50, 50, 50, 0, 0],
-          [-50, 0, 50, 50, 50, 50, 0, -50],
-          [-100, 50, 50, 50, 50, 50, 0, -100],
-          [-100, 0, 0, 0, 0, 0, 0, -100],
-          [-200, -100, -100, -50, -50, -100, -100, -200],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
+            [-10, 0, 0, 0, 0, 5, 0, -10],
+            [-10, 0, 5, 5, 5, 5, 0, -10],
+            [-5, 0, 5, 5, 5, 5, 0, 0],
+            [-5, 0, 5, 5, 5, 5, 0, -5],
+            [-10, 5, 5, 5, 5, 5, 0, -10],
+            [-10, 0, 0, 0, 0, 0, 0, -10],
+            [-20, -10, -10, -5, -5, -10, -10, -20],
         ];
         return blackQueenArray;
-      }
+    }
+    
     }
   }
 
@@ -770,6 +655,9 @@ export default class Board {
     const y = Math.floor(clientY / 100);
     const Aicolour = COLOUR.WHITE;
     const playerColour = COLOUR.WHITE;
+    if (!calculating) {
+      this.select(x, y);
+    }
     if (this.turn !== Aicolour) {
       calculating = true;
       let allMoves = this.findAllMoves(Aicolour, this.tiles);
@@ -802,9 +690,6 @@ export default class Board {
       }
       this.turn = playerColour;
       calculating = false;
-    }
-    if (!calculating) {
-      this.select(x, y);
     }
   }
 
@@ -909,13 +794,6 @@ export default class Board {
       for (let j = 0; j < 8; j++) {
         if (this.tiles[i][j] != undefined) {
           evaluation += this.tiles[i][j].value;
-          if (this.tiles[i][j].colour == COLOUR.BLACK) {
-            evaluation -=
-              this.arrayValueChanger(this.tiles[i][j].sprite)[i][j] / 10;
-          } else {
-            evaluation +=
-              this.arrayValueChanger(this.tiles[i][j].sprite)[i][j] / 10;
-          }
           numberOfPieces++;
           if (
             this.tiles[i][j].sprite == "♕" ||
@@ -940,6 +818,13 @@ export default class Board {
             this.tiles[i][j].sprite == "♘"
           ) {
             numberOfKnights++;
+          }
+          if (this.tiles[i][j].colour == COLOUR.BLACK) {
+            evaluation -=
+              this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
+          } else {
+            evaluation +=
+              this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
           }
         }
         //♟♙♜♖♝♗♞♘♚♔♛♕
@@ -985,16 +870,6 @@ export default class Board {
     let value = undefined;
     let evaluation = originalEvaluation;
     if (depth == 0) {
-      // if (possibleMoves.length === 0) {
-      //     this.isInCheck = CheckFinder.isCurrentPlayerInCheck(this.tiles, playerColor);
-      //     if (this.isInCheck) {
-      //         evaluation = 19000;
-      //     }
-      //     if (!this.isInCheck) {
-      //         evaluation = 0;
-      //     }
-      // }
-      //value = this.evaluator().evaluation;
       return [originalEvaluation, undefined];
     }
     playerColor = playerColor === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
@@ -1011,27 +886,27 @@ export default class Board {
         evaluation -= this.tiles[move.to.x][move.to.y].value;
         if (this.tiles[move.to.x][move.to.y].colour == COLOUR.BLACK) {
           evaluation +=
-            this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[
+            this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite, 30)[
               move.to.y
-            ][move.to.x] / 10;
+            ][move.to.x];
         } else {
           evaluation -=
-            this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[
+            this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite, 30)[
               move.to.y
-            ][move.to.x] / 10;
+            ][move.to.x];
         }
       }
       if (this.tiles[move.from.i][move.from.j] !== undefined) {
         if (this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK) {
           evaluation -=
-            this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite)[
+            this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite, 30)[
               move.to.y
-            ][move.to.x] / 10;
+            ][move.to.x];
         } else {
           evaluation +=
-            this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite)[
+            this.arrayValueChanger(this.tiles[move.from.i][move.from.j].sprite, 30)[
               move.to.y
-            ][move.to.x] / 10;
+            ][move.to.x];
         }
       }
 
