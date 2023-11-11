@@ -11,6 +11,7 @@ var w1 = 0;
 var w2 = 0;
 var b1 = 0;
 var b2 = 0;
+// var distance = 0;
 
 export default class Board {
   constructor() {
@@ -66,7 +67,7 @@ export default class Board {
     // }
     //♟♙♜♖♝♗♞♘♚♔♛♕
     // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", -525);
-    // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
+    tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
     // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", 525);
     // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, "♖", 525);
 
@@ -88,18 +89,21 @@ export default class Board {
 
     return tiles;
   }
-
-
-  arrayValueChanger(piece) {
+  kingThing(piece){
     let amountOfPieces = 0;
-    // let w1 = 0;
-    // let w2 = 0;
-    // let b1 = 0;
-    // let b2 = 0;
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (this.tiles[i][j] !== undefined) {
           amountOfPieces++;
+
+        }
+      }
+    }
+    //I will change this so its not two forloops
+    if(amountOfPieces < 6){
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        if (this.tiles[i][j] !== undefined) {
           if (this.tiles[i][j].sprite == "♔") {
             b1 = i+1;
             b2 = j+1;
@@ -111,9 +115,37 @@ export default class Board {
         }
       }
     }
-    //king needs to move to other king to trap it for checkmate
-    let distance = Math.round(5*sqrt((b1 - w1)^2 + (b2 - w2)^2));
-    console.log(distance);
+    let distance = Math.round((5*sqrt((b1 - w1)**2 + (b2 - w2)**2)));
+    return distance;
+  }
+  else{
+    return 0;
+  }
+  }
+
+  arrayValueChanger(piece) {
+    let amountOfPieces = 0;
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        if (this.tiles[i][j] !== undefined) {
+          amountOfPieces++;
+
+        }
+      }
+    }
+
+    // if(b1 > w1 && b2 > w2){
+      
+    // }
+    // if(b1 < w1 && b2 > w2){
+      
+    // }
+    // if(b1 > w1 && b2 < w2){
+      
+    // }
+    // if(b1 < w1 && b2 < w2){
+      
+    // }
 
     let whiteKingArray, blackKingArray, whitePawnArray, blackPawnArray, whiteRookArray, blackRookArray,
         whiteHorseArray, blackHorseArray, whiteBishopArray, blackBishopArray, whiteQueenArray, blackQueenArray;
@@ -538,7 +570,7 @@ export default class Board {
         let isMaximizingPlayer = true;
         let evaluation = this.evaluator();
         let bestMove = this.chessLooper(
-          2,
+          4,
           this.tiles,
           Aicolour,
           alpha,
@@ -690,10 +722,18 @@ export default class Board {
             evaluation +=
               this.arrayValueChanger(this.tiles[i][j].sprite)[i][j];
           }
+          if (this.tiles[i][j].colour == COLOUR.BLACK) {
+            evaluation += this.kingThing(this.tiles[i][j].sprite);
+            console.log(this.kingThing(this.tiles[i][j].sprite));
+          // } else {
+          //   evaluation -= this.kingThing(this.tiles[i][j].sprite);
+          // 
         }
+      }
         //♟♙♜♖♝♗♞♘♚♔♛♕
       }
     }
+    console.log("evaluation:", evaluation);
     return {
       evaluation,
       numberOfPieces,
@@ -772,6 +812,13 @@ export default class Board {
               move.to.y
             ][move.to.x];
         }
+        if (this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK) {
+          evaluation += 10*this.kingThing(this.tiles[move.from.i][move.from.j].sprite);
+          console.log(10*this.kingThing(this.tiles[move.from.i][move.from.j].sprite));
+        // } else {
+        //   evaluation -= this.kingThing(this.tiles[i][j].sprite);
+        // 
+      }
       }
 
       this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
