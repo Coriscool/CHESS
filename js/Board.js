@@ -210,7 +210,7 @@ export default class Board {
         }
       }
     }
-    console.log(amountOfPieces);
+    //console.log(amountOfPieces);
     if (amountOfPieces > 24) {
       if (piece == "♜") {
         let blackRookArray = [
@@ -742,7 +742,7 @@ export default class Board {
       const tile = this.tiles[this.selected.x][this.selected.y];
       if (tile) {
         push();
-        fill(118, 115, 115, 170);
+        fill(90, 90, 90, 170);
 
         for (const move of this.legalMoves) {
           push();
@@ -770,20 +770,6 @@ export default class Board {
     const y = Math.floor(clientY / 100);
     const Aicolour = COLOUR.WHITE;
     const playerColour = COLOUR.WHITE;
-    if (!calculating) {
-      // if (this.isInCheck) {
-      //     let moves = CheckFinder.findMovesForCheckedPlayer(this.tiles, this.turn);
-      //     if (moves.length === 0) {
-      //         console.log('Checkmate');
-      //         fill(10,10,10);
-      //         textFont('Arial');
-      //         text('Checkmate',400,400,500,500);
-      //         noLoop();
-      //     }
-      // }
-      // else{
-      this.select(x, y);
-    }
     if (this.turn !== Aicolour) {
       calculating = true;
       let allMoves = this.findAllMoves(Aicolour, this.tiles);
@@ -816,6 +802,9 @@ export default class Board {
       }
       this.turn = playerColour;
       calculating = false;
+    }
+    if (!calculating) {
+      this.select(x, y);
     }
   }
 
@@ -1020,7 +1009,6 @@ export default class Board {
       var move = possibleMoves[j];
       if (this.tiles[move.to.x][move.to.y] !== undefined) {
         evaluation -= this.tiles[move.to.x][move.to.y].value;
-        //console.log(this.tiles[move.to.x][move.to.y].value, this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[move.to.x][move.to.y]/10);
         if (this.tiles[move.to.x][move.to.y].colour == COLOUR.BLACK) {
           evaluation +=
             this.arrayValueChanger(this.tiles[move.to.x][move.to.y].sprite)[
