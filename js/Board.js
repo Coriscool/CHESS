@@ -11,6 +11,7 @@ var w1 = 0;
 var w2 = 0;
 var b1 = 0;
 var b2 = 0;
+var piecesAmount = 32;
 // var distance = 0;
 
 export default class Board {
@@ -66,6 +67,8 @@ export default class Board {
     //   tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
     // }
     //♟♙♜♖♝♗♞♘♚♔♛♕
+    tiles[1][5] = new Pawn(1, 5, COLOUR.WHITE, "♙", -10, false);
+
     // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", -525);
     tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
     // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", 525);
@@ -95,7 +98,7 @@ export default class Board {
       for (let j = 0; j < 8; j++) {
         if (this.tiles[i][j] !== undefined) {
           amountOfPieces++;
-
+          piecesAmount = amountOfPieces;
         }
       }
     }
@@ -115,7 +118,9 @@ export default class Board {
         }
       }
     }
-    let distance = Math.round((5*sqrt((b1 - w1)**2 + (b2 - w2)**2)));
+    //let distance = (sqrt((b1 - w1)**2 + (b2 - w2)**2));
+    let distance = Math.round(5*(sqrt((b1 - w1)**2 + (b2 - w2)**2)));
+    console.log("distance:", distance);
     return distance;
   }
   else{
@@ -129,7 +134,6 @@ export default class Board {
       for (let j = 0; j < 8; j++) {
         if (this.tiles[i][j] !== undefined) {
           amountOfPieces++;
-
         }
       }
     }
@@ -311,6 +315,15 @@ export default class Board {
     else {      
       if (piece == "♔") {
         whiteKingArray = [
+            // [-100, -50, -50, -50, -50, -50, -50, -100],
+            // [-25, 0, 2.5, 2.5, 2.5, 2.5, 0, -25],
+            // [-50, -2.5, 10, 15, 15, 10, -2.5, -50],
+            // [-75, -5, 17.5, 22.5, 22.5, 17.5, -5, -75],
+            // [-100, -7.5, 15, 20, 20, 15, -7.5, -100],
+            // [-125, -10, 10, 12.5, 12.5, 10, -10, -125],
+            // [-150, -12.5, 0, 0, 0, 0, -12.5, -150],
+            // [-250, -150, -150, -150, -150, -150, -150, -250]
+
             [-10, -5, -5, -5, -5, -5, -5, -10],
             [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
             [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
@@ -569,6 +582,7 @@ export default class Board {
         let beta = 20000;
         let isMaximizingPlayer = true;
         let evaluation = this.evaluator();
+        //if(piecesAmount > 5){
         let bestMove = this.chessLooper(
           4,
           this.tiles,
@@ -578,6 +592,18 @@ export default class Board {
           isMaximizingPlayer,
           evaluation.evaluation
         );
+      //  }
+      //  else{
+      //   let bestMove = this.chessLooper(
+      //     4,
+      //     this.tiles,
+      //     Aicolour,
+      //     alpha,
+      //     beta,
+      //     isMaximizingPlayer,
+      //     evaluation.evaluation
+      //   );
+      //}
         this.move(
           this.tiles[bestMove[1].from.i][bestMove[1].from.j],
           bestMove[1].to,
@@ -653,6 +679,7 @@ export default class Board {
         fill(10, 10, 10);
         textFont("Arial");
         text("Checkmate", 400, 400, 50, 50);
+        console.log("checkmate");
         //noLoop();
       }
     }
@@ -678,7 +705,6 @@ export default class Board {
     }
     return possibleMove;
   }
-
   evaluator() {
     let evaluation = 0;
     let numberOfQueens = 0;
@@ -812,14 +838,21 @@ export default class Board {
               move.to.y
             ][move.to.x];
         }
+        console.log("pieces:" , piecesAmount);
+        console.log("legalmoves:" , this.legalMoves.length , this.legalMoves);
+        if(piecesAmount < 5){
         if (this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK) {
-          evaluation += 10*this.kingThing(this.tiles[move.from.i][move.from.j].sprite);
-          console.log(10*this.kingThing(this.tiles[move.from.i][move.from.j].sprite));
+          evaluation += this.kingThing(this.tiles[move.from.i][move.from.j].sprite);
+          console.log(this.kingThing(this.tiles[move.from.i][move.from.j].sprite));
+
         // } else {
         //   evaluation -= this.kingThing(this.tiles[i][j].sprite);
-        // 
       }
       }
+      }
+      // if(this.legalMoves.length = 0){
+      //   evaluation += Math.abs(evaluation);
+      // }
 
       this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
       value = JSON.parse(
