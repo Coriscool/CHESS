@@ -12,7 +12,7 @@ var w2 = 0;
 var b1 = 0;
 var b2 = 0;
 var piecesAmount = 32;
-// var distance = 0;
+var gameOver1 = 1;
 
 export default class Board {
   constructor() {
@@ -25,73 +25,35 @@ export default class Board {
   createTiles() {
     let tiles = this.createEmptyBoard();
 
-    // for (let i = 0; i < 8; i++) {
-    //  tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
-    //  tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
-    // }
-    // //♟♙♜♖♝♗♞♘♚♔♛♕
-    // //tiles[1][5] = new Pawn(1, 5, COLOUR.BLACK, "♟", -10, false);
-    // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
-    // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
-    // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
-    // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 525);
+    for (let i = 0; i < 8; i++) {
+     tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
+     tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
+    }
+    //♟♙♜♖♝♗♞♘♚♔♛♕
+    tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
+    tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
+    tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
+    tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, '♖', 525);
 
-    // tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -350);
-    // tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -350);
-    // tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 350);
-    // tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 350);
+    tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, '♝', -350);
+    tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, '♝', -350);
+    tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, '♗', 350);
+    tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, '♗', 350);
 
-    // tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -350);
-    // tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -350);
-    // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
-    // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
+    tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, '♞', -350);
+    tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, '♞', -350);
+    tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
+    tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
 
     tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
     tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
 
-    //tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
+    tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
     tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
 
     return tiles;
   }
 
-
-// COMMENT THIS AWAY WHEN THINGS
-
-  // createTiles() {
-  //   //for specific board positions
-  //   let tiles = this.createEmptyBoard();
-
-  //   // for (let i = 0; i < 8; i++) {
-  //   //   tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
-  //   //   tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
-  //   // }
-  //   //♟♙♜♖♝♗♞♘♚♔♛♕
-  //   tiles[1][5] = new Pawn(1, 5, COLOUR.WHITE, "♙", -10, false);
-
-  //   // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", -525);
-  //   tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
-  //   // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", 525);
-  //   // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, "♖", 525);
-
-  //   // tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, "♝", -350);
-  //   // tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, "♝", -350);
-  //   // tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, "♗", 350);
-  //   // tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, "♗", 350);
-
-  //   // tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, "♞", -350);
-  //   // tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, "♞", -350);
-  //   // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, "♘", 350);
-  //   // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, "♘", 350);
-
-  //   tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
-  //   tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
-
-  //   // tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, "♛", -1000);
-  //   // tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, "♕", 1000);
-
-  //   return tiles;
-  // }
   kingThing(piece){
     let amountOfPieces = 0;
     for (let i = 0; i < 8; i++) {
@@ -102,7 +64,7 @@ export default class Board {
         }
       }
     }
-    //I will change this so its not two forloops
+
     if(amountOfPieces < 6){
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
@@ -118,9 +80,8 @@ export default class Board {
         }
       }
     }
-    //let distance = (sqrt((b1 - w1)**2 + (b2 - w2)**2));
+
     let distance = Math.round(5*(sqrt((b1 - w1)**2 + (b2 - w2)**2)));
-    console.log("distance:", distance);
     return distance;
   }
   else{
@@ -138,23 +99,10 @@ export default class Board {
       }
     }
 
-    // if(b1 > w1 && b2 > w2){
-      
-    // }
-    // if(b1 < w1 && b2 > w2){
-      
-    // }
-    // if(b1 > w1 && b2 < w2){
-      
-    // }
-    // if(b1 < w1 && b2 < w2){
-      
-    // }
-
     let whiteKingArray, blackKingArray, whitePawnArray, blackPawnArray, whiteRookArray, blackRookArray,
         whiteHorseArray, blackHorseArray, whiteBishopArray, blackBishopArray, whiteQueenArray, blackQueenArray;
     if (amountOfPieces > 12) {
-        console.log("hi");
+
       if (piece == "♜") {
        blackRookArray = [
             [0, 0, 0, 5, 5, 5, 0, 0],
@@ -315,24 +263,6 @@ export default class Board {
     else {      
       if (piece == "♔") {
         whiteKingArray = [
-            // [-100, -50, -50, -50, -50, -50, -50, -100],
-            // [-25, 0, 2.5, 2.5, 2.5, 2.5, 0, -25],
-            // [-50, -2.5, 10, 15, 15, 10, -2.5, -50],
-            // [-75, -5, 17.5, 22.5, 22.5, 17.5, -5, -75],
-            // [-100, -7.5, 15, 20, 20, 15, -7.5, -100],
-            // [-125, -10, 10, 12.5, 12.5, 10, -10, -125],
-            // [-150, -12.5, 0, 0, 0, 0, -12.5, -150],
-            // [-250, -150, -150, -150, -150, -150, -150, -250]
-
-            // [-10, -5, -5, -5, -5, -5, -5, -10],
-            // [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
-            // [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
-            // [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
-            // [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
-            // [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
-            // [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
-            // [-25, -15, -15, -15, -15, -15, -15, -25]
-
             [-10, -5, -5, -5, -5, -5, -5, -10],
             [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
             [-5, -2.5, 5, 7, 7, 5, -2.5, -5],
@@ -346,15 +276,6 @@ export default class Board {
     }
     if (piece == "♚") {
         blackKingArray = [
-            // [-25, -15, -15, -15, -15, -15, -15, -25],
-            // [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
-            // [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
-            // [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
-            // [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
-            // [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
-            // [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
-            // [-10, -5, -5, -5, -5, -5, -5, -10]
-
             [-25, -15, -15, -15, -15, -15, -15, -25],
             [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
             [-12.5, -10, 5, 7, 7, 5, -10, -12.5],
@@ -593,16 +514,14 @@ export default class Board {
         fill(10, 10, 10);
         textFont("Arial");
         text("Draw by stalemate", 400, 400, 500, 500);
-        //noLoop();
       }
       if (allMoves.length !== 0) {
         let alpha = -20000;
         let beta = 20000;
         let isMaximizingPlayer = true;
         let evaluation = this.evaluator();
-        //if(piecesAmount > 5){
         let bestMove = this.chessLooper(
-          2,
+          4,
           this.tiles,
           Aicolour,
           alpha,
@@ -610,24 +529,14 @@ export default class Board {
           isMaximizingPlayer,
           evaluation.evaluation
         );
-      //  }
-      //  else{
-      //   let bestMove = this.chessLooper(
-      //     4,
-      //     this.tiles,
-      //     Aicolour,
-      //     alpha,
-      //     beta,
-      //     isMaximizingPlayer,
-      //     evaluation.evaluation
-      //   );
-      //}
+      if(bestMove[1].from.i != undefined){
         this.move(
           this.tiles[bestMove[1].from.i][bestMove[1].from.j],
           bestMove[1].to,
           this.tiles
         );
       }
+    }
       this.turn = playerColour;
       calculating = false;
     }
@@ -681,7 +590,6 @@ export default class Board {
       board[from.x][from.y].flag = true;
     }
     this.turn = this.turn === COLOUR.WHITE ? COLOUR.BLACK : COLOUR.WHITE;
-    //DEZE IF STATEMENT WAS ER NIET EN OOK NIET WAT IN DE ELSE STAAT
     if (to.i === undefined) {
       board[from.x][from.y].userMove(to.x, to.y, board);
     } else {
@@ -689,27 +597,15 @@ export default class Board {
     }
     this.selected = undefined;
   
-    // this.isInCheck = CheckFinder.isCurrentPlayerInCheck(board, this.turn);
-    // if (!this.isInCheck) {
-    //   let moves1 = findAllMoves.possibleMove(board, this.turn);
-    //   if (moves1.length === 0) {
-    //     fill(10, 10, 10);
-    //     textFont("Arial");
-    //     text("Draw", 400, 400, 50, 50);
-    //     console.log("Draw");
-    //     //noLoop();
-    //   }
-    // }
-    
-
+    this.isInCheck = CheckFinder.isCurrentPlayerInCheck(board, this.turn);
     if (this.isInCheck) {
       let moves = CheckFinder.findMovesForCheckedPlayer(board, this.turn);
       if (moves.length === 0) {
-        fill(10, 10, 10);
-        textFont("Arial");
-        text("Checkmate", 400, 400, 50, 50);
-        console.log("checkmate");
-        //noLoop();
+        gameOver1 += 1;
+        // fill(10, 10, 10);
+        // textFont("Arial");
+        // text("Checkmate", 400, 400, 50, 50);
+        // console.log("checkmate1");
       }
     }
   }
@@ -732,15 +628,14 @@ export default class Board {
         }
       }
     }
-    if (possibleMove.length === 0){
-      let draw = 1;
-      fill(10, 10, 10);
-        textFont("Arial");
-        text("Draw", 400, 400, 50, 50);
-        console.log("Draw");
-        noLoop();
-        return draw;
+    if (possibleMove.length === 0 && gameOver1 == 1){
+         fill(10, 10, 10);
+         textFont("Arial");
+         text("Draw", 400, 400, 50, 50);
+         console.log("Draw");
     }
+    
+  
     return possibleMove;
   }
   evaluator() {
@@ -788,16 +683,11 @@ export default class Board {
           }
           if (this.tiles[i][j].colour == COLOUR.BLACK) {
             evaluation += this.kingThing(this.tiles[i][j].sprite);
-            console.log(this.kingThing(this.tiles[i][j].sprite));
-          // } else {
-          //   evaluation -= this.kingThing(this.tiles[i][j].sprite);
-          // 
         }
       }
-        //♟♙♜♖♝♗♞♘♚♔♛♕
       }
     }
-    console.log("evaluation:", evaluation);
+
     return {
       evaluation,
       numberOfPieces,
@@ -876,21 +766,12 @@ export default class Board {
               move.to.y
             ][move.to.x];
         }
-        console.log("pieces:" , piecesAmount);
-        console.log("legalmoves:" , this.legalMoves.length , this.legalMoves);
         if(piecesAmount < 5){
         if (this.tiles[move.from.i][move.from.j].colour == COLOUR.BLACK) {
           evaluation += this.kingThing(this.tiles[move.from.i][move.from.j].sprite);
-          console.log(this.kingThing(this.tiles[move.from.i][move.from.j].sprite));
-
-        // } else {
-        //   evaluation -= this.kingThing(this.tiles[i][j].sprite);
       }
       }
       }
-      // if(this.legalMoves.length = 0){
-      //   evaluation += Math.abs(evaluation);
-      // }
 
       this.move(this.tiles[move.from.i][move.from.j], move.to, this.tiles);
       value = JSON.parse(
@@ -935,112 +816,5 @@ export default class Board {
     if (this.tiles[i][j].sprite == "♚") {
       cosole.log("test");
     }
-
-    if(this.findAllMoves(draw)==1){
-      fill(10, 10, 10);
-        textFont("Arial");
-        text("Draw", 400, 400, 50, 50);
-        console.log("Draw");
-        noLoop();
-    }
   }
-
-  //Dit hieronder is mijn poging om minder _.deepclone() the gebruiken...
-
-  // evaluator(boardToEvaluate) {
-  //     let evaluation = 0;
-  //     for(let i = 0; i<8; i++){
-  //         for(let j = 0; j<8; j++){
-  //             if(boardToEvaluate[i][j] != undefined){
-  //                 evaluation += boardToEvaluate[i][j].value;
-  //             }
-  //         }
-  //     }
-  //     console.log(boardToEvaluate);
-  //     return evaluation;
-  // }
-
-  // resetBoard(boardstate, boardToReset){
-  //     boardToReset[boardstate.from.x][boardstate.from.y] = _.cloneDeep(boardstate.from);
-  //     if (boardstate.to === undefined) {
-  //         boardToReset[boardstate.toX][boardstate.toY] = undefined;
-  //     }
-  //     else {
-  //         boardToReset[boardstate.toX][boardstate.toY] = _.cloneDeep(boardstate.to);
-  //     }
-  // }
-
-  // chessLooper (allMoves1, depth, color, boardImput) {
-  //     if (allMoves1.length === 0) {
-  //         this.isInCheck = CheckFinder.isCurrentPlayerInCheck(boardImput, this.turn);
-  //         console.log(this.isInCheck, 'hi');
-  //         if (this.isInCheck) {
-  //             console.log('could be checkmate');
-  //             return 'checkmate';
-  //         }
-  //         if (!this.isInCheck) {
-  //             console.log('could be draw');
-  //             return 'draw';
-  //         }
-  //     }
-
-  //     let colour = color;
-  //     //const boardstate = _.cloneDeep(this.tiles);
-  //     let bestMoveIndex = -1;
-  //     let bestMove = undefined;
-  //     let maxMoveValue = undefined;
-
-  //     if (colour == COLOUR.BLACK) {
-  //         colour = COLOUR.WHITE;
-  //         maxMoveValue = 1000;
-  //     }
-  //     else {
-  //         colour = COLOUR.BLACK;
-  //         maxMoveValue = -1000;
-  //     }
-
-  //     depth --;
-
-  //     for (let j = 0; j < allMoves1.length; j++) {
-  //         let boardstate = undefined;
-  //         if(boardImput[allMoves1[j].to.x][allMoves1[j].to.y] == undefined){
-  //             //boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: undefined, toX: allMoves1[j].to.x, toY: allMoves1[j].to.y};
-  //             let pieceIMovedFrom = _.cloneDeep(boardImput[allMoves1[j].from.i][allMoves1[j].from.j]);
-  //             boardstate = {from: pieceIMovedFrom, to: undefined, toX: allMoves1[j].to.x, toY: allMoves1[j].to.y};
-  //         }
-  //         else{
-  //             //boardstate = {from: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].from.i][allMoves1[j].from.j])), to: JSON.parse(JSON.stringify(this.tiles[allMoves1[j].to.x][allMoves1[j].to.y])), toX: JSON.parse(JSON.stringify(allMoves1[j].to.x)), toY: JSON.parse(JSON.stringify(allMoves1[j].to.y))};
-  //             let pieceIMovedFrom = _.cloneDeep(boardImput[allMoves1[j].from.i][allMoves1[j].from.j]);
-  //             boardstate = {from: pieceIMovedFrom, to: boardImput[allMoves1[j].to.x][allMoves1[j].to.y], toX: allMoves1[j].to.x, toY: allMoves1[j].to.y}
-  //         }
-
-  //         this.move(boardImput[allMoves1[j].from.i][allMoves1[j].from.j], allMoves1[j].to, boardImput);
-
-  //         if (depth > 0) {
-  //             bestMove = this.chessLooper(this.findAllMoves(colour, boardImput), depth, colour, boardImput);
-  //             if  (bestMove == 'draw')    {
-  //                  console.log(bestMove, 'draw');
-  //                  allMoves1[j].valueOfMove = 0;
-  //              }
-  //              if  (bestMove == 'checkmate')   {
-  //                  console.log(bestMove, 'checkmate');
-  //                  allMoves1[j].valueOfMove = -1*maxMoveValue;
-  //              }
-  //              else    {
-  //                  allMoves1[j].valueOfMove = bestMove.valueOfMove;
-  //              }
-  //         }
-  //         else {
-  //             console.log('calculating...');
-  //             allMoves1[j].valueOfMove = this.evaluator(boardImput);
-  //         }
-
-  //         if (this.shouldITrade(color, allMoves1[j].valueOfMove, maxMoveValue)) {
-  //             maxMoveValue = allMoves1[j].valueOfMove;
-  //             bestMoveIndex = j;
-  //         }
-  //         this.resetBoard(boardstate, boardImput);
-  //     }
-  //     return allMoves1[bestMoveIndex];
-  // }
-} //♟♙♜♖♝♗♞♘♚♔♛♕
+}
