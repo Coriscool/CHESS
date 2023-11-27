@@ -22,15 +22,15 @@ export default class Board {
     this.isInCheck = false;
   }
 
-  //createTiles() {
-    //let tiles = this.createEmptyBoard();
+  createTiles() {
+    let tiles = this.createEmptyBoard();
 
-    //for (let i = 0; i < 5; i++) {
+    // for (let i = 0; i < 8; i++) {
     //  tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
     //  tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
-    //}
-    //♟♙♜♖♝♗♞♘♚♔♛♕
-    //tiles[1][5] = new Pawn(1, 5, COLOUR.BLACK, "♟", -10, false);
+    // }
+    // //♟♙♜♖♝♗♞♘♚♔♛♕
+    // //tiles[1][5] = new Pawn(1, 5, COLOUR.BLACK, "♟", -10, false);
     // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, '♜', -525);
     // tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, '♜', -525);
     // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, '♖', 525);
@@ -46,52 +46,52 @@ export default class Board {
     // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, '♘', 350);
     // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, '♘', 350);
 
-    //tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
-    //tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
+    tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
+    tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
 
-    // tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
-    // tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
+    //tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, '♛', -1000);
+    tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, '♕', 1000);
 
-    //return tiles;
-  //}
+    return tiles;
+  }
 
 
 // COMMENT THIS AWAY WHEN THINGS
 
-  createTiles() {
-    //for specific board positions
-    let tiles = this.createEmptyBoard();
+  // createTiles() {
+  //   //for specific board positions
+  //   let tiles = this.createEmptyBoard();
 
-    // for (let i = 0; i < 8; i++) {
-    //   tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
-    //   tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
-    // }
-    //♟♙♜♖♝♗♞♘♚♔♛♕
-    tiles[1][5] = new Pawn(1, 5, COLOUR.WHITE, "♙", -10, false);
+  //   // for (let i = 0; i < 8; i++) {
+  //   //   tiles[i][1] = new Pawn(i, 1, COLOUR.BLACK, "♟", -100, false);
+  //   //   tiles[i][6] = new Pawn(i, 6, COLOUR.WHITE, "♙", 100, false);
+  //   // }
+  //   //♟♙♜♖♝♗♞♘♚♔♛♕
+  //   tiles[1][5] = new Pawn(1, 5, COLOUR.WHITE, "♙", -10, false);
 
-    // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", -525);
-    tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
-    // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", 525);
-    // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, "♖", 525);
+  //   // tiles[0][0] = new Rook(0, 0, COLOUR.BLACK, "♜", -525);
+  //   tiles[7][0] = new Rook(7, 0, COLOUR.BLACK, "♜", -525);
+  //   // tiles[0][7] = new Rook(0, 7, COLOUR.WHITE, "♖", 525);
+  //   // tiles[7][7] = new Rook(7, 7, COLOUR.WHITE, "♖", 525);
 
-    // tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, "♝", -350);
-    // tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, "♝", -350);
-    // tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, "♗", 350);
-    // tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, "♗", 350);
+  //   // tiles[2][0] = new Bishop(2, 0, COLOUR.BLACK, "♝", -350);
+  //   // tiles[5][0] = new Bishop(5, 0, COLOUR.BLACK, "♝", -350);
+  //   // tiles[2][7] = new Bishop(2, 7, COLOUR.WHITE, "♗", 350);
+  //   // tiles[5][7] = new Bishop(5, 7, COLOUR.WHITE, "♗", 350);
 
-    // tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, "♞", -350);
-    // tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, "♞", -350);
-    // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, "♘", 350);
-    // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, "♘", 350);
+  //   // tiles[1][0] = new Knight(1, 0, COLOUR.BLACK, "♞", -350);
+  //   // tiles[6][0] = new Knight(6, 0, COLOUR.BLACK, "♞", -350);
+  //   // tiles[1][7] = new Knight(1, 7, COLOUR.WHITE, "♘", 350);
+  //   // tiles[6][7] = new Knight(6, 7, COLOUR.WHITE, "♘", 350);
 
-    tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
-    tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
+  //   tiles[4][0] = new King(4, 0, COLOUR.BLACK, "♚", -10000);
+  //   tiles[4][7] = new King(4, 7, COLOUR.WHITE, "♔", 10000);
 
-    // tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, "♛", -1000);
-    // tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, "♕", 1000);
+  //   // tiles[3][0] = new Queen(3, 0, COLOUR.BLACK, "♛", -1000);
+  //   // tiles[3][7] = new Queen(3, 7, COLOUR.WHITE, "♕", 1000);
 
-    return tiles;
-  }
+  //   return tiles;
+  // }
   kingThing(piece){
     let amountOfPieces = 0;
     for (let i = 0; i < 8; i++) {
@@ -324,12 +324,21 @@ export default class Board {
             // [-150, -12.5, 0, 0, 0, 0, -12.5, -150],
             // [-250, -150, -150, -150, -150, -150, -150, -250]
 
+            // [-10, -5, -5, -5, -5, -5, -5, -10],
+            // [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
+            // [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
+            // [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
+            // [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
+            // [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
+            // [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
+            // [-25, -15, -15, -15, -15, -15, -15, -25]
+
             [-10, -5, -5, -5, -5, -5, -5, -10],
             [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
-            [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
-            [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
-            [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
-            [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
+            [-5, -2.5, 5, 7, 7, 5, -2.5, -5],
+            [-7.5, -5, 8, 9, 9, 8, -5, -7.5],
+            [-10, -7.5, 7, 8, 8, 7, -7.5, -10],
+            [-12.5, -10, 5, 7, 7, 5, -10, -12.5],
             [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
             [-25, -15, -15, -15, -15, -15, -15, -25]
         ];
@@ -337,12 +346,21 @@ export default class Board {
     }
     if (piece == "♚") {
         blackKingArray = [
+            // [-25, -15, -15, -15, -15, -15, -15, -25],
+            // [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
+            // [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
+            // [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
+            // [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
+            // [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
+            // [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
+            // [-10, -5, -5, -5, -5, -5, -5, -10]
+
             [-25, -15, -15, -15, -15, -15, -15, -25],
             [-15, -12.5, 0, 0, 0, 0, -12.5, -15],
-            [-12.5, -10, 10, 12.5, 12.5, 10, -10, -12.5],
-            [-10, -7.5, 15, 20, 20, 15, -7.5, -10],
-            [-7.5, -5, 17.5, 22.5, 22.5, 17.5, -5, -7.5],
-            [-5, -2.5, 10, 15, 15, 10, -2.5, -5],
+            [-12.5, -10, 5, 7, 7, 5, -10, -12.5],
+            [-10, -7.5, 7, 8, 8, 7, -7.5, -10],
+            [-7.5, -5, 8, 9, 9, 8, -5, -7.5],
+            [-5, -2.5, 5, 7, 7, 5, -2.5, -5],
             [-2.5, 0, 2.5, 2.5, 2.5, 2.5, 0, -2.5],
             [-10, -5, -5, -5, -5, -5, -5, -10]
         ];
@@ -584,7 +602,7 @@ export default class Board {
         let evaluation = this.evaluator();
         //if(piecesAmount > 5){
         let bestMove = this.chessLooper(
-          4,
+          2,
           this.tiles,
           Aicolour,
           alpha,
@@ -670,8 +688,19 @@ export default class Board {
       board[from.x][from.y].userMove(to.i, to.j, board);
     }
     this.selected = undefined;
-
-    this.isInCheck = CheckFinder.isCurrentPlayerInCheck(board, this.turn);
+  
+    // this.isInCheck = CheckFinder.isCurrentPlayerInCheck(board, this.turn);
+    // if (!this.isInCheck) {
+    //   let moves1 = findAllMoves.possibleMove(board, this.turn);
+    //   if (moves1.length === 0) {
+    //     fill(10, 10, 10);
+    //     textFont("Arial");
+    //     text("Draw", 400, 400, 50, 50);
+    //     console.log("Draw");
+    //     //noLoop();
+    //   }
+    // }
+    
 
     if (this.isInCheck) {
       let moves = CheckFinder.findMovesForCheckedPlayer(board, this.turn);
@@ -702,6 +731,15 @@ export default class Board {
           }
         }
       }
+    }
+    if (possibleMove.length === 0){
+      let draw = 1;
+      fill(10, 10, 10);
+        textFont("Arial");
+        text("Draw", 400, 400, 50, 50);
+        console.log("Draw");
+        noLoop();
+        return draw;
     }
     return possibleMove;
   }
@@ -896,6 +934,14 @@ export default class Board {
   checkMateForQueen(tiles) {
     if (this.tiles[i][j].sprite == "♚") {
       cosole.log("test");
+    }
+
+    if(this.findAllMoves(draw)==1){
+      fill(10, 10, 10);
+        textFont("Arial");
+        text("Draw", 400, 400, 50, 50);
+        console.log("Draw");
+        noLoop();
     }
   }
 
