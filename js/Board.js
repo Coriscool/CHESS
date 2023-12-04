@@ -602,10 +602,10 @@ export default class Board {
       let moves = CheckFinder.findMovesForCheckedPlayer(board, this.turn);
       if (moves.length === 0) {
         gameOver1 += 1;
-        // fill(10, 10, 10);
-        // textFont("Arial");
-        // text("Checkmate", 400, 400, 50, 50);
-        // console.log("checkmate1");
+        fill(10, 10, 10);
+        textFont("Arial");
+        text("Checkmate", 400, 400, 50, 50);
+        console.log("checkmate");
       }
     }
   }
